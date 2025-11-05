@@ -1,0 +1,200 @@
+import { useState, useEffect } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
+import { FaCalendarAlt, FaUser, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { defaultBlogImages } from '../util/constants/BlogImages';
+
+interface BlogPost {
+  id: number;
+  title: { rendered: string };
+  content: { rendered: string };
+  excerpt: { rendered: string };
+  date: string;
+  author: number;
+  _embedded?: {
+    author?: Array<{ name: string }>;
+    'wp:featuredmedia'?: Array<{ source_url: string }>;
+  };
+}
+
+const POSTS_PER_PAGE = 6;
+
+const Blog = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [totalPages, setTotalPages] = useState(1);
+  
+  const currentPage = Number(searchParams.get('page') || '1');
+
+  // Función para cambiar de página
+  const handlePageChange = (newPage: number) => {
+    setSearchParams({ page: newPage.toString() });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const requestUrl = `${import.meta.env.VITE_WORDPRESS_API_URL}&_embed&per_page=${POSTS_PER_PAGE}&page=${currentPage}`;
+        console.log('Fetching posts from:', requestUrl);
+        const response = await fetch(requestUrl);
+        const totalPosts = Number(response.headers.get('X-WP-Total'));
+        const data = await response.json();
+        console.log('Received posts data:', data);
+        setPosts(data);
+        setTotalPages(Math.ceil(totalPosts / POSTS_PER_PAGE));
+      } catch (err) {
+        setError('Error al cargar las entradas del blog');
+        console.error('Error fetching blog posts:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, [currentPage]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-900 text-white py-20 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center">
+            <div className="animate-pulse">
+              <div className="h-8 bg-gray-800 rounded w-1/4 mx-auto mb-8"></div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {[...Array(POSTS_PER_PAGE)].map((_, index) => (
+                  <div key={index} className="bg-gray-800 rounded-lg overflow-hidden">
+                    <div className="h-48 bg-gray-700"></div>
+                    <div className="p-6">
+                      <div className="h-6 bg-gray-700 rounded w-3/4 mb-4"></div>
+                      <div className="h-4 bg-gray-700 rounded w-1/2 mb-4"></div>
+                      <div className="h-4 bg-gray-700 rounded w-full mb-4"></div>
+                      <div className="h-4 bg-gray-700 rounded w-2/3"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-900 text-white py-20 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center">
+            <p className="text-red-500">{error}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <section className="min-h-screen bg-gray-900 text-white py-20 px-4">
+      <div className="max-w-6xl mx-auto">
+        <h2 className="text-4xl font-bold text-center mb-12">
+          Mi <span className="text-orange-500">Blog</span>
+        </h2>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {posts.map((post) => (
+            <article
+              key={post.id}
+              className="bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-transform duration-300 hover:-translate-y-2"
+            >
+              <img
+                src={
+                  post._embedded?.['wp:featuredmedia']
+                    ? post._embedded['wp:featuredmedia'][0].source_url
+                    : defaultBlogImages[post.id % defaultBlogImages.length]
+                }
+                alt={post.title.rendered}
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-6">
+                <h3
+                  className="text-xl font-bold mb-2"
+                  dangerouslySetInnerHTML={{ __html: post.title.rendered }}
+                />
+                <div className="flex items-center gap-4 text-sm text-gray-400 mb-4">
+                  <span className="flex items-center gap-1">
+                    <FaCalendarAlt />
+                    {new Date(post.date).toLocaleDateString()}
+                  </span>
+                  {post._embedded?.author && (
+                    <span className="flex items-center gap-1">
+                      <FaUser />
+                      {post._embedded.author[0].name}
+                    </span>
+                  )}
+                </div>
+                <div
+                  className="text-gray-300 mb-4 line-clamp-3"
+                  dangerouslySetInnerHTML={{ __html: post.excerpt.rendered }}
+                />
+                <Link
+                  to={`/blog/${post.id}`}
+                  className="inline-block px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors"
+                >
+                  Leer más
+                </Link>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        {/* Paginación */}
+        {totalPages > 1 && (
+          <div className="flex justify-center mt-12 gap-2">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className={`flex items-center justify-center w-10 h-10 rounded-full 
+                ${currentPage === 1 
+                  ? 'bg-gray-700 text-gray-500 cursor-not-allowed' 
+                  : 'bg-gray-700 text-white hover:bg-orange-500 transition-colors'
+                }`}
+              aria-label="Página anterior"
+            >
+              <FaChevronLeft className="w-4 h-4" />
+            </button>
+            
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <button
+                key={page}
+                onClick={() => handlePageChange(page)}
+                className={`w-10 h-10 rounded-full transition-colors
+                  ${currentPage === page
+                    ? 'bg-orange-500 text-white'
+                    : 'bg-gray-700 text-white hover:bg-orange-500'
+                  }`}
+              >
+                {page}
+              </button>
+            ))}
+
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className={`flex items-center justify-center w-10 h-10 rounded-full 
+                ${currentPage === totalPages 
+                  ? 'bg-gray-700 text-gray-500 cursor-not-allowed' 
+                  : 'bg-gray-700 text-white hover:bg-orange-500 transition-colors'
+                }`}
+              aria-label="Página siguiente"
+            >
+              <FaChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+};
+
+export default Blog;

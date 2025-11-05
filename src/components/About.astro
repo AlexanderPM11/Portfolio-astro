@@ -1,0 +1,112 @@
+---
+import { FiDownload, FiMail } from "react-icons/fi";
+import imgAbout01 from "../assets/img/about04-CJBXsyAU.jpg";
+import imgAbout02 from "../assets/img/about02-BIKhex6S.jpg";
+import Button from "./common/Button.astro";
+
+const sliderImages = [imgAbout01, imgAbout02];
+---
+
+<!-- Sección principal -->
+<section id="about" class="py-20 px-6 bg-gray-950 text-white">
+  <div
+    class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center"
+  >
+    <!-- Swiper -->
+    <div class="relative rounded-2xl overflow-hidden shadow-2xl h-[400px]">
+      <swiper-container
+        navigation="true"
+        autoplay-delay="4000"
+        loop="true"
+        class="h-full w-full"
+      >
+        {
+          sliderImages.map((img, i) => (
+            <swiper-slide key={i}>
+              <div
+                class="w-full h-full bg-cover bg-center"
+                style={`background-image: url('${img}');`}
+              />
+            </swiper-slide>
+          ))
+        }
+      </swiper-container>
+    </div>
+
+    <!-- Contenido -->
+    <div>
+      <h2 class="text-4xl font-extrabold text-white mb-3">
+        Sobre <span class="text-orange-500">Mí</span>
+      </h2>
+      <p class="text-gray-400 mb-6 text-lg">Un poco de mi historia</p>
+
+      <div class="space-y-5 text-gray-400">
+        <p>
+          Me describo como un entusiasta de la informática enfocado en la
+          resolución de problemas y la innovación, siempre buscando nuevas
+          formas de abordar los desafíos tecnológicos.
+        </p>
+        <p>
+          Con sólidas habilidades técnicas en desarrollo de software y una
+          mentalidad creativa y analítica, me destaco en la creación de
+          soluciones eficientes, con capacidad para comunicarme con claridad y
+          colaborar eficazmente con equipos y clientes.
+        </p>
+        <p>
+          <span class="font-semibold text-gray-400"
+            >En 2023 logré la máxima</span
+          >
+          excelencia académica al graduarme del programa de Desarrollo de Software
+          en el Instituto Tecnológico de las Américas (ITLA).
+        </p>
+      </div>
+
+      <!-- Estadísticas -->
+      <div class="flex flex-wrap justify-center sm:justify-start gap-6 my-8">
+        {
+          [
+            { label: "Graduación ITLA", value: "2023" },
+            { label: "Proyectos desarrollados", value: "+20" },
+            { label: "Compromiso con la mejora continua", value: "100%" },
+          ].map((item) => (
+            <div class="text-center">
+              <span class="block text-4xl font-bold text-blue-500 mb-1">
+                {item.value}
+              </span>
+              <span class="text-sm text-gray-400">{item.label}</span>
+            </div>
+          ))
+        }
+      </div>
+
+      <!-- Botones -->
+      <div
+        class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4"
+      >
+        <Button
+          href="#contact"
+          variant="primary"
+          class="bg-white text-gray-900 hover:bg-white/75"
+        >
+          <FiMail class:list="inline-block mr-2 text-lg" />
+          Contáctame
+        </Button>
+
+        <Button
+          href="/CV_Alexander_Polanco_Desarrollo_de_Software.pdf"
+          variant="primary"
+          class="bg-transparent hover:bg-white/10 border border-gray-500 text-white"
+          target="_blank"
+        >
+          <FiDownload class:list="inline-block mr-2 text-lg" />
+          Currículum
+        </Button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Importar scripts de Swiper -->
+<script type="module">
+  import "swiper/element/bundle";
+</script>

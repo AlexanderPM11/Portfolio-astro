@@ -1,0 +1,99 @@
+---
+import { fetchBlogPost } from "../../services/blogService";
+import { defaultBlogImages } from "../../util/constants/BlogImages";
+import sanitizeHtml from "sanitize-html";
+import { date } from "astro:schema";
+import Layout from "../../layouts/Layout.astro";
+
+const { id } = Astro.params;
+const post = await fetchBlogPost(id ?? "");
+const error = !post ? "Error al cargar el artículo" : "";
+---
+
+<Layout title={post?.title?.rendered ?? "Blog"}>
+  <div class="min-h-screen bg-gray-900 text-white">
+    {
+      error ? (
+        <div class="min-h-screen flex items-center justify-center bg-gray-900">
+          <div class="text-center">
+            <p class="text-red-400 text-lg mb-4">{error}</p>
+            <a
+              href="/blog"
+              class="inline-flex items-center gap-2 px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors shadow-md hover:shadow-lg"
+            >
+              ← Volver al Blog
+            </a>
+          </div>
+        </div>
+      ) : (
+        <>
+          {/* Imagen destacada */}
+          <div class="relative w-full h-[50vh] min-h-[300px] bg-gray-800">
+            <img
+              src={
+                post?._embedded?.["wp:featuredmedia"]
+                  ? post?._embedded["wp:featuredmedia"][0].source_url
+                  : defaultBlogImages[post?.id ?? 0 % defaultBlogImages.length]
+              }
+              alt={post?.title.rendered}
+              class="absolute inset-0 w-full h-full object-cover opacity-50"
+            />
+            <div class="absolute inset-0 bg-gradient-to-b from-gray-900/70 to-gray-900/90" />
+            <div class="absolute bottom-0 left-0 right-0 p-8 max-w-5xl mx-auto">
+              <h1
+                class="text-4xl font-bold mb-4 leading-tight"
+                set:html={post?.title.rendered}
+              />
+              <div class="flex gap-6 text-gray-300 text-sm">
+                <span>
+                  📅{" "}
+                  {new Date(post?.date ?? Date.now()).toLocaleDateString(
+                    "es-ES",
+                    {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    }
+                  )}
+                </span>
+                {post?._embedded?.author && (
+                  <span>👤 {post?._embedded.author[0].name}</span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Contenido */}
+          <article class="max-w-5xl mx-auto px-4 py-12">
+            <div
+              class="wordpress-content prose prose-invert max-w-none text-white"
+              set:html={sanitizeHtml(post?.content.rendered, {
+                allowedTags: [
+                  ...sanitizeHtml.defaults.allowedTags,
+                  "img",
+                  "figure",
+                  "iframe",
+                  "video",
+                  "source",
+                ],
+                allowedAttributes: {
+                  ...sanitizeHtml.defaults.allowedAttributes,
+                  "*": ["class", "style", "src", "alt", "width", "height"],
+                },
+              })}
+            />
+
+            <div class="mt-12 pt-6 border-t border-gray-700">
+              <a
+                href="/blog"
+                class="inline-flex items-center gap-2 px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors shadow-md hover:shadow-lg"
+              >
+                ← Volver al Blog
+              </a>
+            </div>
+          </article>
+        </>
+      )
+    }
+  </div>
+</Layout>

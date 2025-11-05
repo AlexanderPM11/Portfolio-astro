@@ -1,0 +1,35 @@
+---
+interface Props {
+  href: string;
+  variant?: "primary" | "secondary";
+  class?: string;
+  target?: "_self" | "_blank" | "_parent" | "_top";
+}
+
+const {
+  href,
+  variant = "primary",
+  class: className = "",
+  target = "_self",
+} = Astro.props;
+
+const baseStyles =
+  "py-2 px-6 rounded transition duration-300 text-sm font-medium shadow-md inline-block";
+
+const variants = {
+  primary: "bg-blue-700 text-white hover:bg-blue-800",
+  secondary:
+    "border border-white text-white hover:bg-white hover:text-blue-700",
+};
+
+const relAttr = target === "_blank" ? "noopener noreferrer" : undefined;
+---
+
+<a
+  href={href}
+  target={target}
+  rel={relAttr}
+  class={`${baseStyles} ${variants[variant]} ${className}`}
+>
+  <slot />
+</a>

@@ -1,0 +1,35 @@
+---
+interface Props {
+  icon: any;
+  title: string;
+  description: string;
+  features: string[];
+}
+
+const { icon, title, description, features } = Astro.props;
+---
+
+<div
+  class="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-lg relative border-l-4 border-orange-500"
+>
+  <div class="p-6">
+    <div class="flex justify-center mb-4">
+      <div class="bg-blue-100 p-4 rounded-full">
+        <Fragment set:html={Astro.slots.icon ? "" : undefined} />
+        <slot name="icon">{icon}</slot>
+      </div>
+    </div>
+    <h3 class="text-xl font-bold text-center mb-3">{title}</h3>
+    <p class="text-gray-600 text-center mb-4">{description}</p>
+    <ul class="space-y-2">
+      {
+        features.map((feature, index) => (
+          <li class="flex items-start">
+            <span class="text-orange-500 mr-2">•</span>
+            <span class="text-gray-600">{feature}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</div>

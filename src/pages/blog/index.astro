@@ -1,0 +1,96 @@
+---
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { fetchCategories, fetchPosts } from "../../services/wordpress";
+import BlogCard from "../../components/BlogCard.astro";
+
+const url = new URL(Astro.request.url);
+const category = url.searchParams.get("category") || "all";
+const page = Number(url.searchParams.get("page") || "1");
+
+const [categories, { posts, totalPages }] = await Promise.all([
+  fetchCategories(),
+  fetchPosts(category, page),
+]);
+---
+
+<section class="min-h-screen bg-gray-900 text-white py-20 px-4">
+  <div class="max-w-6xl mx-auto">
+    <h2 class="text-4xl font-bold text-center mb-8">
+      Mi <span class="text-orange-500">Blog</span>
+    </h2>
+
+    <!-- Categorías -->
+    <div class="flex flex-wrap justify-center gap-2 mb-12">
+      {categories.map((cat) => (
+        <a
+          href={`/blog?category=${cat.slug}`}
+          class={`px-4 py-2 rounded-full transition-all duration-300 ${
+            category === cat.slug
+              ? "bg-orange-500 text-white"
+              : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+          }`}
+        >
+          {cat.name}
+          {cat.count > 0 && cat.slug !== "all" && (
+            <span class="ml-2 text-sm opacity-75">
+              ({cat.count})
+            </span>
+          )}
+        </a>
+      ))}
+    </div>
+
+    <!-- Posts -->
+    {posts.length === 0 ? (
+      <div class="text-center py-12 bg-gray-800/50 rounded-lg">
+        <p class="text-gray-400">No hay posts en esta categoría</p>
+      </div>
+    ) : (
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {posts.map((post) => <BlogCard post={post} />)}
+      </div>
+    )}
+
+    <!-- Paginación -->
+    {totalPages > 1 && (
+      <div class="flex justify-center mt-12 gap-2">
+        <a
+          href={`/blog?page=${page - 1}&category=${category}`}
+          class={`flex items-center justify-center w-10 h-10 rounded-full ${
+            page === 1
+              ? "bg-gray-700 text-gray-500 pointer-events-none"
+              : "bg-gray-700 text-white hover:bg-orange-500"
+          }`}
+          aria-label="Página anterior"
+        >
+          <FaChevronLeft class:list="w-4 h-4" />
+        </a>
+
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
+          <a
+            href={`/blog?page=${num}&category=${category}`}
+            class={`w-10 h-10 rounded-full flex items-center justify-center ${
+              page === num
+                ? "bg-orange-500 text-white"
+                : "bg-gray-700 text-white hover:bg-orange-500"
+            }`}
+          >
+            {num}
+          </a>
+        ))}
+
+        <a
+          href={`/blog?page=${page + 1}&category=${category}`}
+          class={`flex items-center justify-center w-10 h-10 rounded-full ${
+            page === totalPages
+              ? "bg-gray-700 text-gray-500 pointer-events-none"
+              : "bg-gray-700 text-white hover:bg-orange-500"
+          }`}
+          aria-label="Página siguiente"
+        >
+          <FaChevronRight class:list="w-4 h-4" />
+        </a>
+      </div>
+    )}
+  </div>
+</section>

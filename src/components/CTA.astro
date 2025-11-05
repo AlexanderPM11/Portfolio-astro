@@ -1,0 +1,43 @@
+---
+import ctaImg from "../assets/img/CTA.jpeg";
+import { FiMail } from "react-icons/fi";
+---
+
+<section
+  id="cta"
+  class="text-center text-white py-20 px-4 bg-cover bg-center relative"
+  style={`background-image: linear-gradient(rgba(11, 25, 38, 0.9), rgba(11, 25, 38, 0.9)), url(${ctaImg.src});`}
+>
+  <div class="max-w-3xl mx-auto">
+    <h2 class="font-oswald text-3xl sm:text-4xl font-medium mb-4">
+      ¿Listo para trabajar en tu próximo proyecto digital?
+    </h2>
+
+    <p class="text-lg text-white/90 mb-6">
+      Contáctame hoy mismo para una asesoría gratuita y llevar tu idea al siguiente nivel.
+    </p>
+
+    <a
+      href="#contact"
+      class="inline-flex items-center justify-center bg-white text-gray-900 hover:bg-white/75 py-2 px-6 rounded font-medium shadow-md transition duration-300 text-sm"
+      onclick="scrollToSection(event, '#contact')"
+    >
+      <FiMail class:list="inline-block mr-2 text-lg" />
+      Contáctame
+    </a>
+  </div>
+</section>
+
+<script>
+  function scrollToSection(event, targetId) {
+    if (location.pathname === "/") {
+      event.preventDefault();
+      const target = document.querySelector(targetId);
+      if (!target) return;
+      const headerHeight = 80;
+      const targetPosition = target.getBoundingClientRect().top + window.pageYOffset;
+      const offsetPosition = targetPosition - headerHeight;
+      window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+    }
+  }
+</script>

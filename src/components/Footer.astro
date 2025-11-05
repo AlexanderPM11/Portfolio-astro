@@ -1,0 +1,90 @@
+---
+import { FaPaperPlane } from "react-icons/fa";
+import SocialMedia from "./SocialMedia.astro";
+import logo from "../assets/img/Logo.png";
+---
+
+<footer id="footer" class="bg-gray-900 text-gray-300 pt-16 border-t border-gray-700">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-10 pb-10 border-b border-gray-700">
+      
+      <!-- Columna 1 -->
+      <div class="max-w-xs">
+        <div class="flex items-center mb-4">
+          <a href="#hero">
+            <span class="flex">
+              <img src={logo.src} class="h-9 mr-2" alt="Logo" />
+              <span class="text-white font-bold text-lg">Alexander Polanco</span>
+            </span>
+          </a>
+        </div>
+        <p class="text-sm leading-relaxed">
+          Desarrollador Full Stack especializado en soluciones modernas y eficientes
+          para web, móviles y sistemas empresariales.
+        </p>
+        <SocialMedia />
+      </div>
+
+      <!-- Columna 2 -->
+      <div>
+        <h3 class="text-white text-lg mb-4 relative inline-block after:block after:w-10 after:h-[2px] after:bg-blue-500 after:absolute after:-bottom-2 after:left-0">
+          Enlaces
+        </h3>
+        <ul class="flex flex-col gap-2 text-sm">
+          <li><a href="#hero" class="hover:text-blue-400">Inicio</a></li>
+          <li><a href="#services" class="hover:text-blue-400">Servicios</a></li>
+          <li><a href="#projects" class="hover:text-blue-400">Proyectos</a></li>
+          <li><a href="#about" class="hover:text-blue-400">Sobre Mí</a></li>
+          <li><a href="#contact" class="hover:text-blue-400">Contacto</a></li>
+        </ul>
+      </div>
+
+      <!-- Columna 3 -->
+      <div>
+        <h3 class="text-white text-lg mb-4 relative inline-block after:block after:w-10 after:h-[2px] after:bg-blue-500 after:absolute after:-bottom-2 after:left-0">
+          Servicios
+        </h3>
+        <ul class="flex flex-col gap-2 text-sm">
+          <li><a href="#services" class="hover:text-blue-400">Desarrollo Web</a></li>
+          <li><a href="#services" class="hover:text-blue-400">Aplicaciones Móviles</a></li>
+          <li><a href="#services" class="hover:text-blue-400">Integraciones API</a></li>
+          <li><a href="#services" class="hover:text-blue-400">Consultoría Técnica</a></li>
+        </ul>
+      </div>
+
+      <!-- Columna 4 -->
+      <div>
+        <h3 class="text-white text-lg mb-4 relative inline-block after:block after:w-10 after:h-[2px] after:bg-blue-500 after:absolute after:-bottom-2 after:left-0">
+          Newsletter
+        </h3>
+        <p class="text-sm text-gray-400 mb-3">
+          Suscríbete para recibir novedades sobre mis últimos proyectos y recursos.
+        </p>
+        <form class="flex">
+          <input
+            type="email"
+            placeholder="Tu correo electrónico"
+            class="max-w-[220px] md:max-w-[150px] lg:max-w-[200px] flex-1 px-4 py-2 rounded-l bg-white/10 text-white border border-white/20 placeholder-gray-400"
+          />
+          <button
+            type="submit"
+            class="bg-orange-500 text-white px-4 rounded-r cursor-pointer flex items-center justify-center"
+            aria-label="Enviar"
+          >
+            <FaPaperPlane />
+          </button>
+        </form>
+      </div>
+
+    </div>
+
+    <!-- Footer inferior -->
+    <div class="flex flex-col sm:flex-row justify-between items-center text-sm text-gray-500 py-6">
+      <p>© {new Date().getFullYear()} Alexander Polanco. Todos los derechos reservados.</p>
+      <div class="flex gap-6 mt-4 sm:mt-0">
+        <a href="#" class="hover:text-blue-400">Política de Privacidad</a>
+        <a href="#" class="hover:text-blue-400">Términos de Uso</a>
+      </div>
+    </div>
+  </div>
+</footer>
