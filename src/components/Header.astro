@@ -1,14 +1,12 @@
 ---
-import { FaYoutube } from "react-icons/fa";
-import { RxHamburgerMenu } from "react-icons/rx";
-import { HiOutlineXMark } from "react-icons/hi2";
+import { Youtube, Menu, X } from "lucide-astro";
 import Logo from "../assets/img/Logo.png";
 import Button from "./common/Button.astro";
 ---
 
 <header
   id="site-header"
-  class="fixed top-0 left-0 w-full z-[100] transition-all duration-300 bg-transparent py-4"
+  class="fixed top-0 left-0 w-full z-100 transition-all duration-300 bg-transparent py-4"
 >
   <div class="container mx-auto px-4 flex justify-between items-center">
     <a
@@ -22,11 +20,15 @@ import Button from "./common/Button.astro";
     <!-- Navegación Desktop -->
     <nav class="hidden lg:flex flex-1 justify-center items-center space-x-8">
       <a href="/" class="nav-link" data-target="#hero">Inicio</a>
-      <a href="/#projects" class="nav-link" data-target="#projects">Proyectos</a>
+      <a href="/#projects" class="nav-link" data-target="#projects">Proyectos</a
+      >
       <a href="/#skills" class="nav-link" data-target="#skills">Habilidades</a>
-      <a href="/#services" class="nav-link" data-target="#services">Servicios</a>
+      <a href="/#services" class="nav-link" data-target="#services">Servicios</a
+      >
       <a href="/#about" class="nav-link" data-target="#about">Sobre mí</a>
-      <a href="/#testimonials" class="nav-link" data-target="#testimonials">Testimonios</a>
+      <a href="/#testimonials" class="nav-link" data-target="#testimonials"
+        >Testimonios</a
+      >
       <a href="/#contact" class="nav-link" data-target="#contact">Contacto</a>
       <a href="/blog" class="nav-link">Blog</a>
     </nav>
@@ -34,133 +36,153 @@ import Button from "./common/Button.astro";
     <div class="hidden lg:flex items-center space-x-4">
       <Button
         variant="secondary"
-        href="https://www.youtube.com/@alexpolanco8175"
+        href="https://www.youtube.com/@alexanderdev-dd9wk"
         target="_blank"
+        icon={Youtube}
+        class="!hover:bg-white/75 hover:text-red-500"
+        iconPosition="left"
       >
-        <FaYoutube class:list="w-6 h-6" />
+        YouTube
       </Button>
     </div>
 
     <!-- Botón Hamburguesa -->
     <button
       id="menu-toggle"
-      class="lg:hidden p-2 text-white hover:text-orange-500 focus:outline-none transition-colors relative z-50"
+      class="lg:hidden p-2 text-white hover:text-orange-500 focus:outline-none transition-colors relative z-50 cursor-pointer"
       aria-label="Abrir menú"
     >
-      <RxHamburgerMenu class:list="w-6 h-6" />
+      <Menu class="w-6 h-6" stroke="currentColor" />
     </button>
   </div>
 
   <!-- Menú móvil -->
   <div
     id="mobile-menu"
-    class="fixed inset-0 bg-gray-900/95 backdrop-blur-sm z-40 flex-col items-center justify-center hidden lg:hidden"
+    class="fixed inset-0 bg-gray-900/95 backdrop-blur-sm z-40 flex-col items-center justify-center hidden lg:hidden p-6"
   >
+    <a
+      href="/"
+      class="flex items-center"
+      onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
+    >
+      <img src={Logo.src} alt="Logo" class="h-10" />
+    </a>
+    <!-- Botón cerrar -->
     <button
       id="menu-close"
-      class="absolute top-6 right-6 text-white hover:text-orange-500"
+      class="cursor-pointer absolute top-6 right-6 text-white hover:text-orange-500 transition-colors"
     >
-      <HiOutlineXMark class:list="w-7 h-7" />
+      <X class="w-7 h-7" stroke="currentColor" />
     </button>
 
-    <nav class="flex flex-col items-center gap-4 mt-12 text-lg font-medium">
+    <!-- Navegación -->
+    <nav class="flex flex-col items-start gap-4 mt-16 text-lg font-medium">
       <a href="/" class="mobile-link" data-target="#hero">Inicio</a>
-      <a href="/#projects" class="mobile-link" data-target="#projects">Proyectos</a>
-      <a href="/#skills" class="mobile-link" data-target="#skills">Habilidades</a>
-      <a href="/#services" class="mobile-link" data-target="#services">Servicios</a>
+      <a href="/#projects" class="mobile-link" data-target="#projects"
+        >Proyectos</a
+      >
+      <a href="/#skills" class="mobile-link" data-target="#skills"
+        >Habilidades</a
+      >
+      <a href="/#services" class="mobile-link" data-target="#services"
+        >Servicios</a
+      >
       <a href="/#about" class="mobile-link" data-target="#about">Sobre mí</a>
-      <a href="/#testimonials" class="mobile-link" data-target="#testimonials">Testimonios</a>
-      <a href="/#contact" class="mobile-link" data-target="#contact">Contacto</a>
+      <a href="/#testimonials" class="mobile-link" data-target="#testimonials"
+        >Testimonios</a
+      >
+      <a href="/#contact" class="mobile-link" data-target="#contact">Contacto</a
+      >
       <a href="/blog" class="mobile-link">Blog</a>
 
-      <a
-        href="https://www.youtube.com/@alexpolanco8175"
-        target="_blank"
-        class="mt-6 flex items-center justify-center gap-2 px-5 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition"
-      >
-        <FaYoutube class:list="w-6 h-6" />
-        Visita mi canal
-      </a>
+      <!-- Botón de YouTube usando tu componente -->
+      <div class="mt-6 ml-3">
+        <Button
+          variant="secondary"
+          href="https://www.youtube.com/@alexanderdev-dd9wk"
+          target="_blank"
+          icon={Youtube}
+          class="!hover:bg-white/75 hover:text-red-500"
+          iconPosition="left"
+        >
+          YouTube
+        </Button>
+      </div>
     </nav>
   </div>
 </header>
 
-<style>
-  .nav-link {
-    @apply text-white text-[14px] font-[500] relative group transition-colors;
-  }
+<script>
+  const header = document.getElementById("site-header")!;
+  const toggle = document.getElementById("menu-toggle")!;
+  const close = document.getElementById("menu-close")!;
+  const menu = document.getElementById("mobile-menu")!;
+  const links = document.querySelectorAll(".mobile-link, .nav-link");
 
-  .nav-link::after {
-    content: "";
-    @apply absolute -bottom-1 left-0 h-0.5 bg-orange-500 w-0 transition-all duration-300;
-  }
-
-  .nav-link:hover::after,
-  .nav-link.active::after {
-    @apply w-full;
-  }
-
-  .nav-link:hover,
-  .nav-link.active {
-    @apply text-orange-500;
-  }
-
-  .mobile-link {
-    @apply text-white text-lg px-4 py-2 rounded-lg hover:text-orange-500 hover:bg-gray-800/50 transition;
-  }
-</style>
-
-<!-- Funcionalidad de scroll, highlight y menú móvil -->
-<script is:client="load">
-  const header = document.getElementById("site-header");
-  const links = document.querySelectorAll(".nav-link, .mobile-link");
-  const menu = document.getElementById("mobile-menu");
-  const toggle = document.getElementById("menu-toggle");
-  const close = document.getElementById("menu-close");
-
-  // Header scroll
-  window.addEventListener("scroll", () => {
-    if (window.scrollY > 50) {
-      header.classList.add("bg-gray-900/90", "shadow-lg", "py-3", "backdrop-blur-md");
-      header.classList.remove("bg-transparent", "py-4");
-    } else {
-      header.classList.remove("bg-gray-900/90", "shadow-lg", "backdrop-blur-md", "py-3");
-      header.classList.add("bg-transparent", "py-4");
-    }
+  // Toggle menú móvil
+  toggle.addEventListener("click", () => {
+    menu.classList.remove("hidden");
+    toggle.classList.add("hidden"); // Oculta hamburguesa
+    close.classList.remove("hidden"); // Muestra X
   });
 
-  // Smooth scroll y active link
+  close.addEventListener("click", () => {
+    menu.classList.add("hidden");
+    toggle.classList.remove("hidden"); // Muestra hamburguesa
+    close.classList.add("hidden"); // Oculta X
+  });
+
+  // Smooth scroll + cerrar menú al hacer clic en link
   links.forEach((link) => {
     link.addEventListener("click", (e) => {
-      const target = link.getAttribute("data-target");
-      if (target && target.startsWith("#")) {
+    toggle.classList.remove("hidden");
+      const targetId = link.getAttribute("data-target");
+      if (targetId && targetId.startsWith("#")) {
         e.preventDefault();
-        const el = document.querySelector(target);
+        const el = document.querySelector(targetId);
         if (el) {
-          const headerOffset = 80;
-          const offset = el.getBoundingClientRect().top + window.scrollY - headerOffset;
+          const offset = el.getBoundingClientRect().top + window.scrollY - 80; // Ajusta según altura header
           window.scrollTo({ top: offset, behavior: "smooth" });
         }
-        menu.classList.add("hidden");
+        // Cerrar menú móvil si está abierto
+        if (!link.classList.contains("nav-link")) {
+          menu.classList.add("hidden");
+        }
       }
     });
   });
 
-  // Menú móvil toggle
-  toggle?.addEventListener("click", () => {
-    menu.classList.toggle("hidden");
-  });
-  close?.addEventListener("click", () => {
-    menu.classList.add("hidden");
+  // Cambiar estilo del header al hacer scroll
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 50) {
+      header.classList.add(
+        "bg-gray-900/90",
+        "shadow-lg",
+        "py-3",
+        "backdrop-blur-md"
+      );
+      header.classList.remove("bg-transparent", "py-4");
+    } else {
+      header.classList.remove(
+        "bg-gray-900/90",
+        "shadow-lg",
+        "py-3",
+        "backdrop-blur-md"
+      );
+      header.classList.add("bg-transparent", "py-4");
+    }
   });
 
-  // Intersection Observer para activar links
+  // IntersectionObserver para resaltar sección activa
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           links.forEach((l) => l.classList.remove("active"));
-          const active = document.querySelector(`[data-target="#${entry.target.id}"]`);
+          const active = document.querySelector(
+            `[data-target="#${entry.target.id}"]`
+          );
           active?.classList.add("active");
         }
       });
@@ -168,5 +190,7 @@ import Button from "./common/Button.astro";
     { threshold: 0.4 }
   );
 
-  document.querySelectorAll("section[id]").forEach((section) => observer.observe(section));
+  document
+    .querySelectorAll("section[id]")
+    .forEach((section) => observer.observe(section));
 </script>

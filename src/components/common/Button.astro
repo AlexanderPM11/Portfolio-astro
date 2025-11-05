@@ -4,6 +4,10 @@ interface Props {
   variant?: "primary" | "secondary";
   class?: string;
   target?: "_self" | "_blank" | "_parent" | "_top";
+  icon?: any; // cualquier componente de icono
+  iconPosition?: "left" | "right";
+  iconColor?: string;
+  iconSize?: string; // ej: "w-6 h-6"
 }
 
 const {
@@ -11,17 +15,24 @@ const {
   variant = "primary",
   class: className = "",
   target = "_self",
+  icon: IconComponent,
+  iconPosition = "right",
+  iconColor = "",
+  iconSize = "w-5 h-5",
 } = Astro.props;
 
+// Base de estilos
 const baseStyles =
-  "py-2 px-6 rounded transition duration-300 text-sm font-medium shadow-md inline-block";
+  "py-2 px-6 rounded transition duration-300 text-sm font-medium shadow-md inline-flex items-center justify-center gap-2";
 
+// Variantes de estilos
 const variants = {
   primary: "bg-blue-700 text-white hover:bg-blue-800",
   secondary:
     "border border-white text-white hover:bg-white hover:text-blue-700",
 };
 
+// Rel para links externos
 const relAttr = target === "_blank" ? "noopener noreferrer" : undefined;
 ---
 
@@ -31,5 +42,17 @@ const relAttr = target === "_blank" ? "noopener noreferrer" : undefined;
   rel={relAttr}
   class={`${baseStyles} ${variants[variant]} ${className}`}
 >
+  {
+    IconComponent && iconPosition === "left" && (
+      <IconComponent class={`${iconSize} ${iconColor}`} stroke="currentColor" />
+    )
+  }
+
   <slot />
+
+  {
+    IconComponent && iconPosition === "right" && (
+      <IconComponent class={`${iconSize} ${iconColor}`} stroke="currentColor" />
+    )
+  }
 </a>

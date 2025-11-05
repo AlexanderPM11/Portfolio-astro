@@ -1,1 +1,63 @@
 @import "tailwindcss";
+
+/* Header Style */
+/* Estilo base para todos los nav-links */
+.nav-link {
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    position: relative;
+    transition: color 0.3s;
+}
+
+/* Hover: cambia a naranja */
+.nav-link:hover {
+    color: #f97316;
+    /* text-orange-500 */
+}
+
+/* Línea animada debajo */
+.nav-link::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    height: 2px;
+    width: 0;
+    background-color: #f97316;
+    /* text-orange-500 */
+    transition: width 0.3s;
+}
+
+/* Hover expande la línea */
+.nav-link:hover::after {
+    width: 100%;
+}
+
+/* Sección activa */
+.nav-link.active {
+    color: #f97316;
+    /* text-orange-500 */
+}
+
+.nav-link.active::after {
+    width: 100%;
+}
+
+.mobile-link {
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: color 0.3s, background-color 0.3s;
+    display: inline-block;
+    text-decoration: none;
+}
+
+.mobile-link:hover {
+    color: #f97316;
+    background-color: rgba(31, 41, 55, 0.3);
+}
+
+/* Fin Header Style */

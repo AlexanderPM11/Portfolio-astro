@@ -1,28 +1,63 @@
-
 ---
+import Header from "../components/Header.astro";
 import "../styles/global.css";
 ---
+
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="stylesheet" href="../../src/styles/global.css" />
-		<link rel="stylesheet" href="../../src/wordpress.css" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/src/assets/img/Logo.png" />
+    <link rel="stylesheet" href="../../src/styles/global.css" />
+    <link rel="stylesheet" href="../../src/wordpress.css" />
+    <meta name="generator" content={Astro.generator} />
+    <title>A Polanco - Portfolio</title>
+
+    <meta
+      name="google-site-verification"
+      content="l9wT_4y2NylWbm4unjdQ7OfnrQn8LubL8gmyvjDWcH4"
+    />
+
+    <!-- Meta tags para compartir en redes sociales (Open Graph) -->
+    <meta property="og:title" content="Alexander Polanco - Portafolio" />
+    <meta
+      property="og:description"
+      content="Explora mis proyectos, habilidades y experiencia en desarrollo de software, aplicaciones y soluciones tecnológicas."
+    />
+    <meta
+      property="og:image"
+      content="https://res.cloudinary.com/dve1upw2p/image/upload/v1758851393/profile-BWVUyPib_we75pc.png"
+    />
+    <meta property="og:url" content="https://apolanco.com/" />
+    <meta property="og:type" content="website" />
+
+    <!-- Opcional: Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Alexander Polanco - Portafolio" />
+    <meta
+      name="twitter:description"
+      content="Descubre mis proyectos de desarrollo web, móvil y sistemas inteligentes. ¡Conecta conmigo para colaborar!"
+    />
+    <meta
+      name="twitter:image"
+      content="https://res.cloudinary.com/dve1upw2p/image/upload/v1758851393/profile-BWVUyPib_we75pc.png"
+    />
+  </head>
+  <body>
+    <Header />
+    <main>
+      <slot />
+      <!-- contenido de la página -->
+    </main>
+  </body>
 </html>
 
 <style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
+  html,
+  body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+  }
 </style>
