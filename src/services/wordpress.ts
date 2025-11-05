@@ -1,5 +1,32 @@
+import type { Project } from "../interface";
+
+
 const API_URL = import.meta.env.VITE_WORDPRESS_API_URL;
 
+type WpMedia = { source_url: string };
+type WpTerm = { id: number; name: string; slug: string };
+type WpPost = {
+    id: number;
+    title: { rendered: string };
+    excerpt?: { rendered: string };
+    content?: { rendered: string };
+    date: string;
+    acf?: {
+        githubUrl?: string;
+        liveurl?: string;
+        techstack?: string[];
+    };
+    _embedded?: {
+        "wp:featuredmedia"?: WpMedia[];
+        author?: Array<{ name: string }>;
+        "wp:term"?: Array<WpTerm[]>;
+    };
+};
+
+function stripHtml(html: string | undefined): string {
+    if (!html) return "";
+    return html.replace(/<[^>]*>?/gm, "").trim();
+}
 export interface Category {
   id: number;
   name: string;
@@ -62,3 +89,41 @@ export async function fetchPosts(categorySlug = "all", page = 1, perPage = 6): P
 
   return { posts: filtered, totalPages };
 }
+export async function fetchProjectsFromCategory(): Promise<Project[]> {
+    const postsEndpoint = API_URL;
+    const url = `${postsEndpoint}&_embed&per_page=100`;
+
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`WP error ${response.status}`);
+    const posts: WpPost[] = await response.json();
+    const filtered = posts.filter((p) =>
+        p._embedded?.["wp:term"]?.some((group) => group.some((t) => t.slug === "projects"))
+    );
+
+    return filtered.map((p) => {
+        const terms = p._embedded?.["wp:term"] ?? [];
+        // Busca una categoría secundaria para usar como category de filtro (distinta a "projects")
+        const secondary = terms
+            .flat()
+            .find((t) => t.slug && t.slug !== "projects");
+
+        const image =
+            p._embedded?.["wp:featuredmedia"]?.[0]?.source_url ||
+            "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=1470&auto=format&fit=crop";
+
+        const project: Project = {
+            id: p.id,
+            category: secondary?.name || "general",
+            title: stripHtml(p.title?.rendered),
+            description: stripHtml(p.excerpt?.rendered) || stripHtml(p.content?.rendered),
+            image,
+            techStack: Array.isArray(p.acf?.techstack) ? p.acf!.techstack : [],
+            githubUrl: p.acf?.githubUrl,
+            liveUrl: p.acf?.liveurl,
+        };
+
+        return project;
+    });
+}
+
+

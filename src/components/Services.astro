@@ -1,0 +1,62 @@
+---
+import Swiper from "swiper";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+
+import { services } from "../services/Services";
+import ServiceCard from "./ServiceCard.astro";
+
+// Inicializamos Swiper en el cliente
+---
+
+<section id="services" class="py-16 px-4 bg-gray-800">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl font-bold mb-2 text-white">
+        Qué <span class="text-orange-500">Ofrezco</span>
+      </h2>
+      <p class="max-w-xl mx-auto text-gray-400 font-medium">
+        Soluciones digitales a medida para impulsar su negocio con tecnología.
+      </p>
+    </div>
+
+    <div class="swiper relative">
+      <div class="swiper-wrapper">
+        {services.map((service) => (
+          <div class="swiper-slide">
+            <ServiceCard {...service} />
+          </div>
+        ))}
+      </div>
+
+      <div class="swiper-button-prev !text-orange-500"></div>
+      <div class="swiper-button-next !text-orange-500"></div>
+      <div class="custom-swiper-pagination flex justify-end mt-4 gap-1"></div>
+    </div>
+  </div>
+</section>
+
+<script is:client>
+  import Swiper, { Navigation, Pagination, A11y, Autoplay } from "swiper";
+
+  new Swiper(".swiper", {
+    modules: [Navigation, Pagination, A11y, Autoplay],
+    spaceBetween: 24,
+    slidesPerView: 1,
+    navigation: true,
+    pagination: {
+      el: ".custom-swiper-pagination",
+      clickable: true,
+    },
+    autoplay: {
+      delay: 3000,
+      disableOnInteraction: false,
+    },
+    breakpoints: {
+      640: { slidesPerView: 1 },
+      768: { slidesPerView: 2 },
+      1024: { slidesPerView: 3 },
+    },
+  });
+</script>

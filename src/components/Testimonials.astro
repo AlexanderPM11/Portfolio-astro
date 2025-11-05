@@ -1,0 +1,107 @@
+---
+import { FaQuoteLeft, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { testimonials } from "../util/constants/Testimonials";
+---
+
+<section id="testimonials" class="py-16 px-4 bg-gray-800 text-white relative overflow-hidden">
+  <div class="max-w-5xl mx-auto">
+    <!-- Título -->
+    <div class="text-center mb-10">
+      <h2 class="text-3xl font-bold mb-2">
+        Opiniones de <span class="text-orange-500">Colaboradores</span>
+      </h2>
+      <p class="max-w-xl mx-auto text-gray-400 font-medium">
+        Lo que dicen personas que me conocen o han trabajado conmigo
+      </p>
+    </div>
+
+    <!-- Testimonios -->
+    <div class="relative min-h-[220px]" id="testimonial-container">
+      {testimonials.map((item, i) => (
+        <div
+          class={`testimonial-slide absolute inset-0 transition-all duration-700 ease-in-out ${
+            i === 0 ? "opacity-100 visible" : "opacity-0 invisible"
+          }`}
+        >
+          <div class="bg-gray-900 bg-opacity-5 p-6 rounded shadow-md">
+            <div class="text-blue-400 text-3xl mb-4">
+              <FaQuoteLeft />
+            </div>
+            <p class="italic mb-4 text-gray-200">"{item.quote}"</p>
+            <div>
+              <h4 class="text-lg font-semibold text-white">{item.name}</h4>
+              <p class="text-sm text-gray-400">{item.role}</p>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- Controles -->
+    <div class="mt-8 flex justify-center items-center gap-6">
+      <button
+        id="prev-btn"
+        class="w-10 h-10 rounded-full bg-white/10 hover:bg-orange-500 cursor-pointer flex items-center justify-center text-white transition"
+        aria-label="Testimonio anterior"
+      >
+        <FaChevronLeft />
+      </button>
+
+      <div id="testimonial-dots" class="flex gap-3">
+        {testimonials.map((_, index) => (
+          <span
+            class={`dot w-3 h-3 rounded-full cursor-pointer transition ${
+              index === 0 ? "bg-orange-500" : "bg-white/20"
+            }`}
+            data-index={index}
+          ></span>
+        ))}
+      </div>
+
+      <button
+        id="next-btn"
+        class="w-10 h-10 rounded-full bg-white/10 hover:bg-orange-500 cursor-pointer flex items-center justify-center text-white transition"
+        aria-label="Siguiente testimonio"
+      >
+        <FaChevronRight />
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- 🎛️ Lógica del slider -->
+<script is:client="load">
+  const slides = document.querySelectorAll(".testimonial-slide");
+  const dots = document.querySelectorAll(".dot");
+  const nextBtn = document.getElementById("next-btn");
+  const prevBtn = document.getElementById("prev-btn");
+  let activeIndex = 0;
+
+  function showSlide(index) {
+    slides.forEach((slide, i) => {
+      slide.classList.toggle("opacity-100", i === index);
+      slide.classList.toggle("visible", i === index);
+      slide.classList.toggle("opacity-0", i !== index);
+      slide.classList.toggle("invisible", i !== index);
+    });
+    dots.forEach((dot, i) => {
+      dot.classList.toggle("bg-orange-500", i === index);
+      dot.classList.toggle("bg-white/20", i !== index);
+    });
+    activeIndex = index;
+  }
+
+  nextBtn.addEventListener("click", () => {
+    const nextIndex = (activeIndex + 1) % slides.length;
+    showSlide(nextIndex);
+  });
+
+  prevBtn.addEventListener("click", () => {
+    const prevIndex = (activeIndex - 1 + slides.length) % slides.length;
+    showSlide(prevIndex);
+  });
+
+  dots.forEach((dot, i) => {
+    dot.addEventListener("click", () => showSlide(i));
+  });
+</script>
