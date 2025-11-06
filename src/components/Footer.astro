@@ -1,5 +1,13 @@
 ---
-import { Send, Mail, MapPin, Phone, ExternalLink, Heart } from "lucide-astro";
+import {
+  Send,
+  Mail,
+  MapPin,
+  Phone,
+  ExternalLink,
+  Heart,
+  User,
+} from "lucide-astro";
 import SocialMedia from "./SocialMedia.astro";
 import logo from "../assets/img/Logo.png";
 ---
@@ -69,7 +77,7 @@ import logo from "../assets/img/Logo.png";
               class="group flex items-center gap-2 text-gray-400 hover:text-white transition-all duration-300 hover:translate-x-2"
             >
               <div
-                class="w-1.5 h-1.5 bg-orange-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                class="w-1.5 h-1.5 bg-orange-500 rounded-full opacity-0 group-hover:opacity-100"
               >
               </div>
               <span>Inicio</span>
@@ -81,7 +89,7 @@ import logo from "../assets/img/Logo.png";
               class="group flex items-center gap-2 text-gray-400 hover:text-white transition-all duration-300 hover:translate-x-2"
             >
               <div
-                class="w-1.5 h-1.5 bg-orange-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                class="w-1.5 h-1.5 bg-orange-500 rounded-full opacity-0 group-hover:opacity-100"
               >
               </div>
               <span>Servicios</span>
@@ -93,7 +101,7 @@ import logo from "../assets/img/Logo.png";
               class="group flex items-center gap-2 text-gray-400 hover:text-white transition-all duration-300 hover:translate-x-2"
             >
               <div
-                class="w-1.5 h-1.5 bg-orange-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                class="w-1.5 h-1.5 bg-orange-500 rounded-full opacity-0 group-hover:opacity-100"
               >
               </div>
               <span>Proyectos</span>
@@ -105,7 +113,7 @@ import logo from "../assets/img/Logo.png";
               class="group flex items-center gap-2 text-gray-400 hover:text-white transition-all duration-300 hover:translate-x-2"
             >
               <div
-                class="w-1.5 h-1.5 bg-orange-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                class="w-1.5 h-1.5 bg-orange-500 rounded-full opacity-0 group-hover:opacity-100"
               >
               </div>
               <span>Sobre Mí</span>
@@ -117,7 +125,7 @@ import logo from "../assets/img/Logo.png";
               class="group flex items-center gap-2 text-gray-400 hover:text-white transition-all duration-300 hover:translate-x-2"
             >
               <div
-                class="w-1.5 h-1.5 bg-orange-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                class="w-1.5 h-1.5 bg-orange-500 rounded-full opacity-0 group-hover:opacity-100"
               >
               </div>
               <span>Contacto</span>
@@ -141,7 +149,7 @@ import logo from "../assets/img/Logo.png";
               class="group flex items-center gap-2 text-gray-400 hover:text-white transition-all duration-300"
             >
               <ExternalLink
-                class="w-4 h-4 text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                class="w-4 h-4 text-blue-400 opacity-0 group-hover:opacity-100"
               />
               <span>Desarrollo Web</span>
             </a>
@@ -152,7 +160,7 @@ import logo from "../assets/img/Logo.png";
               class="group flex items-center gap-2 text-gray-400 hover:text-white transition-all duration-300"
             >
               <ExternalLink
-                class="w-4 h-4 text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                class="w-4 h-4 text-blue-400 opacity-0 group-hover:opacity-100"
               />
               <span>Apps Móviles</span>
             </a>
@@ -163,7 +171,7 @@ import logo from "../assets/img/Logo.png";
               class="group flex items-center gap-2 text-gray-400 hover:text-white transition-all duration-300"
             >
               <ExternalLink
-                class="w-4 h-4 text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                class="w-4 h-4 text-blue-400 opacity-0 group-hover:opacity-100"
               />
               <span>APIs & Backend</span>
             </a>
@@ -174,7 +182,7 @@ import logo from "../assets/img/Logo.png";
               class="group flex items-center gap-2 text-gray-400 hover:text-white transition-all duration-300"
             >
               <ExternalLink
-                class="w-4 h-4 text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                class="w-4 h-4 text-blue-400 opacity-0 group-hover:opacity-100"
               />
               <span>Consultoría Tech</span>
             </a>
@@ -185,7 +193,7 @@ import logo from "../assets/img/Logo.png";
               class="group flex items-center gap-2 text-gray-400 hover:text-white transition-all duration-300"
             >
               <ExternalLink
-                class="w-4 h-4 text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                class="w-4 h-4 text-blue-400 opacity-0 group-hover:opacity-100"
               />
               <span>Mentoría</span>
             </a>
@@ -213,7 +221,7 @@ import logo from "../assets/img/Logo.png";
             <input
               type="email"
               placeholder="tu@email.com"
-              class="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300 backdrop-blur-sm"
+              class="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
               required
             />
           </div>
@@ -293,22 +301,6 @@ import logo from "../assets/img/Logo.png";
   }
 
   /* Aplicar animación a las columnas */
-  .grid > div {
-    animation: fadeInUp 0.6s ease-out;
-  }
-
-  .grid > div:nth-child(1) {
-    animation-delay: 0.1s;
-  }
-  .grid > div:nth-child(2) {
-    animation-delay: 0.2s;
-  }
-  .grid > div:nth-child(3) {
-    animation-delay: 0.3s;
-  }
-  .grid > div:nth-child(4) {
-    animation-delay: 0.4s;
-  }
 
   /* Mejoras de focus para accesibilidad */
   a:focus-visible,

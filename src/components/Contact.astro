@@ -74,7 +74,7 @@ import {
               </h4>
               <p class="text-gray-300">alexanderdev@apolanco.com</p>
               <p
-                class="text-orange-400 text-sm mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                class="text-orange-400 text-sm mt-1 opacity-0 group-hover:opacity-100"
               >
                 Click para enviar email
               </p>
@@ -97,7 +97,7 @@ import {
               <h4 class="text-lg font-semibold text-white mb-1">GitHub</h4>
               <p class="text-gray-300">github.com/AlexanderPM11</p>
               <p
-                class="text-blue-400 text-sm mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                class="text-blue-400 text-sm mt-1 opacity-0 group-hover:opacity-100"
               >
                 Ver mis proyectos
               </p>
@@ -120,7 +120,7 @@ import {
               <h4 class="text-lg font-semibold text-white mb-1">Telegram</h4>
               <p class="text-gray-300">@alexanderJpm</p>
               <p
-                class="text-sky-400 text-sm mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                class="text-sky-400 text-sm mt-1 opacity-0 group-hover:opacity-100"
               >
                 Enviar mensaje directo
               </p>
@@ -268,20 +268,6 @@ import {
 
 <style>
   /* Animaciones personalizadas */
-  @keyframes slideInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  #contact form {
-    animation: slideInUp 0.8s ease-out;
-  }
 
   /* Mejoras de focus para accesibilidad */
   input:focus,
@@ -371,32 +357,5 @@ import {
     if (form) {
       form.addEventListener("submit", handleSubmit);
     }
-
-    // Efectos de aparición para las cards
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: "0px 0px -50px 0px",
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const target = entry.target as HTMLElement;
-          target.style.opacity = "1";
-          target.style.transform = "translateY(0)";
-        }
-      });
-    }, observerOptions);
-
-    // Aplicar a las cards de contacto
-    const contactCards = document.querySelectorAll<HTMLElement>(
-      "a[href], .flex.items-center.gap-6"
-    );
-    contactCards.forEach((card, index) => {
-      card.style.opacity = "0";
-      card.style.transform = "translateY(20px)";
-      card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
-      observer.observe(card);
-    });
   });
 </script>
