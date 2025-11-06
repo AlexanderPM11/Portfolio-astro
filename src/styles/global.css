@@ -1,6 +1,33 @@
 @import "tailwindcss";
+@import "swiper/css/pagination";
+@import "swiper/css/scrollbar";
+@import "swiper/css";
+
+.swiper-button-next,
+.swiper-button-prev {
+    display: none !important;
+}
+
+.custom-swiper-pagination .swiper-pagination-bullet {
+    background-color: #ffffff;
+    opacity: 0.5;
+    margin: 0 3px;
+    width: 10px;
+    height: 10px;
+    transition: all 0.3s ease;
+}
+
+.custom-swiper-pagination .swiper-pagination-bullet-active {
+    background-color: #f97316;
+    opacity: 1;
+}
+
+
 
 /* Header Style */
+
+
+
 /* Estilo base para todos los nav-links */
 .nav-link {
     color: white;

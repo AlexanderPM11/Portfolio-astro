@@ -1,107 +1,316 @@
 ---
-import { FaQuoteLeft, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { Quote, ChevronLeft, ChevronRight, Star, Award } from "lucide-astro";
 import { testimonials } from "../util/constants/Testimonials";
 ---
 
-<section id="testimonials" class="py-16 px-4 bg-gray-800 text-white relative overflow-hidden">
-  <div class="max-w-5xl mx-auto">
-    <!-- Título -->
-    <div class="text-center mb-10">
-      <h2 class="text-3xl font-bold mb-2">
-        Opiniones de <span class="text-orange-500">Colaboradores</span>
+<section id="testimonials" class="py-28 px-6 bg-linear-to-br from-gray-900 via-gray-950 to-black text-white relative overflow-hidden">
+  <!-- Elementos decorativos de fondo -->
+  <div class="absolute top-0 left-0 w-96 h-96 bg-orange-500/3 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
+  <div class="absolute bottom-0 right-0 w-96 h-96 bg-blue-500/3 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
+  <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-purple-500/2 rounded-full blur-2xl"></div>
+  
+  <div class="max-w-5xl mx-auto relative z-10">
+    <!-- Header de sección -->
+    <div class="text-center mb-20">
+      <div class="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-linear-to-r from-orange-500/10 to-orange-600/10 border border-orange-500/20 text-orange-300 text-base font-medium mb-6 backdrop-blur-sm">
+        <Award class="w-5 h-5" />
+        <span>Testimonios Verificados</span>
+      </div>
+      <h2 class="text-5xl font-bold text-white mb-6 leading-tight">
+        Confían en <span class="text-transparent bg-clip-text bg-linear-to-r from-orange-400 via-orange-500 to-orange-600">Mi Trabajo</span>
       </h2>
-      <p class="max-w-xl mx-auto text-gray-400 font-medium">
-        Lo que dicen personas que me conocen o han trabajado conmigo
+      <p class="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
+        Experiencias reales de colaboradores y clientes que han trabajado conmigo
       </p>
     </div>
 
-    <!-- Testimonios -->
-    <div class="relative min-h-[220px]" id="testimonial-container">
-      {testimonials.map((item, i) => (
-        <div
-          class={`testimonial-slide absolute inset-0 transition-all duration-700 ease-in-out ${
-            i === 0 ? "opacity-100 visible" : "opacity-0 invisible"
-          }`}
-        >
-          <div class="bg-gray-900 bg-opacity-5 p-6 rounded shadow-md">
-            <div class="text-blue-400 text-3xl mb-4">
-              <FaQuoteLeft />
-            </div>
-            <p class="italic mb-4 text-gray-200">"{item.quote}"</p>
-            <div>
-              <h4 class="text-lg font-semibold text-white">{item.name}</h4>
-              <p class="text-sm text-gray-400">{item.role}</p>
+    <!-- Contenedor principal -->
+    <div class="relative">
+      <!-- Testimonios -->
+      <div class="relative min-h-[480px] mb-16" id="testimonial-container">
+        {testimonials.map((item, i) => (
+          <div
+            class={`testimonial-slide absolute inset-0 transition-all duration-700 ease-out transform ${
+              i === 0 
+                ? "opacity-100 visible translate-x-0 scale-100" 
+                : "opacity-0 invisible translate-x-12 scale-95"
+            }`}
+            data-index={i}
+          >
+            <div class="relative group">
+              <!-- Card principal -->
+              <div class="bg-linear-to-br from-white/5 to-white/2 backdrop-blur-xl border border-white/10 rounded-3xl p-10 lg:p-12 shadow-2xl relative overflow-hidden">
+                <!-- Patrón de fondo sutil -->
+                <div class="absolute inset-0 opacity-5">
+                  <div class="absolute top-6 right-6 w-24 h-24 border-2 border-orange-400 rounded-full"></div>
+                  <div class="absolute bottom-6 left-6 w-16 h-16 border border-blue-400 rounded-full"></div>
+                </div>
+                
+                <!-- Quote icon decorativo -->
+                <div class="absolute top-8 right-8 text-orange-400/10">
+                  <Quote class="w-20 h-20" />
+                </div>
+
+                <!-- Contenido -->
+                <div class="relative z-10">
+                  <!-- Rating con estrellas -->
+                  <div class="flex items-center gap-1 mb-8">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star class="w-5 h-5 fill-orange-400 text-orange-400" />
+                    ))}
+                  </div>
+
+                  <!-- Texto del testimonio -->
+                  <blockquote>
+                    <p class="text-2xl lg:text-3xl leading-relaxed text-white font-light mb-10 italic tracking-tight">
+                      "{item.quote}"
+                    </p>
+                  </blockquote>
+
+                  <!-- Información de la persona -->
+                  <footer class="flex items-center gap-5 pt-8 border-t border-white/10">
+                    <div class="relative">
+                      <div class="w-16 h-16 bg-linear-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-orange-500/25">
+                        {item.name.split(' ').map(n => n[0]).join('')}
+                      </div>
+                      <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-gray-900"></div>
+                    </div>
+                    <div class="grow">
+                      <h4 class="text-xl font-semibold text-white mb-1">{item.name}</h4>
+                      <p class="text-orange-400 font-medium text-lg mb-1">{item.role}</p>
+                    </div>
+                  </footer>
+                </div>
+              </div>
+
+              <!-- Efecto de brillo en hover -->
+              <div class="absolute inset-0 rounded-3xl bg-linear-to-r from-orange-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500 -z-10"></div>
             </div>
           </div>
-        </div>
-      ))}
-    </div>
-
-    <!-- Controles -->
-    <div class="mt-8 flex justify-center items-center gap-6">
-      <button
-        id="prev-btn"
-        class="w-10 h-10 rounded-full bg-white/10 hover:bg-orange-500 cursor-pointer flex items-center justify-center text-white transition"
-        aria-label="Testimonio anterior"
-      >
-        <FaChevronLeft />
-      </button>
-
-      <div id="testimonial-dots" class="flex gap-3">
-        {testimonials.map((_, index) => (
-          <span
-            class={`dot w-3 h-3 rounded-full cursor-pointer transition ${
-              index === 0 ? "bg-orange-500" : "bg-white/20"
-            }`}
-            data-index={index}
-          ></span>
         ))}
       </div>
 
-      <button
-        id="next-btn"
-        class="w-10 h-10 rounded-full bg-white/10 hover:bg-orange-500 cursor-pointer flex items-center justify-center text-white transition"
-        aria-label="Siguiente testimonio"
-      >
-        <FaChevronRight />
-      </button>
+      <!-- Controles de navegación -->
+      <div class="flex items-center justify-between px-4">
+        <!-- Contador -->
+        <div class="flex items-center gap-3 text-gray-300">
+          <span id="current-slide" class="text-3xl font-bold text-white">1</span>
+          <span class="text-xl">de</span>
+          <span id="total-slides" class="text-2xl text-gray-400">{testimonials.length}</span>
+        </div>
+
+        <!-- Botones de navegación -->
+        <div class="flex items-center gap-3">
+          <button
+            id="prev-btn"
+            class="group w-14 h-14 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-orange-500/50 cursor-pointer flex items-center justify-center text-white transition-all duration-300 hover:scale-110 hover:shadow-2xl hover:shadow-orange-500/20 backdrop-blur-sm"
+            aria-label="Testimonio anterior"
+          >
+            <ChevronLeft class="w-6 h-6 group-hover:text-orange-400 transition-colors duration-300" />
+          </button>
+
+          <button
+            id="next-btn"
+            class="group w-14 h-14 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-orange-500/50 cursor-pointer flex items-center justify-center text-white transition-all duration-300 hover:scale-110 hover:shadow-2xl hover:shadow-orange-500/20 backdrop-blur-sm"
+            aria-label="Siguiente testimonio"
+          >
+            <ChevronRight class="w-6 h-6 group-hover:text-orange-400 transition-colors duration-300" />
+          </button>
+        </div>
+      </div>
+
+      <!-- Indicadores de progreso -->
+      <div class="mt-12">
+        <!-- Barra de progreso -->
+        <div class="relative h-1 bg-white/10 rounded-full overflow-hidden mb-6">
+          <div id="progress-bar" class="absolute top-0 left-0 h-full bg-linear-to-r from-orange-500 to-orange-600 rounded-full transition-all duration-500 ease-out" 
+               style="width: 20%"></div>
+        </div>
+        
+        <!-- Dots de navegación -->
+        <div id="testimonial-dots" class="flex justify-center gap-4">
+          {testimonials.map((_, index) => (
+            <button
+              class={`dot group relative w-4 h-4 rounded-full cursor-pointer transition-all duration-500 ease-out ${
+                index === 0 
+                  ? "bg-orange-500 scale-125 shadow-lg shadow-orange-500/50" 
+                  : "bg-white/20 hover:bg-white/40"
+              }`}
+              data-index={index}
+              aria-label={`Ir al testimonio ${index + 1}`}
+            >
+              <div class="absolute inset-0 rounded-full bg-white/20 group-hover:scale-150 transition-transform duration-300"></div>
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- 🎛️ Lógica del slider -->
-<script is:client="load">
-  const slides = document.querySelectorAll(".testimonial-slide");
-  const dots = document.querySelectorAll(".dot");
-  const nextBtn = document.getElementById("next-btn");
-  const prevBtn = document.getElementById("prev-btn");
-  let activeIndex = 0;
-
-  function showSlide(index) {
-    slides.forEach((slide, i) => {
-      slide.classList.toggle("opacity-100", i === index);
-      slide.classList.toggle("visible", i === index);
-      slide.classList.toggle("opacity-0", i !== index);
-      slide.classList.toggle("invisible", i !== index);
-    });
-    dots.forEach((dot, i) => {
-      dot.classList.toggle("bg-orange-500", i === index);
-      dot.classList.toggle("bg-white/20", i !== index);
-    });
-    activeIndex = index;
+<style>
+  /* Animaciones y efectos pulidos */
+  .testimonial-slide {
+    transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    perspective: 1000px;
   }
 
-  nextBtn.addEventListener("click", () => {
-    const nextIndex = (activeIndex + 1) % slides.length;
-    showSlide(nextIndex);
-  });
+  /* Efecto de tarjeta flotante */
+  .testimonial-slide[style*="opacity: 1"] .group > div:first-child {
+    animation: cardFloat 0.8s ease-out;
+  }
 
-  prevBtn.addEventListener("click", () => {
-    const prevIndex = (activeIndex - 1 + slides.length) % slides.length;
-    showSlide(prevIndex);
-  });
+  @keyframes cardFloat {
+    0% {
+      opacity: 0;
+      transform: translateY(30px) scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
 
-  dots.forEach((dot, i) => {
-    dot.addEventListener("click", () => showSlide(i));
+  /* Efecto de brillo sutil en hover de la card */
+  .group:hover > div:first-child {
+    box-shadow: 
+      0 25px 50px -12px rgba(249, 115, 22, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  /* Transición suave para los dots */
+  .dot {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Mejoras de accesibilidad y focus */
+  button:focus-visible {
+    outline: 2px solid #f97316;
+    outline-offset: 2px;
+    border-radius: 12px;
+  }
+
+  /* Efecto de pulso para el dot activo */
+  .dot.bg-orange-500::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: rgba(249, 115, 22, 0.3);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.2);
+      opacity: 0.5;
+    }
+  }
+
+  /* Scroll suave para toda la página */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Mejora de rendimiento para transformaciones */
+  .testimonial-slide {
+    will-change: transform, opacity;
+  }
+</style>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const slides = document.querySelectorAll(".testimonial-slide");
+    const dots = document.querySelectorAll(".dot");
+    const nextBtn = document.getElementById("next-btn");
+    const prevBtn = document.getElementById("prev-btn");
+    const currentSlideElement = document.getElementById("current-slide");
+    const totalSlidesElement = document.getElementById("total-slides");
+    const progressBar = document.getElementById("progress-bar");
+    
+    let activeIndex = 0;
+    const totalSlides = slides.length;
+
+    // Inicializar contadores
+    if (totalSlidesElement) {
+      totalSlidesElement.textContent = totalSlides;
+    }
+
+    function updateProgress() {
+      if (progressBar) {
+        const progress = ((activeIndex + 1) / totalSlides) * 100;
+        progressBar.style.width = `${progress}%`;
+      }
+    }
+
+    function showSlide(index) {
+      // Validar y ajustar índice
+      if (index < 0) index = totalSlides - 1;
+      if (index >= totalSlides) index = 0;
+
+      // Transición de slides
+      slides.forEach((slide, i) => {
+        const isActive = i === index;
+        slide.classList.toggle("opacity-100", isActive);
+        slide.classList.toggle("visible", isActive);
+        slide.classList.toggle("opacity-0", !isActive);
+        slide.classList.toggle("invisible", !isActive);
+        slide.classList.toggle("translate-x-0", isActive);
+        slide.classList.toggle("translate-x-12", !isActive);
+        slide.classList.toggle("scale-100", isActive);
+        slide.classList.toggle("scale-95", !isActive);
+      });
+
+      // Actualizar dots
+      dots.forEach((dot, i) => {
+        const isActive = i === index;
+        dot.classList.toggle("bg-orange-500", isActive);
+        dot.classList.toggle("scale-125", isActive);
+        dot.classList.toggle("shadow-lg", isActive);
+        dot.classList.toggle("shadow-orange-500/50", isActive);
+        dot.classList.toggle("bg-white/20", !isActive);
+      });
+
+      // Actualizar contador y progreso
+      if (currentSlideElement) {
+        currentSlideElement.textContent = index + 1;
+      }
+      updateProgress();
+
+      activeIndex = index;
+    }
+
+    // Event listeners
+    nextBtn.addEventListener("click", () => {
+      const nextIndex = (activeIndex + 1) % totalSlides;
+      showSlide(nextIndex);
+    });
+
+    prevBtn.addEventListener("click", () => {
+      const prevIndex = (activeIndex - 1 + totalSlides) % totalSlides;
+      showSlide(prevIndex);
+    });
+
+    dots.forEach((dot, i) => {
+      dot.addEventListener("click", () => showSlide(i));
+    });
+
+    // Navegación por teclado
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") {
+        const nextIndex = (activeIndex + 1) % totalSlides;
+        showSlide(nextIndex);
+      } else if (e.key === "ArrowLeft") {
+        const prevIndex = (activeIndex - 1 + totalSlides) % totalSlides;
+        showSlide(prevIndex);
+      }
+    });
+
+    // Inicializar
+    updateProgress();
   });
 </script>

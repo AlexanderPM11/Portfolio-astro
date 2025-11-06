@@ -1,5 +1,4 @@
-import { FaCode, FaServer, FaMobileAlt } from "react-icons/fa";
-import { SiWordpress, SiDocker, SiFigma } from "react-icons/si";
+import { Code, Server, Smartphone, Figma,  Layout } from "lucide-astro";
 
 export const services = [
   {
@@ -12,7 +11,7 @@ export const services = [
       "APIs RESTful",
       "Diseño responsive",
     ],
-    Icon: FaCode,
+    Icon: Code, // Reemplazado por lucide-astro
   },
   {
     title: "Diseño UI/UX con Figma",
@@ -24,7 +23,7 @@ export const services = [
       "Diseños responsivos",
       "Guías de estilo reutilizables",
     ],
-    Icon: SiFigma,
+    Icon: Figma,
   },
   {
     title: "Aplicaciones Móviles",
@@ -36,7 +35,7 @@ export const services = [
       "Integración con APIs",
       "Publicación en tiendas",
     ],
-    Icon: FaMobileAlt,
+    Icon: Smartphone,
   },
   {
     title: "Gestión de Servidores VPS",
@@ -48,7 +47,7 @@ export const services = [
       "Control de acceso",
       "Backups automáticos",
     ],
-    Icon: FaServer,
+    Icon: Server,
   },
   {
     title: "Contenerización con Docker",
@@ -60,7 +59,7 @@ export const services = [
       "Integración con CI/CD",
       "Ambientes replicables",
     ],
-    Icon: SiDocker,
+    Icon: Code,
   },
   {
     title: "Desarrollo WordPress",
@@ -72,6 +71,6 @@ export const services = [
       "Optimización SEO",
       "Formularios avanzados",
     ],
-    Icon: SiWordpress,
+    Icon: Layout, // Icono de WordPress (aproximado) en lucide-astro
   },
 ];

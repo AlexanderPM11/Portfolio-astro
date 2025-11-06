@@ -1,112 +1,258 @@
 ---
-import { FiDownload, FiMail } from "react-icons/fi";
+import { Download, Mail, Award, Code, Target } from "lucide-astro";
 import imgAbout01 from "../assets/img/about04-CJBXsyAU.jpg";
 import imgAbout02 from "../assets/img/about02-BIKhex6S.jpg";
-import Button from "./common/Button.astro";
-
-const sliderImages = [imgAbout01, imgAbout02];
 ---
 
-<!-- Sección principal -->
-<section id="about" class="py-20 px-6 bg-gray-950 text-white">
+<!-- Sección About Mejorada -->
+<section
+  id="about"
+  class="py-24 px-6 bg-linear-to-br from-gray-900 via-gray-950 to-black text-white relative overflow-hidden"
+>
+  <!-- Elementos decorativos de fondo -->
   <div
-    class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center"
+    class="absolute top-0 left-0 w-72 h-72 bg-orange-500/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"
   >
-    <!-- Swiper -->
-    <div class="relative rounded-2xl overflow-hidden shadow-2xl h-[400px]">
-      <swiper-container
-        navigation="true"
-        autoplay-delay="4000"
-        loop="true"
-        class="h-full w-full"
+  </div>
+  <div
+    class="absolute bottom-0 right-0 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"
+  >
+  </div>
+
+  <div class="max-w-7xl mx-auto relative z-10">
+    <!-- Header de sección -->
+    <div class="text-center mb-16">
+      <div
+        class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-sm font-medium mb-4"
       >
-        {
-          sliderImages.map((img, i) => (
-            <swiper-slide key={i}>
-              <div
-                class="w-full h-full bg-cover bg-center"
-                style={`background-image: url('${img}');`}
-              />
-            </swiper-slide>
-          ))
-        }
-      </swiper-container>
+        <Award class="w-4 h-4" />
+        Desarrollador Full Stack
+      </div>
+      <h2 class="text-5xl font-bold text-white mb-4">
+        Conoce <span
+          class="text-transparent bg-clip-text bg-linear-to-r from-orange-400 to-orange-600"
+          >Mi Trayectoria</span
+        >
+      </h2>
+      <p class="text-xl text-gray-300 max-w-2xl mx-auto">
+        Pasión por el código, dedicación a la excelencia y compromiso con la
+        innovación
+      </p>
     </div>
 
-    <!-- Contenido -->
-    <div>
-      <h2 class="text-4xl font-extrabold text-white mb-3">
-        Sobre <span class="text-orange-500">Mí</span>
-      </h2>
-      <p class="text-gray-400 mb-6 text-lg">Un poco de mi historia</p>
-
-      <div class="space-y-5 text-gray-400">
-        <p>
-          Me describo como un entusiasta de la informática enfocado en la
-          resolución de problemas y la innovación, siempre buscando nuevas
-          formas de abordar los desafíos tecnológicos.
-        </p>
-        <p>
-          Con sólidas habilidades técnicas en desarrollo de software y una
-          mentalidad creativa y analítica, me destaco en la creación de
-          soluciones eficientes, con capacidad para comunicarme con claridad y
-          colaborar eficazmente con equipos y clientes.
-        </p>
-        <p>
-          <span class="font-semibold text-gray-400"
-            >En 2023 logré la máxima</span
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <!-- Gallery Mejorada -->
+      <div class="relative group">
+        <!-- Imagen principal -->
+        <div
+          class="relative rounded-3xl overflow-hidden shadow-2xl h-[500px] transform group-hover:scale-[1.02] transition-transform duration-700"
+        >
+          <img
+            src={imgAbout02.src}
+            alt="Alexander Polanco - Desarrollador"
+            class="w-full h-full object-cover"
+          />
+          <!-- Overlay gradiente -->
+          <div
+            class="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent"
           >
-          excelencia académica al graduarme del programa de Desarrollo de Software
-          en el Instituto Tecnológico de las Américas (ITLA).
-        </p>
+          </div>
+        </div>
+
+        <!-- Imagen secundaria flotante -->
+        <div
+          class="absolute -bottom-6 -right-6 w-48 h-48 rounded-2xl overflow-hidden border-4 border-gray-900 shadow-2xl transform rotate-6 group-hover:rotate-3 transition-transform duration-500"
+        >
+          <img
+            src={imgAbout01.src}
+            alt="Trabajo en equipo"
+            class="w-full h-full object-cover"
+          />
+        </div>
+
+        <!-- Badge de experiencia -->
+        <div
+          class="absolute -top-4 -left-4 bg-linear-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-2xl shadow-2xl transform -rotate-6"
+        >
+          <div class="flex items-center gap-2">
+            <Code class="w-5 h-5" />
+            <span class="font-bold">+2 Años</span>
+          </div>
+          <div class="text-xs opacity-90">Experiencia</div>
+        </div>
       </div>
 
-      <!-- Estadísticas -->
-      <div class="flex flex-wrap justify-center sm:justify-start gap-6 my-8">
-        {
-          [
-            { label: "Graduación ITLA", value: "2023" },
-            { label: "Proyectos desarrollados", value: "+20" },
-            { label: "Compromiso con la mejora continua", value: "100%" },
-          ].map((item) => (
-            <div class="text-center">
-              <span class="block text-4xl font-bold text-blue-500 mb-1">
-                {item.value}
-              </span>
-              <span class="text-sm text-gray-400">{item.label}</span>
-            </div>
-          ))
-        }
-      </div>
+      <!-- Contenido Mejorado -->
+      <div class="space-y-8">
+        <!-- Introducción -->
+        <div class="space-y-6">
+          <div>
+            <h3 class="text-2xl font-bold text-white mb-3">
+              Alexander Polanco
+            </h3>
+            <p class="text-orange-400 font-medium text-lg">
+              Desarrollador Full Stack e Innovador Tecnológico
+            </p>
+          </div>
 
-      <!-- Botones -->
-      <div
-        class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4"
-      >
-        <Button
-          href="#contact"
-          variant="primary"
-          class="bg-white text-gray-900 hover:bg-white/75"
-        >
-          <FiMail class:list="inline-block mr-2 text-lg" />
-          Contáctame
-        </Button>
+          <div class="space-y-4 text-gray-300 text-lg leading-relaxed">
+            <p class="flex items-start gap-3">
+              <span class="w-2 h-2 bg-orange-500 rounded-full mt-3 shrink-0"
+              ></span>
+              <span
+                >Apasionado por la <strong class="text-white"
+                  >resolución de problemas complejos</strong
+                > mediante soluciones tecnológicas innovadoras y eficientes.</span
+              >
+            </p>
 
-        <Button
-          href="/CV_Alexander_Polanco_Desarrollo_de_Software.pdf"
-          variant="primary"
-          class="bg-transparent hover:bg-white/10 border border-gray-500 text-white"
-          target="_blank"
-        >
-          <FiDownload class:list="inline-block mr-2 text-lg" />
-          Currículum
-        </Button>
+            <p class="flex items-start gap-3">
+              <span class="w-2 h-2 bg-orange-500 rounded-full mt-3 shrink-0"
+              ></span>
+              <span
+                >Combino <strong class="text-white"
+                  >habilidades técnicas sólidas</strong
+                > con una mentalidad creativa y analítica para crear productos digitales
+                excepcionales.</span
+              >
+            </p>
+
+            <p class="flex items-start gap-3">
+              <span class="w-2 h-2 bg-orange-500 rounded-full mt-3 shrink-0"
+              ></span>
+              <span
+                >Graduado con <strong class="text-white"
+                  >máxima excelencia académica</strong
+                > en Desarrollo de Software del Instituto Tecnológico de las Américas
+                (ITLA) 2023.</span
+              >
+            </p>
+          </div>
+        </div>
+
+        <!-- Logros y Estadísticas -->
+        <div class="grid grid-cols-2 lg:grid-cols-3 gap-6 py-6">
+          <div
+            class="text-center p-4 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-orange-500/30 transition-all duration-300"
+          >
+            <div class="text-3xl font-bold text-orange-400 mb-2">2023</div>
+            <div class="text-sm text-gray-300">Graduación ITLA</div>
+            <div class="text-xs text-gray-500 mt-1">Excelencia Académica</div>
+          </div>
+
+          <div
+            class="text-center p-4 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-orange-500/30 transition-all duration-300"
+          >
+            <div class="text-3xl font-bold text-orange-400 mb-2">20+</div>
+            <div class="text-sm text-gray-300">Proyectos</div>
+            <div class="text-xs text-gray-500 mt-1">Desarrollados</div>
+          </div>
+
+          <div
+            class="text-center p-4 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-orange-500/30 transition-all duration-300"
+          >
+            <div class="text-3xl font-bold text-orange-400 mb-2">100%</div>
+            <div class="text-sm text-gray-300">Compromiso</div>
+            <div class="text-xs text-gray-500 mt-1">Mejora Continua</div>
+          </div>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="flex flex-col sm:flex-row gap-4 pt-4">
+          <a
+            href="#contact"
+            class="group bg-linear-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 hover:shadow-2xl hover:shadow-orange-500/25 hover:-translate-y-1 inline-flex items-center justify-center gap-3"
+          >
+            <Mail class="w-5 h-5" />
+            Iniciar Conversación
+          </a>
+
+          <a
+            href="/CV_Alexander_Polanco_Desarrollo_de_Software.pdf"
+            target="_blank"
+            class="group border-2 border-white/20 hover:border-orange-500/50 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 hover:bg-white/5 inline-flex items-center justify-center gap-3"
+          >
+            <Download class="w-5 h-5" />
+            Descargar CV
+          </a>
+        </div>
+
+        <!-- Skills destacadas -->
+        <div class="pt-6 border-t border-white/10">
+          <div class="flex items-center gap-2 text-gray-400 text-sm mb-4">
+            <Target class="w-4 h-4" />
+            <span>Habilidades Destacadas</span>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            {
+              [
+                "JavaScript",
+                "TypeScript",
+                "React",
+                "Node.js",
+                "Python",
+                "SQL",
+                "Git",
+                "Docker",
+              ].map((skill) => (
+                <span class="px-3 py-1 bg-white/5 rounded-full text-xs text-gray-300 border border-white/10 hover:border-orange-500/30 transition-colors duration-300">
+                  {skill}
+                </span>
+              ))
+            }
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Importar scripts de Swiper -->
-<script type="module">
-  import "swiper/element/bundle";
+<style>
+  /* Animaciones personalizadas */
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .group:hover .floating-badge {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  /* Mejoras de transición para imágenes */
+  .group img {
+    transition: transform 0.7s ease;
+  }
+
+  .group:hover img {
+    transform: scale(1.05);
+  }
+</style>
+
+<script>
+  // Scroll suave para los enlaces
+  document.addEventListener("DOMContentLoaded", () => {
+    const contactLink = document.querySelector('a[href="#contact"]');
+    if (contactLink) {
+      contactLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        const target = document.querySelector("#contact");
+        if (target) {
+          const headerHeight = 80;
+          const targetPosition =
+            target.getBoundingClientRect().top + window.pageYOffset;
+          const offsetPosition = targetPosition - headerHeight;
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth",
+          });
+        }
+      });
+    }
+  });
 </script>

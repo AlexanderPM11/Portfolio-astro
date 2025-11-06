@@ -1,62 +1,200 @@
 ---
-import Swiper from "swiper";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-
 import { services } from "../services/Services";
-import ServiceCard from "./ServiceCard.astro";
-
-// Inicializamos Swiper en el cliente
 ---
 
-<section id="services" class="py-16 px-4 bg-gray-800">
-  <div class="max-w-6xl mx-auto">
-    <div class="text-center mb-12">
-      <h2 class="text-3xl font-bold mb-2 text-white">
-        Qué <span class="text-orange-500">Ofrezco</span>
+<section id="services" class="py-20 px-4 bg-linear-to-b from-gray-900 to-gray-800 relative overflow-hidden">
+  <!-- Elementos decorativos de fondo -->
+  <div class="absolute top-10 left-10 w-32 h-32 bg-orange-500/5 rounded-full blur-xl"></div>
+  <div class="absolute bottom-10 right-10 w-40 h-40 bg-purple-500/5 rounded-full blur-xl"></div>
+  <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-blue-500/3 rounded-full blur-2xl"></div>
+
+  <div class="max-w-4xl mx-auto relative z-10">
+    <div class="text-center mb-16">
+      <div class="inline-flex items-center gap-2 text-orange-400/80 text-sm font-medium mb-4 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/>
+        </svg>
+        Servicios Profesionales
+      </div>
+      <h2 class="text-4xl font-bold mb-4 text-white">
+        Soluciones <span class="text-transparent bg-clip-text bg-linear-to-r from-orange-400 to-orange-600">Digitales</span>
       </h2>
-      <p class="max-w-xl mx-auto text-gray-400 font-medium">
-        Soluciones digitales a medida para impulsar su negocio con tecnología.
+      <p class="text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed">
+        Desarrollo soluciones tecnológicas innovadoras que impulsan el crecimiento de tu negocio
       </p>
     </div>
 
-    <div class="swiper relative">
-      <div class="swiper-wrapper">
-        {services.map((service) => (
-          <div class="swiper-slide">
-            <ServiceCard {...service} />
+    <!-- Lista vertical mejorada -->
+    <div class="space-y-8 relative">
+      <!-- Línea vertical decorativa -->
+      <div class="absolute left-8 top-0 bottom-0 w-0.5 bg-linear-to-b from-orange-500/20 via-orange-500/10 to-transparent hidden md:block"></div>
+      
+      {services.map((service, index) => (
+        <div 
+          class="flex flex-col md:flex-row gap-6 items-start group relative"
+          data-aos="fade-up"
+          data-aos-delay={(index * 150).toString()}
+        >
+          <!-- Ícono con efecto mejorado -->
+          <div class="shrink-0 relative">
+            <div class="w-20 h-20 rounded-2xl bg-linear-to-br from-orange-500 to-orange-600 flex items-center justify-center text-white group-hover:scale-110 transition-all duration-500 shadow-lg shadow-orange-500/25 relative z-10">
+              <service.Icon class="w-9 h-9" />
+            </div>
+            <!-- Efecto de brillo en hover -->
+            <div class="absolute inset-0 rounded-2xl bg-orange-400 blur-md opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
           </div>
-        ))}
-      </div>
 
-      <div class="swiper-button-prev !text-orange-500"></div>
-      <div class="swiper-button-next !text-orange-500"></div>
-      <div class="custom-swiper-pagination flex justify-end mt-4 gap-1"></div>
+          <!-- Contenido mejorado -->
+          <div class="grow bg-white/3 backdrop-blur-sm border border-white/10 rounded-2xl p-6 group-hover:bg-white/5 group-hover:border-orange-500/20 transition-all duration-500">
+            <div class="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
+              <div>
+                <h3 class="text-2xl font-bold text-white mb-2 group-hover:text-orange-400 transition-colors duration-300">
+                  {service.title}
+                </h3>
+                <div class="flex items-center gap-2 text-sm text-gray-400 mb-3">
+                  <span>Servicio profesional</span>
+                  <span class="w-1 h-1 bg-gray-500 rounded-full"></span>
+                  <span>{index + 1} de {services.length}</span>
+                </div>
+              </div>
+              
+              <a
+                href="#contact"
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-medium transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/25 hover:-translate-y-0.5 group/btn"
+                onclick="scrollToSection(event, '#contact')"
+              >
+                <span>Consultar</span>
+                <svg class="w-4 h-4 group-hover/btn:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                </svg>
+              </a>
+            </div>
+            
+            <p class="text-gray-300 text-lg leading-relaxed mb-6 border-l-2 border-orange-500/30 pl-4">
+              {service.description}
+            </p>
+            
+            <div class="space-y-3">
+              <div class="flex items-center gap-2 text-sm text-gray-400 font-medium">
+                <svg class="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                </svg>
+                Características principales:
+              </div>
+              <div class="flex flex-wrap gap-3">
+                {service.features.map((feature) => (
+                  <span class="inline-flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-gray-300 text-sm border border-white/10 hover:border-orange-500/30 transition-all duration-300 group/feature">
+                    <div class="w-2 h-2 bg-orange-500 rounded-full group-hover/feature:scale-150 transition-transform duration-300"></div>
+                    {feature}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- Call to Action final mejorado -->
+    <div class="text-center mt-16 pt-8 border-t border-white/10">
+      <div class="bg-linear-to-r from-orange-500/10 to-purple-500/10 border border-white/10 rounded-2xl p-8 backdrop-blur-sm relative overflow-hidden">
+        <!-- Elementos decorativos del CTA -->
+        <div class="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 rounded-full -translate-y-16 translate-x-16"></div>
+        <div class="absolute bottom-0 left-0 w-40 h-40 bg-purple-500/5 rounded-full translate-y-16 -translate-x-16"></div>
+        
+        <div class="relative z-10">
+          <h3 class="text-2xl font-bold text-white mb-4">
+            ¿Listo para comenzar tu proyecto?
+          </h3>
+          <p class="text-gray-300 mb-6 max-w-2xl mx-auto text-lg">
+            Trabajemos juntos para hacer realidad tus ideas. Contáctame y hablemos sobre cómo puedo ayudarte a alcanzar tus objetivos.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a
+              href="#contact"
+              class="bg-linear-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 hover:shadow-2xl hover:shadow-orange-500/25 hover:-translate-y-1 inline-flex items-center gap-3"
+              onclick="scrollToSection(event, '#contact')"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+              </svg>
+              Iniciar conversación
+            </a>
+            <a
+              href="#portfolio"
+              class="border border-white/20 hover:border-orange-500/50 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 hover:bg-white/5 inline-flex items-center gap-3"
+              onclick="scrollToSection(event, '#portfolio')"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9"/>
+              </svg>
+              Ver proyectos
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<script is:client>
-  import Swiper, { Navigation, Pagination, A11y, Autoplay } from "swiper";
+<style>
+  /* Animaciones personalizadas */
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+  
+  .group:hover .floating-icon {
+    animation: float 2s ease-in-out infinite;
+  }
 
-  new Swiper(".swiper", {
-    modules: [Navigation, Pagination, A11y, Autoplay],
-    spaceBetween: 24,
-    slidesPerView: 1,
-    navigation: true,
-    pagination: {
-      el: ".custom-swiper-pagination",
-      clickable: true,
-    },
-    autoplay: {
-      delay: 3000,
-      disableOnInteraction: false,
-    },
-    breakpoints: {
-      640: { slidesPerView: 1 },
-      768: { slidesPerView: 2 },
-      1024: { slidesPerView: 3 },
-    },
+  /* Mejoras de scroll suave */
+  html {
+    scroll-behavior: smooth;
+  }
+</style>
+
+<script>
+  function scrollToSection(e:Event, targetId:string) {
+    e.preventDefault();
+    const target = document.querySelector(targetId)!;
+    if (target) {
+      const headerHeight = 80;
+      const targetPosition = target.getBoundingClientRect().top + window.pageYOffset;
+      const offsetPosition = targetPosition - headerHeight;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  }
+
+  // Efecto de aparición progresiva
+  document.addEventListener('DOMContentLoaded', () => {
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+   const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          // Hacer type assertion para que TS reconozca style
+          const target = entry.target as HTMLElement;
+          target.style.opacity = '1';
+          target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    // Aplicar a los elementos de servicio
+    const elements = document.querySelectorAll<HTMLElement>('[data-aos]');
+    elements.forEach((el) => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(30px)';
+      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(el);
+    });
   });
 </script>

@@ -1,76 +1,64 @@
 ---
+// src/components/SkillsData.ts
 import {
-  FaReact,
-  FaDocker,
-  FaWordpress,
-  FaGitAlt,
-  FaLinux,
-  FaHtml5,
-  FaCss3Alt,
-  FaFigma,
-  FaGithub,
-  FaGitlab,
-  FaDatabase,
-} from "react-icons/fa";
-import {
-  SiAstro,
-  SiFlutter,
-  SiTailwindcss,
-  SiMysql,
-  SiDotnet,
-  SiTypescript,
-  SiJavascript,
-  SiTrello,
-  SiJira,
-  SiSwagger,
-} from "react-icons/si";
-import { MdCloudUpload, MdSecurity } from "react-icons/md";
+  Database,
+  Figma,
+  Key,
+  Code,
+  Zap, // React
+  Box, // Docker
+  Layout, // WordPress
+  Sliders, // Tailwind CSS
+} from "lucide-astro";
 
-const skills = [
-  { name: "JavaScript", Icon: SiJavascript, category: "Languages" },
-  { name: "TypeScript", Icon: SiTypescript, category: "Languages" },
-  { name: "C#", Icon: SiDotnet, category: "Languages" },
-  { name: "SQL", Icon: FaDatabase, category: "Languages" },
-  { name: "Dart", Icon: SiFlutter, category: "Languages" },
+interface Skill {
+  name: string;
+  Icon: any; // Icono compatible con Astro (lucide-astro)
+  category: string;
+}
 
-  { name: "React", Icon: FaReact, category: "Frameworks/Libraries" },
-  { name: "Astro", Icon: SiAstro, category: "Frameworks/Libraries" },
-  { name: "Flutter", Icon: SiFlutter, category: "Frameworks/Libraries" },
-  {
-    name: "Tailwind CSS",
-    Icon: SiTailwindcss,
-    category: "Frameworks/Libraries",
-  },
-  { name: "HTML", Icon: FaHtml5, category: "Frameworks/Libraries" },
-  { name: "CSS", Icon: FaCss3Alt, category: "Frameworks/Libraries" },
-  { name: "ASP.NET Core", Icon: SiDotnet, category: "Frameworks/Libraries" },
-  { name: "WordPress", Icon: FaWordpress, category: "Frameworks/Libraries" },
+export const skills: Skill[] = [
+  // Languages
+  { name: "JavaScript", Icon: Code, category: "Languages" },
+  { name: "TypeScript", Icon: Code, category: "Languages" },
+  { name: "C#", Icon: Code, category: "Languages" },
+  { name: "SQL", Icon: Database, category: "Languages" },
+  { name: "Dart", Icon: Code, category: "Languages" },
 
-  { name: "Docker", Icon: FaDocker, category: "Cloud/DevOps" },
-  { name: "Linux Server", Icon: FaLinux, category: "Cloud/DevOps" },
-  { name: "VPS Deployment", Icon: MdCloudUpload, category: "Cloud/DevOps" },
-  {
-    name: "Certificados SSL (Let's Encrypt)",
-    Icon: MdSecurity,
-    category: "Cloud/DevOps",
-  },
+  // Frameworks/Libraries
+  { name: "React", Icon: Zap, category: "Frameworks/Libraries" },
+  { name: "Astro", Icon: Code, category: "Frameworks/Libraries" },
+  { name: "Flutter", Icon: Code, category: "Frameworks/Libraries" },
+  { name: "Tailwind CSS", Icon: Sliders, category: "Frameworks/Libraries" },
+  { name: "HTML", Icon: Code, category: "Frameworks/Libraries" },
+  { name: "CSS", Icon: Code, category: "Frameworks/Libraries" },
+  { name: "ASP.NET Core", Icon: Code, category: "Frameworks/Libraries" },
+  { name: "WordPress", Icon: Layout, category: "Frameworks/Libraries" },
 
-  { name: "SQL Server", Icon: FaDatabase, category: "ML/Data" },
-  { name: "MySQL", Icon: SiMysql, category: "ML/Data" },
+  // Cloud/DevOps
+  { name: "Docker", Icon: Box, category: "Cloud/DevOps" },
+  { name: "Linux Server", Icon: Code, category: "Cloud/DevOps" },
+  { name: "VPS Deployment", Icon: Code, category: "Cloud/DevOps" },
+  { name: "Certificados SSL", Icon: Key, category: "Cloud/DevOps" },
 
-  { name: "Git", Icon: FaGitAlt, category: "Concepts" },
-  { name: "GitHub", Icon: FaGithub, category: "Concepts" },
-  { name: "GitLab", Icon: FaGitlab, category: "Concepts" },
-  { name: "Figma", Icon: FaFigma, category: "Concepts" },
-  { name: "Trello", Icon: SiTrello, category: "Concepts" },
-  { name: "Jira", Icon: SiJira, category: "Concepts" },
-  { name: "API Design", Icon: SiSwagger, category: "Concepts" },
+  // ML/Data
+  { name: "SQL Server", Icon: Database, category: "ML/Data" },
+  { name: "MySQL", Icon: Database, category: "ML/Data" },
+
+  // Concepts
+  { name: "Git", Icon: Code, category: "Concepts" },
+  { name: "GitHub", Icon: Code, category: "Concepts" },
+  { name: "GitLab", Icon: Code, category: "Concepts" },
+  { name: "Figma", Icon: Figma, category: "Concepts" },
+  { name: "Trello", Icon: Code, category: "Concepts" },
+  { name: "Jira", Icon: Code, category: "Concepts" },
+  { name: "API Design", Icon: Code, category: "Concepts" },
 ];
 
+let activeCategory = "Languages";
 const skillFilters = [
   "Languages",
   "Frameworks/Libraries",
-  "ML/Data",
   "Cloud/DevOps",
   "Concepts",
 ];
@@ -98,7 +86,7 @@ const skillFilters = [
         skillFilters.map((filter) => (
           <button
             type="button"
-            class="px-4 py-1.5 rounded-md text-sm font-semibold transition-colors text-white/70 hover:bg-white/10"
+            class={`cursor-pointer px-4 py-1.5 rounded-md text-sm font-semibold transition-colors ${filter === activeCategory ? "bg-white text-gray-900 shadow" : "text-white/70 hover:bg-white/10"}`}
             data-category={filter}
           >
             {filter}
@@ -110,57 +98,49 @@ const skillFilters = [
     <!-- Skill Cards -->
     <div id="skills-container" class="flex flex-wrap justify-center gap-4 mt-6">
       {
-        skills
-          .filter((s) => s.category === "Languages")
-          .map(({ name, Icon }) => (
-            <div
-              data-aos="fade-up"
-              data-aos-delay="100"
-              class="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition text-white max-w-[200px] border border-white/10 backdrop-blur-sm"
-            >
-              <Icon class:list="text-2xl text-white/80" />
-              <span class="text-sm font-semibold">{name}</span>
-            </div>
-          ))
+        skills.map(({ name, Icon, category }) => (
+          <div
+            class={`skill-card flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition text-white max-w-[200px] border border-white/10 backdrop-blur-sm ${category !== activeCategory ? "hidden" : ""}`}
+            data-category={category}
+          >
+            <Icon class="text-2xl text-white/80" />
+            <span class="text-sm font-semibold">{name}</span>
+          </div>
+        ))
       }
     </div>
   </div>
 </section>
-
-<script is:client>
-  const buttons = document.querySelectorAll("#skills-tabs button");
-  const container = document.querySelector("#skills-container");
-  let active = "Languages";
-
-  const allSkills = JSON.parse(`{JSON.stringify(skills)}`);
-
-  function renderSkills(category) {
-    container.innerHTML = allSkills
-      .filter((s) => s.category === category)
-      .map(
-        (s) => `
-          <div class="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition text-white max-w-[200px] border border-white/10 backdrop-blur-sm">
-            ${ReactIcons.renderToString(s.Icon, { className: "text-2xl text-white/80" }) ?? ""}
-            <span class="text-sm font-semibold">${s.name}</span>
-          </div>
-        `
-      )
-      .join("");
-  }
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>(
+    "#skills-tabs button"
+  );
+  const cards = document.querySelectorAll<HTMLDivElement>(".skill-card");
 
   buttons.forEach((btn) => {
     btn.addEventListener("click", () => {
-      active = btn.dataset.category;
-      buttons.forEach((b) =>
-        b.classList.toggle(
-          "bg-white text-gray-900 shadow",
-          b.dataset.category === active
-        )
-      );
-      renderSkills(active);
+      const category = btn.dataset.category;
+      if (!category) return;
+
+      // Actualizar tab activo
+      buttons.forEach((b) => {
+        if (b.dataset.category === category) {
+          b.classList.add("bg-white", "text-gray-900", "shadow");
+          b.classList.remove("text-white/70", "hover:bg-white/10");
+        } else {
+          b.classList.remove("bg-white", "text-gray-900", "shadow");
+          b.classList.add("text-white/70", "hover:bg-white/10");
+        }
+      });
+
+      // Mostrar/Ocultar cards
+      cards.forEach((card) => {
+        if (card.dataset.category === category) {
+          card.classList.remove("hidden");
+        } else {
+          card.classList.add("hidden");
+        }
+      });
     });
   });
-
-  // Marcar el primero activo
-  buttons[0].classList.add("bg-white", "text-gray-900", "shadow");
 </script>

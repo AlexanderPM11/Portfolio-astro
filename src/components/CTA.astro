@@ -1,43 +1,256 @@
 ---
 import ctaImg from "../assets/img/CTA.jpeg";
-import { FiMail } from "react-icons/fi";
+import { Mail, ArrowRight, Rocket, Sparkles } from "lucide-astro";
 ---
 
-<section
-  id="cta"
-  class="text-center text-white py-20 px-4 bg-cover bg-center relative"
-  style={`background-image: linear-gradient(rgba(11, 25, 38, 0.9), rgba(11, 25, 38, 0.9)), url(${ctaImg.src});`}
->
-  <div class="max-w-3xl mx-auto">
-    <h2 class="font-oswald text-3xl sm:text-4xl font-medium mb-4">
-      ¿Listo para trabajar en tu próximo proyecto digital?
-    </h2>
-
-    <p class="text-lg text-white/90 mb-6">
-      Contáctame hoy mismo para una asesoría gratuita y llevar tu idea al siguiente nivel.
-    </p>
-
-    <a
-      href="#contact"
-      class="inline-flex items-center justify-center bg-white text-gray-900 hover:bg-white/75 py-2 px-6 rounded font-medium shadow-md transition duration-300 text-sm"
-      onclick="scrollToSection(event, '#contact')"
+<section id="cta" class="relative py-32 px-6 text-white overflow-hidden">
+  <!-- Imagen de fondo con overlay mejorado -->
+  <div class="absolute inset-0">
+    <img
+      src={ctaImg.src}
+      alt="Background"
+      class="w-full h-full object-cover"
+      loading="lazy"
+    />
+    <!-- Overlay gradiente mejorado -->
+    <div
+      class="absolute inset-0 bg-linear-to-br from-gray-900/95 via-blue-900/80 to-orange-900/70"
     >
-      <FiMail class:list="inline-block mr-2 text-lg" />
-      Contáctame
-    </a>
+    </div>
+    <!-- Patrón sutil -->
+    <div
+      class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--tw-gradient-stops))] from-white/5 via-transparent to-transparent"
+    >
+    </div>
+  </div>
+
+  <!-- Elementos decorativos flotantes -->
+  <div
+    class="absolute top-10 left-10 w-72 h-72 bg-orange-500/10 rounded-full blur-3xl"
+  >
+  </div>
+  <div
+    class="absolute bottom-10 right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"
+  >
+  </div>
+  <div
+    class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-purple-500/5 rounded-full blur-2xl"
+  >
+  </div>
+
+  <div class="max-w-4xl mx-auto relative z-10">
+    <!-- Badge destacado -->
+    <div
+      class="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-linear-to-r from-orange-500/20 to-orange-600/20 border border-orange-500/30 text-orange-300 text-base font-medium mb-8 backdrop-blur-sm"
+    >
+      <Sparkles class="w-5 h-5" />
+      <span>Oportunidad Limitada</span>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="text-center mb-12">
+      <h2 class="text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+        ¿Listo para crear algo
+        <span
+          class="text-transparent bg-clip-text bg-linear-to-r from-orange-400 via-orange-500 to-orange-600"
+        >
+          extraordinario</span
+        >
+        ?
+      </h2>
+
+      <p
+        class="text-xl lg:text-2xl text-gray-200 mb-8 leading-relaxed max-w-3xl mx-auto"
+      >
+        Transformemos tu visión en una solución digital impactante.
+        <span class="text-orange-300 font-semibold">Asesoría gratuita</span> incluida.
+      </p>
+    </div>
+
+    <!-- Estadísticas de confianza -->
+    <div class="flex flex-wrap justify-center gap-8 mb-12">
+      <div class="text-center">
+        <div class="text-3xl font-bold text-white mb-2">24h</div>
+        <div class="text-gray-300 text-sm">Respuesta rápida</div>
+      </div>
+      <div class="text-center">
+        <div class="text-3xl font-bold text-white mb-2">100%</div>
+        <div class="text-gray-300 text-sm">Dedicación</div>
+      </div>
+      <div class="text-center">
+        <div class="text-3xl font-bold text-white mb-2">✓</div>
+        <div class="text-gray-300 text-sm">Asesoría gratis</div>
+      </div>
+    </div>
+
+    <!-- Botones de acción -->
+    <div
+      class="flex flex-col sm:flex-row items-center justify-center gap-6 mb-8"
+    >
+      <a
+        href="#contact"
+        class="group relative bg-linear-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-10 py-5 rounded-2xl font-semibold text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/30 inline-flex items-center justify-center gap-4 overflow-hidden"
+      >
+        <!-- Efecto de brillo -->
+        <div
+          class="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"
+        >
+        </div>
+
+        <Mail class="w-6 h-6 relative z-10" />
+        <span class="relative z-10">Iniciar Proyecto</span>
+        <ArrowRight
+          class="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform duration-300"
+        />
+      </a>
+
+      <a
+        href="#portfolio"
+        class="group border-2 border-white/30 hover:border-orange-500/50 text-white px-10 py-5 rounded-2xl font-semibold text-lg transition-all duration-300 hover:bg-white/5 hover:scale-105 inline-flex items-center justify-center gap-3 backdrop-blur-sm"
+      >
+        <Rocket class="w-5 h-5" />
+        <span>Ver Proyectos</span>
+      </a>
+    </div>
+
+    <!-- Texto de garantía -->
+    <div class="text-center">
+      <p class="text-gray-400 text-sm flex items-center justify-center gap-2">
+        <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+        Sin compromisos • Primeras 10 consultas gratuitas
+      </p>
+    </div>
+  </div>
+
+  <!-- Elemento decorativo inferior -->
+  <div
+    class="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-gray-900 to-transparent"
+  >
   </div>
 </section>
 
-<script>
-  function scrollToSection(event, targetId) {
-    if (location.pathname === "/") {
-      event.preventDefault();
-      const target = document.querySelector(targetId);
-      if (!target) return;
-      const headerHeight = 80;
-      const targetPosition = target.getBoundingClientRect().top + window.pageYOffset;
-      const offsetPosition = targetPosition - headerHeight;
-      window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+<style>
+  /* Animaciones personalizadas */
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
     }
   }
+
+  .floating-element {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  /* Efecto de aparición suave */
+  #cta {
+    animation: fadeInUp 1s ease-out;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Mejoras de rendimiento */
+  .backdrop-blur-sm {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  /* Efecto de brillo en hover mejorado */
+  .group:hover .shine-effect {
+    transform: translateX(100%);
+  }
+</style>
+
+<script>
+  // Scroll suave mejorado
+  function scrollToSection(event: Event, targetId: string) {
+    // Solo aplicar en la página principal
+    if (
+      window.location.pathname === "/" ||
+      window.location.pathname === "/index.html"
+    ) {
+      event.preventDefault();
+      const target = document.querySelector(targetId);
+      if (!target) {
+        console.warn(`Elemento ${targetId} no encontrado`);
+        return;
+      }
+
+      const headerHeight = 80;
+      const targetPosition =
+        target.getBoundingClientRect().top + window.pageYOffset;
+      const offsetPosition = targetPosition - headerHeight;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth",
+      });
+    }
+  }
+
+  // Añadir event listeners después de que el DOM cargue
+  document.addEventListener("DOMContentLoaded", () => {
+    // Botón principal de CTA
+    const ctaButton = document.querySelector('a[href="#contact"]');
+    if (ctaButton) {
+      ctaButton.addEventListener("click", (e) => {
+        scrollToSection(e, "#contact");
+      });
+    }
+
+    // Botón secundario de portfolio
+    const portfolioButton = document.querySelector('a[href="#portfolio"]');
+    if (portfolioButton) {
+      portfolioButton.addEventListener("click", (e) => {
+        scrollToSection(e, "#portfolio");
+      });
+    }
+
+    // Efecto de aparición para elementos de confianza
+    const observerOptions = {
+      threshold: 0.3,
+      rootMargin: "0px 0px -50px 0px",
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        const target = entry.target as HTMLElement;
+        if (entry.isIntersecting) {
+          target.style.opacity = "1";
+          target.style.transform = "translateY(0)";
+        }
+      });
+    }, observerOptions);
+
+    // Observar elementos de estadísticas
+    const statsElements = document.querySelectorAll<HTMLElement>(
+      ".flex.flex-wrap.justify-center > div"
+    );
+    statsElements.forEach((el, index) => {
+      el.style.opacity = "0";
+      el.style.transform = "translateY(20px)";
+      el.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+      observer.observe(el);
+    });
+  });
+
+  // Efecto de escritura opcional para el título
+  document.addEventListener("DOMContentLoaded", () => {
+    const title = document.querySelector<HTMLElement>("#cta h2");
+    if (title) {
+      title.style.animation = "fadeInUp 1s ease-out";
+    }
+  });
 </script>

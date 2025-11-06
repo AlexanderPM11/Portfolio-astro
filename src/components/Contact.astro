@@ -1,216 +1,264 @@
 ---
 import {
-  FaMapMarkerAlt,
-  FaEnvelope,
-  FaGithub,
-  FaTelegram,
-} from "react-icons/fa";
-
-let status = "";
-let isSending = false;
-
-async function handleSubmit(e: { preventDefault: () => void; target: any }) {
-  e.preventDefault();
-  const form = e.target;
-  const formData = Object.fromEntries(new FormData(form).entries());
-
-  isSending = true;
-  status = "";
-
-  try {
-    const res = await fetch("/api/send-message", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    });
-
-    const data = await res.text();
-    status = data || "Mensaje enviado con éxito 🎉";
-    form.reset();
-  } catch (err) {
-    status = "Error al enviar el mensaje ❌";
-  }
-
-  isSending = false;
-}
+  MapPin,
+  Mail,
+  Github,
+  Send,
+  MessageCircle,
+  User,
+  Phone,
+} from "lucide-astro";
 ---
 
 <section
   id="contact"
-  class="py-20 px-4 bg-gradient-to-b from-gray-900 to-black text-white"
+  class="py-28 px-6 bg-linear-to-br from-gray-900 via-gray-950 to-black text-white relative overflow-hidden"
 >
-  <div class="max-w-7xl mx-auto">
-    <div class="text-center mb-16">
-      <h2 class="text-4xl font-bold">
-        Ponte en <span class="text-orange-500">Contacto</span>
+  <!-- Elementos decorativos de fondo -->
+  <div
+    class="absolute top-0 left-0 w-96 h-96 bg-orange-500/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"
+  >
+  </div>
+  <div
+    class="absolute bottom-0 right-0 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"
+  >
+  </div>
+
+  <div class="max-w-7xl mx-auto relative z-10">
+    <!-- Header de sección -->
+    <div class="text-center mb-20">
+      <div
+        class="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-linear-to-r from-orange-500/10 to-orange-600/10 border border-orange-500/20 text-orange-300 text-base font-medium mb-6 backdrop-blur-sm"
+      >
+        <MessageCircle class="w-5 h-5" />
+        <span>Disponible para Proyectos</span>
+      </div>
+      <h2 class="text-5xl font-bold text-white mb-6">
+        Trabajemos <span
+          class="text-transparent bg-clip-text bg-linear-to-r from-orange-400 to-orange-600"
+          >Juntos</span
+        >
       </h2>
-      <p class="text-gray-400 mt-2">
-        ¿Tienes un proyecto en mente o te gustaría colaborar? ¡Me encantaría
-        saber de ti!
+      <p class="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
+        ¿Tienes una idea innovadora? Hablemos sobre cómo puedo ayudarte a
+        hacerla realidad.
       </p>
     </div>
 
-    <div class="flex justify-center flex-wrap gap-6">
-      <!-- Formulario -->
-      <div
-        class="bg-[#111827] max-w-[450px] p-8 rounded-xl shadow-lg border border-white/10"
-      >
-        <p class="font-medium">Envíame un mensaje</p>
-        <p class="text-gray-500 mb-5">
-          Completa el formulario y me pondré en contacto contigo lo antes
-          posible.
-        </p>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+      <!-- Información de Contacto -->
+      <div class="space-y-8">
+        <div>
+          <h3 class="text-3xl font-bold text-white mb-6">Conectemos</h3>
+          <p class="text-gray-300 text-lg mb-8 leading-relaxed">
+            Estoy siempre abierto a discutir nuevos proyectos, ideas creativas y
+            oportunidades para ser parte de tu visión.
+          </p>
+        </div>
 
-        <form
-          id="contact-form"
-          onsubmit="handleSubmit(event)"
-          class="space-y-5"
-        >
-          <div>
-            <label for="name" class="block text-sm font-medium text-gray-300">
-              Nombre
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              required
-              class="w-full bg-[#1f2937] border border-gray-600 rounded px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <div>
-            <label for="email" class="block text-sm font-medium text-gray-300">
-              Correo electrónico
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              required
-              class="w-full bg-[#1f2937] border border-gray-600 rounded px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <div>
-            <label
-              for="service"
-              class="block text-sm font-medium text-gray-300"
-            >
-              Asunto
-            </label>
-            <input
-              type="text"
-              id="service"
-              name="service"
-              class="w-full bg-[#1f2937] border border-gray-600 rounded px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <div>
-            <label
-              for="message"
-              class="block text-sm font-medium text-gray-300"
-            >
-              Mensaje
-            </label>
-            <textarea
-              id="message"
-              name="message"
-              rows="5"
-              required
-              class="w-full bg-[#1f2937] border border-gray-600 rounded px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            ></textarea>
-          </div>
-
-          <button
-            type="submit"
-            class="w-full font-semibold py-2 rounded transition cursor-pointer bg-white text-black hover:bg-orange-500 hover:text-white"
+        <!-- Tarjetas de contacto -->
+        <div class="space-y-6">
+          <!-- Email -->
+          <a
+            href="mailto:alexanderdev@apolanco.com"
+            class="group flex items-center gap-6 p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-orange-500/30 hover:bg-white/10 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-orange-500/10"
           >
-            Enviar Mensaje
-          </button>
+            <div
+              class="shrink-0 w-14 h-14 bg-linear-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300"
+            >
+              <Mail class="w-6 h-6" />
+            </div>
+            <div class="grow">
+              <h4 class="text-lg font-semibold text-white mb-1">
+                Correo Electrónico
+              </h4>
+              <p class="text-gray-300">alexanderdev@apolanco.com</p>
+              <p
+                class="text-orange-400 text-sm mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              >
+                Click para enviar email
+              </p>
+            </div>
+          </a>
 
-          <p id="status" class="text-green-400 text-sm text-center mt-2"></p>
-        </form>
+          <!-- GitHub -->
+          <a
+            href="https://github.com/AlexanderPM11"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group flex items-center gap-6 p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-blue-500/30 hover:bg-white/10 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-blue-500/10"
+          >
+            <div
+              class="shrink-0 w-14 h-14 bg-linear-to-br from-gray-700 to-gray-900 rounded-2xl flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300"
+            >
+              <Github class="w-6 h-6" />
+            </div>
+            <div class="grow">
+              <h4 class="text-lg font-semibold text-white mb-1">GitHub</h4>
+              <p class="text-gray-300">github.com/AlexanderPM11</p>
+              <p
+                class="text-blue-400 text-sm mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              >
+                Ver mis proyectos
+              </p>
+            </div>
+          </a>
+
+          <!-- Telegram -->
+          <a
+            href="https://t.me/alexanderJpm"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group flex items-center gap-6 p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-sky-500/30 hover:bg-white/10 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-sky-500/10"
+          >
+            <div
+              class="shrink-0 w-14 h-14 bg-linear-to-br from-sky-500 to-sky-600 rounded-2xl flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300"
+            >
+              <Send class="w-6 h-6" />
+            </div>
+            <div class="grow">
+              <h4 class="text-lg font-semibold text-white mb-1">Telegram</h4>
+              <p class="text-gray-300">@alexanderJpm</p>
+              <p
+                class="text-sky-400 text-sm mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              >
+                Enviar mensaje directo
+              </p>
+            </div>
+          </a>
+
+          <!-- Ubicación -->
+          <div
+            class="group flex items-center gap-6 p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 transition-all duration-500"
+          >
+            <div
+              class="shrink-0 w-14 h-14 bg-linear-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center text-white"
+            >
+              <MapPin class="w-6 h-6" />
+            </div>
+            <div class="grow">
+              <h4 class="text-lg font-semibold text-white mb-1">Ubicación</h4>
+              <p class="text-gray-300">Santo Domingo, República Dominicana</p>
+              <p class="text-green-400 text-sm mt-1">
+                Disponible para trabajo remoto
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Contact Info -->
-      <div
-        class="bg-[#111827] max-w-[450px] p-8 rounded-xl shadow-lg border border-white/10 space-y-6"
-      >
-        <div>
-          <h3 class="text-lg font-semibold mb-4">Conecta conmigo</h3>
+      <!-- Formulario de Contacto -->
+      <div class="relative">
+        <div
+          class="bg-linear-to-br from-white/5 to-white/2 backdrop-blur-xl border border-white/10 rounded-3xl p-8 lg:p-10 shadow-2xl"
+        >
+          <!-- Elemento decorativo -->
+          <div
+            class="absolute top-6 right-6 w-20 h-20 bg-orange-500/10 rounded-full blur-xl"
+          >
+          </div>
 
-          <div class="space-y-4">
-            <a
-              href="https://github.com/AlexanderPM11"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="block"
-            >
-              <div
-                class="flex gap-4 py-6 px-4 rounded-[8px] border border-white/10 hover:shadow-md transition-shadow hover:bg-white/6"
-              >
-                <div
-                  class="flex items-center h-10 p-2 bg-white/10 rounded-full"
+          <div class="relative z-10">
+            <h3 class="text-2xl font-bold text-white mb-2">
+              Envíame un mensaje
+            </h3>
+            <p class="text-gray-300 mb-8">
+              Completa el formulario y me pondré en contacto contigo en menos de
+              24 horas.
+            </p>
+
+            <form id="contact-form" class="space-y-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                  <label
+                    for="name"
+                    class="block text-sm font-medium text-gray-300"
+                  >
+                    Nombre completo *
+                  </label>
+                  <div class="relative">
+                    <User
+                      class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
+                    />
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      required
+                      class="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300"
+                      placeholder="Tu nombre"
+                    />
+                  </div>
+                </div>
+
+                <div class="space-y-2">
+                  <label
+                    for="email"
+                    class="block text-sm font-medium text-gray-300"
+                  >
+                    Correo electrónico *
+                  </label>
+                  <div class="relative">
+                    <Mail
+                      class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
+                    />
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      required
+                      class="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300"
+                      placeholder="tu@email.com"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <label
+                  for="service"
+                  class="block text-sm font-medium text-gray-300"
                 >
-                  <FaGithub class:list="text-white text-2xl" />
-                </div>
-                <div class="flex flex-col justify-center">
-                  <p class="text-white font-semibold">GitHub</p>
-                  <p class="text-gray-300">github.com/alexanderpolanco</p>
-                </div>
+                  Asunto del proyecto
+                </label>
+                <input
+                  type="text"
+                  id="service"
+                  name="service"
+                  class="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300"
+                  placeholder="¿En qué puedo ayudarte?"
+                />
               </div>
-            </a>
 
-            <a
-              href="https://t.me/alexanderJpm"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="block"
-            >
-              <div
-                class="flex gap-4 py-6 px-4 rounded-[8px] border border-white/10 hover:shadow-md transition-shadow hover:bg-white/6"
-              >
-                <div
-                  class="flex items-center h-10 p-2 bg-white/10 rounded-full"
+              <div class="space-y-2">
+                <label
+                  for="message"
+                  class="block text-sm font-medium text-gray-300"
                 >
-                  <FaTelegram class:list="text-white text-2xl" />
-                </div>
-                <div class="flex flex-col justify-center">
-                  <p class="text-white font-semibold">Telegram</p>
-                  <p class="text-gray-300">@alexanderJpm</p>
-                </div>
+                  Mensaje *
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  rows="6"
+                  required
+                  class="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300 resize-none"
+                  placeholder="Cuéntame sobre tu proyecto..."></textarea>
               </div>
-            </a>
 
-            <a href="mailto:alexanderdev@apolanco.com" class="block">
-              <div
-                class="flex gap-4 py-6 px-4 rounded-[8px] border border-white/10 hover:shadow-md transition-shadow hover:bg-white/6"
+              <button
+                type="submit"
+                id="submit-btn"
+                class="group w-full bg-linear-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold py-5 rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/25 inline-flex items-center justify-center gap-3"
               >
-                <div
-                  class="flex items-center h-10 p-2 bg-white/10 rounded-full"
-                >
-                  <FaEnvelope class:list="text-white text-2xl" />
-                </div>
-                <div class="flex flex-col justify-center">
-                  <p class="text-white font-semibold">Correo</p>
-                  <p class="text-gray-300">alexanderdev@apolanco.com</p>
-                </div>
-              </div>
-            </a>
+                <span>Enviar Mensaje</span>
+                <Send
+                  class="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300"
+                />
+              </button>
 
-            <div
-              class="flex gap-4 py-6 px-4 rounded-[8px] border border-white/10 hover:shadow-md transition-shadow hover:bg-white/6"
-            >
-              <div class="flex items-center h-10 p-2 bg-white/10 rounded-full">
-                <FaMapMarkerAlt class:list="text-white text-2xl" />
-              </div>
-              <div class="flex flex-col justify-center">
-                <p class="text-white font-semibold">Ubicación</p>
-                <p class="text-gray-300">Santo Domingo, República Dominicana</p>
-              </div>
-            </div>
+              <div id="status" class="text-center text-sm min-h-5"></div>
+            </form>
           </div>
         </div>
       </div>
@@ -218,17 +266,78 @@ async function handleSubmit(e: { preventDefault: () => void; target: any }) {
   </div>
 </section>
 
-<script>
-  async function handleSubmit(e: { preventDefault: () => void; target: any }) {
-    e.preventDefault();
-    const form = e.target;
-    const formData = Object.fromEntries(new FormData(form).entries());
-    const status = document.getElementById("status");
-    const button = form.querySelector("button");
+<style>
+  /* Animaciones personalizadas */
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 
+  #contact form {
+    animation: slideInUp 0.8s ease-out;
+  }
+
+  /* Mejoras de focus para accesibilidad */
+  input:focus,
+  textarea:focus {
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+  }
+
+  /* Efecto de carga para el botón */
+  .loading {
+    position: relative;
+    color: transparent;
+  }
+
+  .loading::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+    margin-left: -10px;
+    margin-top: -10px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    border-right-color: transparent;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+</style>
+
+<script>
+  import { undefined } from "astro:schema";
+
+  async function handleSubmit(e: Event) {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const formData = Object.fromEntries(new FormData(form).entries());
+    const status = document.getElementById("status")!;
+    const button = document.getElementById("submit-btn")! as HTMLButtonElement;
+
+    // Validación básica
+    if (!formData.name || !formData.email || !formData.message) {
+      status.innerHTML =
+        '<p class="text-red-400">Por favor, completa todos los campos requeridos</p>';
+      return;
+    }
+
+    // Estado de carga
+    button.classList.add("loading");
     button.disabled = true;
-    button.textContent = "Enviando...";
-    status.textContent = "";
+    status.innerHTML = "";
 
     try {
       const res = await fetch("/api/send-message", {
@@ -238,13 +347,56 @@ async function handleSubmit(e: { preventDefault: () => void; target: any }) {
       });
 
       const text = await res.text();
-      status.textContent = text || "Mensaje enviado con éxito 🎉";
-      form.reset();
-    } catch (err) {
-      status.textContent = "Error al enviar el mensaje ❌";
+
+      if (res.ok) {
+        status.innerHTML =
+          '<p class="text-green-400 text-lg font-medium">🎉 ¡Mensaje enviado con éxito! Te contactaré pronto.</p>';
+        form.reset();
+      } else {
+        throw new Error(text || "Error al enviar el mensaje");
+      }
+    } catch (err: any) {
+      status.innerHTML = `<p class="text-red-400">❌ ${err.message || "Error al enviar el mensaje. Intenta nuevamente."}</p>`;
     } finally {
+      button.classList.remove("loading");
       button.disabled = false;
-      button.textContent = "Enviar Mensaje";
+      button.innerHTML =
+        '<span>Enviar Mensaje</span><Send class="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />';
     }
   }
+
+  // Inicializar el formulario
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("contact-form");
+    if (form) {
+      form.addEventListener("submit", handleSubmit);
+    }
+
+    // Efectos de aparición para las cards
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: "0px 0px -50px 0px",
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const target = entry.target as HTMLElement;
+          target.style.opacity = "1";
+          target.style.transform = "translateY(0)";
+        }
+      });
+    }, observerOptions);
+
+    // Aplicar a las cards de contacto
+    const contactCards = document.querySelectorAll<HTMLElement>(
+      "a[href], .flex.items-center.gap-6"
+    );
+    contactCards.forEach((card, index) => {
+      card.style.opacity = "0";
+      card.style.transform = "translateY(20px)";
+      card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+      observer.observe(card);
+    });
+  });
 </script>
