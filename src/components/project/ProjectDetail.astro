@@ -23,9 +23,9 @@ interface ProjectPost {
 }
 
 const { id } = Astro.params;
-const postsEndpoint = import.meta.env.VITE_WORDPRESS_API_URL;
+const postsEndpoint = import.meta.env.PUBLIC_WORDPRESS_API_URL;
 
-if (!postsEndpoint) throw new Error("Falta VITE_WORDPRESS_API_URL");
+if (!postsEndpoint) throw new Error("Falta PUBLIC_WORDPRESS_API_URL");
 
 const base = postsEndpoint.replace("?rest_route=/wp/v2/posts", "");
 const url = `${base}?rest_route=/wp/v2/posts/${id}&_embed`;

@@ -36,7 +36,7 @@ const Blog = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const requestUrl = `${import.meta.env.VITE_WORDPRESS_API_URL}&_embed&per_page=${POSTS_PER_PAGE}&page=${currentPage}`;
+        const requestUrl = `${import.meta.env.PUBLIC_WORDPRESS_API_URL}&_embed&per_page=${POSTS_PER_PAGE}&page=${currentPage}`;
         console.log('Fetching posts from:', requestUrl);
         const response = await fetch(requestUrl);
         const totalPosts = Number(response.headers.get('X-WP-Total'));

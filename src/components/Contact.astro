@@ -1,18 +1,11 @@
 ---
-import {
-  MapPin,
-  Mail,
-  Github,
-  Send,
-  MessageCircle,
-  User,
-  Phone,
-} from "lucide-astro";
+import { Send, MessageCircle, User, Mail, MapPin, Github } from "lucide-astro";
+import { sendMessage } from "../util/sendMessage";
 ---
 
 <section
   id="contact"
-  class="py-28 px-6 bg-linear-to-br from-gray-900 via-gray-950 to-black text-white relative overflow-hidden"
+  class="py-28 px-6 bg-gradient-to-br from-gray-900 via-gray-950 to-black text-white relative overflow-hidden"
 >
   <!-- Elementos decorativos de fondo -->
   <div
@@ -28,14 +21,14 @@ import {
     <!-- Header de sección -->
     <div class="text-center mb-20">
       <div
-        class="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-linear-to-r from-orange-500/10 to-orange-600/10 border border-orange-500/20 text-orange-300 text-base font-medium mb-6 backdrop-blur-sm"
+        class="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-gradient-to-r from-orange-500/10 to-orange-600/10 border border-orange-500/20 text-orange-300 text-base font-medium mb-6 backdrop-blur-sm"
       >
         <MessageCircle class="w-5 h-5" />
         <span>Disponible para Proyectos</span>
       </div>
       <h2 class="text-5xl font-bold text-white mb-6">
         Trabajemos <span
-          class="text-transparent bg-clip-text bg-linear-to-r from-orange-400 to-orange-600"
+          class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600"
           >Juntos</span
         >
       </h2>
@@ -64,7 +57,7 @@ import {
             class="group flex items-center gap-6 p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-orange-500/30 hover:bg-white/10 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-orange-500/10"
           >
             <div
-              class="shrink-0 w-14 h-14 bg-linear-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300"
+              class="shrink-0 w-14 h-14 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300"
             >
               <Mail class="w-6 h-6" />
             </div>
@@ -74,7 +67,7 @@ import {
               </h4>
               <p class="text-gray-300">alexanderdev@apolanco.com</p>
               <p
-                class="text-orange-400 text-sm mt-1 opacity-0 group-hover:opacity-100"
+                class="text-orange-400 text-sm mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               >
                 Click para enviar email
               </p>
@@ -89,7 +82,7 @@ import {
             class="group flex items-center gap-6 p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-blue-500/30 hover:bg-white/10 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-blue-500/10"
           >
             <div
-              class="shrink-0 w-14 h-14 bg-linear-to-br from-gray-700 to-gray-900 rounded-2xl flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300"
+              class="shrink-0 w-14 h-14 bg-gradient-to-br from-gray-700 to-gray-900 rounded-2xl flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300"
             >
               <Github class="w-6 h-6" />
             </div>
@@ -97,7 +90,7 @@ import {
               <h4 class="text-lg font-semibold text-white mb-1">GitHub</h4>
               <p class="text-gray-300">github.com/AlexanderPM11</p>
               <p
-                class="text-blue-400 text-sm mt-1 opacity-0 group-hover:opacity-100"
+                class="text-blue-400 text-sm mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               >
                 Ver mis proyectos
               </p>
@@ -112,7 +105,7 @@ import {
             class="group flex items-center gap-6 p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-sky-500/30 hover:bg-white/10 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-sky-500/10"
           >
             <div
-              class="shrink-0 w-14 h-14 bg-linear-to-br from-sky-500 to-sky-600 rounded-2xl flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300"
+              class="shrink-0 w-14 h-14 bg-gradient-to-br from-sky-500 to-sky-600 rounded-2xl flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300"
             >
               <Send class="w-6 h-6" />
             </div>
@@ -120,7 +113,7 @@ import {
               <h4 class="text-lg font-semibold text-white mb-1">Telegram</h4>
               <p class="text-gray-300">@alexanderJpm</p>
               <p
-                class="text-sky-400 text-sm mt-1 opacity-0 group-hover:opacity-100"
+                class="text-sky-400 text-sm mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               >
                 Enviar mensaje directo
               </p>
@@ -132,7 +125,7 @@ import {
             class="group flex items-center gap-6 p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 transition-all duration-500"
           >
             <div
-              class="shrink-0 w-14 h-14 bg-linear-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center text-white"
+              class="shrink-0 w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center text-white"
             >
               <MapPin class="w-6 h-6" />
             </div>
@@ -150,7 +143,7 @@ import {
       <!-- Formulario de Contacto -->
       <div class="relative">
         <div
-          class="bg-linear-to-br from-white/5 to-white/2 backdrop-blur-xl border border-white/10 rounded-3xl p-8 lg:p-10 shadow-2xl"
+          class="bg-gradient-to-br from-white/5 to-white/2 backdrop-blur-xl border border-white/10 rounded-3xl p-8 lg:p-10 shadow-2xl"
         >
           <!-- Elemento decorativo -->
           <div
@@ -249,7 +242,7 @@ import {
               <button
                 type="submit"
                 id="submit-btn"
-                class="group w-full bg-linear-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold py-5 rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/25 inline-flex items-center justify-center gap-3"
+                class="group w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold py-5 rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/25 inline-flex items-center justify-center gap-3"
               >
                 <span>Enviar Mensaje</span>
                 <Send
@@ -304,12 +297,29 @@ import {
 </style>
 
 <script>
-  import { undefined } from "astro:schema";
+  import { sendMessage } from "../util/sendMessage";
 
+  type FormData = {
+    name: string;
+    email: string;
+    phone?: string;
+    service?: string;
+    message: string;
+  };
+
+  type SendMessageResult = {
+    success: boolean;
+    message: string;
+  };
+
+  // Función para manejar el envío del formulario
   async function handleSubmit(e: Event) {
-    e.preventDefault();
+    e.preventDefault(); // Esto previene la recarga de la página
     const form = e.target as HTMLFormElement;
-    const formData = Object.fromEntries(new FormData(form).entries());
+    const formData = Object.fromEntries(
+      new FormData(form).entries()
+    ) as FormData;
+
     const status = document.getElementById("status")!;
     const button = document.getElementById("submit-btn")! as HTMLButtonElement;
 
@@ -326,20 +336,13 @@ import {
     status.innerHTML = "";
 
     try {
-      const res = await fetch("/api/send-message", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      const res: SendMessageResult = await sendMessage(formData);
 
-      const text = await res.text();
-
-      if (res.ok) {
-        status.innerHTML =
-          '<p class="text-green-400 text-lg font-medium">🎉 ¡Mensaje enviado con éxito! Te contactaré pronto.</p>';
+      if (res.success) {
+        status.innerHTML = `<p class="text-green-400 text-lg font-medium">🎉 ${res.message} Te contactaré pronto.</p>`;
         form.reset();
       } else {
-        throw new Error(text || "Error al enviar el mensaje");
+        status.innerHTML = `<p class="text-red-400">❌ ${res.message}</p>`;
       }
     } catch (err: any) {
       status.innerHTML = `<p class="text-red-400">❌ ${err.message || "Error al enviar el mensaje. Intenta nuevamente."}</p>`;
@@ -350,12 +353,14 @@ import {
         '<span>Enviar Mensaje</span><Send class="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />';
     }
   }
-
-  // Inicializar el formulario
+  // Inicializar el formulario cuando el DOM esté listo
   document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("contact-form");
     if (form) {
-      form.addEventListener("submit", handleSubmit);
+      form.addEventListener("submit", (e: Event) => {
+        e.preventDefault();
+        handleSubmit(e);
+      });
     }
   });
 </script>

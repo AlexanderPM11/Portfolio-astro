@@ -11,7 +11,7 @@ export interface BlogPost {
 
 export async function fetchBlogPost(id: string): Promise<BlogPost | null> {
   try {
-    const baseUrl = import.meta.env.VITE_WORDPRESS_API_URL.replace(
+    const baseUrl = import.meta.env.PUBLIC_WORDPRESS_API_URL.replace(
       "?rest_route=/wp/v2/posts",
       ""
     );

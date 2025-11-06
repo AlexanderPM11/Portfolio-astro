@@ -1,7 +1,8 @@
 import type { Project } from "../interface";
 
 
-const API_URL = import.meta.env.VITE_WORDPRESS_API_URL;
+const API_URL = import.meta.env.PUBLIC_WORDPRESS_API_URL;
+
 
 type WpMedia = { source_url: string };
 type WpTerm = { id: number; name: string; slug: string };
