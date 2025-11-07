@@ -10,12 +10,14 @@ let fetchError = false;
 
 try {
   projects = await fetchProjectsFromCategory();
+  console.log("Proyectos cargados:", projects);
   categories = ["all", ...new Set(projects.map((p) => p.category || "general"))];
 } catch (err) {
   console.error("Error cargando proyectos:", err);
   fetchError = true;
 }
 ---
+
 
 <section id="projects" class="py-16 bg-gray-800 text-white">
   <div class="flex flex-col w-full items-center pb-16">

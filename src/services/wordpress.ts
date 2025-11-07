@@ -91,6 +91,7 @@ export async function fetchPosts(categorySlug = "all", page = 1, perPage = 6): P
 
   return { posts: filtered, totalPages, totalItem };
 }
+export const prerender = false;
 export async function fetchProjectsFromCategory(): Promise<Project[]> {
   const postsEndpoint = API_URL;
   const url = `${postsEndpoint}&_embed&per_page=100`;

@@ -1,4 +1,4 @@
-import emailjs from "emailjs-com";
+import emailjs from 'emailjs-com';
 
 const serviceId = import.meta.env.PUBLIC_EMAILJS_SERVICE_ID;
 const templateId = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID;
