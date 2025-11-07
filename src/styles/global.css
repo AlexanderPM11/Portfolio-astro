@@ -31,7 +31,7 @@
 /* Estilo base para todos los nav-links */
 .nav-link {
     color: white;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 500;
     position: relative;
     transition: color 0.3s;
