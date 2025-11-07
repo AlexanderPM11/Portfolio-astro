@@ -1,98 +1,214 @@
 ---
-import { fetchBlogPost } from "../../services/blogService";
-import { defaultBlogImages } from "../../util/constants/BlogImages";
-import sanitizeHtml from "sanitize-html";
+import { Calendar, User } from "lucide-astro";
+import { sanitizeContent } from "../../util/constants/sanitizedContent";
 import Layout from "../../layouts/Layout.astro";
 
+interface WpMedia {
+  source_url: string;
+}
+
+interface WpAuthor {
+  name: string;
+}
+
+interface BlogPost {
+  id: number;
+  title: { rendered: string };
+  content: { rendered: string };
+  date: string;
+  _embedded?: {
+    author?: WpAuthor[];
+    "wp:featuredmedia"?: WpMedia[];
+  };
+}
+
+// -------- Obtener rutas dinámicas --------
+export async function getStaticPaths() {
+  const baseUrl = import.meta.env.PUBLIC_WORDPRESS_API_URL;
+
+  if (!baseUrl) throw new Error("Falta PUBLIC_WORDPRESS_API_URL");
+
+  const cleanUrl = baseUrl.replace("?rest_route=/wp/v2/posts", "");
+  const res = await fetch(`${cleanUrl}?rest_route=/wp/v2/posts`);
+  const posts: BlogPost[] = await res.json();
+
+  return posts.map((post) => ({
+    params: { id: post.id.toString() },
+  }));
+}
+
+// -------- Obtener el post por ID --------
+let error: string | null = null;
+
 const { id } = Astro.params;
-const post = await fetchBlogPost(id ?? "");
-const error = !post ? "Error al cargar el artículo" : "";
+if (!id) throw new Error("ID no proporcionado");
+
+let post: BlogPost | null = null;
+try {
+  const postsEndpoint = import.meta.env.PUBLIC_WORDPRESS_API_URL;
+  if (!postsEndpoint) throw new Error("Falta PUBLIC_WORDPRESS_API_URL");
+
+  const base = postsEndpoint.replace("?rest_route=/wp/v2/posts", "");
+  const url = `${base}?rest_route=/wp/v2/posts/${id}&_embed`;
+  const res = await fetch(url);
+
+  if (!res.ok)
+    throw new Error(`Error ${res.status}: No se pudo cargar el proyecto`);
+
+  post = await res.json();
+} catch (err) {
+  error = err instanceof Error ? err.message : "Error cargando el proyecto";
+}
+
+if (!post) throw new Error("Artículo no encontrado");
+
+const featured =
+  post._embedded?.["wp:featuredmedia"]?.[0]?.source_url ||
+  "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=1470&auto=format&fit=crop";
+
+const author = post._embedded?.author?.[0]?.name || "Administrador";
+const sanitizedContent = sanitizeContent(post.content.rendered);
+
+const formattedDate = new Date(post.date).toLocaleDateString("es-ES", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
 ---
 
-<Layout title={post?.title?.rendered ?? "Blog"}>
-  <div class="min-h-screen bg-gray-900 text-white">
-    {
-      error ? (
-        <div class="min-h-screen flex items-center justify-center bg-gray-900">
-          <div class="text-center">
-            <p class="text-red-400 text-lg mb-4">{error}</p>
-            <a
-              href="/blog"
-              class="inline-flex items-center gap-2 px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors shadow-md hover:shadow-lg"
-            >
-              ← Volver al Blog
-            </a>
-          </div>
+<Layout>
+  <section
+    class="relative w-full min-h-[60vh] bg-gray-900 text-white overflow-hidden"
+  >
+    <!-- Imagen de fondo -->
+    <div class="absolute inset-0">
+      <img
+        src={featured}
+        alt={post.title.rendered}
+        class="w-full h-full object-cover opacity-50"
+      />
+      <div
+        class="absolute inset-0 bg-gradient-to-b from-gray-900/70 to-gray-900/90"
+      >
+      </div>
+    </div>
+
+    <!-- Contenido principal del hero -->
+    <div class="absolute bottom-0 left-0 right-0 p-6 md:p-10">
+      <div class="max-w-5xl mx-auto text-center md:text-left">
+        <h1
+          class="text-3xl md:text-5xl font-bold mb-4 leading-tight"
+          set:html={post.title.rendered}
+        />
+        <div
+          class="flex flex-col sm:flex-row gap-3 text-gray-300 text-sm md:text-base"
+        >
+          <span class="flex items-center gap-2">
+            <Calendar class="w-4 h-4 text-orange-400" />
+            {formattedDate}
+          </span>
+          <span class="flex items-center gap-2">
+            <User class="w-4 h-4 text-orange-400" />
+            {author}
+          </span>
         </div>
-      ) : (
-        <>
-          {/* Imagen destacada */}
-          <div class="relative w-full h-[50vh] min-h-[300px] bg-gray-800">
-            <img
-              src={
-                post?._embedded?.["wp:featuredmedia"]
-                  ? post?._embedded["wp:featuredmedia"][0].source_url
-                  : defaultBlogImages[post?.id ?? 0 % defaultBlogImages.length]
-              }
-              alt={post?.title.rendered}
-              class="absolute inset-0 w-full h-full object-cover opacity-50"
-            />
-            <div class="absolute inset-0 bg-gradient-to-b from-gray-900/70 to-gray-900/90" />
-            <div class="absolute bottom-0 left-0 right-0 p-8 max-w-5xl mx-auto">
-              <h1
-                class="text-4xl font-bold mb-4 leading-tight"
-                set:html={post?.title.rendered}
-              />
-              <div class="flex gap-6 text-gray-300 text-sm">
-                <span>
-                  📅{" "}
-                  {new Date(post?.date ?? Date.now()).toLocaleDateString(
-                    "es-ES",
-                    {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    }
-                  )}
-                </span>
-                {post?._embedded?.author && (
-                  <span>👤 {post?._embedded.author[0].name}</span>
-                )}
-              </div>
-            </div>
-          </div>
+      </div>
+    </div>
+  </section>
 
-          {/* Contenido */}
-          <article class="max-w-5xl mx-auto px-4 py-12">
-            <div
-              class="wordpress-content prose prose-invert max-w-none text-white"
-              set:html={sanitizeHtml(post?.content.rendered, {
-                allowedTags: [
-                  ...sanitizeHtml.defaults.allowedTags,
-                  "img",
-                  "figure",
-                  "iframe",
-                  "video",
-                  "source",
-                ],
-                allowedAttributes: {
-                  ...sanitizeHtml.defaults.allowedAttributes,
-                  "*": ["class", "style", "src", "alt", "width", "height"],
-                },
-              })}
-            />
+  <main class="bg-gray-900 text-white py-12 md:py-20">
+    <div class="max-w-5xl mx-auto px-4 md:px-6">
+      <article
+        class="bg-gray-800/50 p-8 rounded-2xl border border-gray-700 backdrop-blur-sm shadow-xl"
+      >
+        <div class="project-content" set:html={sanitizedContent} />
+      </article>
 
-            <div class="mt-12 pt-6 border-t border-gray-700">
-              <a
-                href="/blog"
-                class="inline-flex items-center gap-2 px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors shadow-md hover:shadow-lg"
-              >
-                ← Volver al Blog
-              </a>
-            </div>
-          </article>
-        </>
-      )
+      <div class="mt-12 text-center border-t border-gray-700 pt-8">
+        <a
+          href="/blog"
+          class="inline-flex items-center gap-2 px-6 py-3 bg-orange-500 text-white font-medium rounded-lg hover:bg-orange-600 transition-all duration-300 hover:scale-105"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-5 h-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"></path>
+          </svg>
+          Volver al Blog
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <style>
+    .wordpress-content ul,
+    .wordpress-content ol {
+      margin: 1rem 0;
+      padding-left: 2rem;
+      list-style-position: outside;
     }
-  </div>
+    .wordpress-content ul {
+      list-style-type: disc;
+    }
+    .wordpress-content ol {
+      list-style-type: decimal;
+    }
+    .wordpress-content li {
+      margin: 0.5rem 0;
+      line-height: 1.75;
+      color: #d1d5db;
+    }
+    .wordpress-content ul li::marker,
+    .wordpress-content ol li::marker {
+      color: #f97316;
+    }
+
+    .wordpress-content .wp-block-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1rem;
+      margin: 0;
+      padding: 0;
+    }
+    .wordpress-content .wp-block-gallery figure {
+      margin: 0;
+      overflow: hidden;
+      border-radius: 8px;
+      transition: transform 0.3s ease;
+    }
+    .wordpress-content .wp-block-gallery figure:hover {
+      transform: scale(1.05);
+    }
+
+    .wordpress-content pre,
+    .wordpress-content code {
+      background-color: #1f2937;
+      color: #fff;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      overflow-x: auto;
+      display: block;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .wordpress-content a {
+      color: #f97316;
+      text-decoration: underline;
+    }
+
+    .wordpress-content img {
+      border-radius: 0.5rem;
+      max-width: 100%;
+      height: auto;
+    }
+  </style>
 </Layout>

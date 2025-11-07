@@ -61,23 +61,27 @@ const totalPosts = initialData.totalItem;
   <section class="bg-gray-900 py-12 px-4">
     <div class="max-w-6xl mx-auto">
       <!-- Filtros -->
+
       <div
         class="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700/50 p-6 mb-12"
       >
-        <div
-          class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4"
-        >
-          <div class="flex items-center gap-3">
+        <div class="flex flex-col lg:items-center lg:justify-between gap-4">
+          <!--  -->
+          <div class="flex justify-center items-center gap-3 w-full">
             <Filter class="w-5 h-5 text-orange-400" />
             <h3 class="text-lg font-semibold text-white">
-              Filtrar por categoría
+              Filtrar por Categoría
             </h3>
           </div>
+          <!--  -->
 
-          <div id="categories-container" class="flex flex-wrap gap-3">
+          <div
+            id="categories-container"
+            class="flex justify-center flex-wrap gap-3"
+          >
             <button
               data-category="all"
-              class="category-btn inline-flex items-center gap-2 px-4 py-2 rounded-full border transition-all duration-300 bg-orange-500 border-orange-500 text-white shadow-lg shadow-orange-500/25"
+              class="cursor-pointer category-btn inline-flex items-center gap-2 px-4 py-2 rounded-full border transition-all duration-300 bg-orange-500 border-orange-500 text-white shadow-lg shadow-orange-500/25"
             >
               <span>Todas</span>
               <span class="text-sm opacity-75">({totalPosts})</span>
@@ -89,7 +93,7 @@ const totalPosts = initialData.totalItem;
                 .map((cat) => (
                   <button
                     data-category={cat.slug}
-                    class="category-btn inline-flex items-center gap-2 px-4 py-2 rounded-full border transition-all duration-300 bg-gray-700/50 border-gray-600 text-gray-300 hover:bg-gray-600 hover:border-gray-500"
+                    class="cursor-pointer category-btn inline-flex items-center gap-2 px-4 py-2 rounded-full border transition-all duration-300 bg-gray-700/50 border-gray-600 text-gray-300 hover:bg-gray-600 hover:border-gray-500"
                   >
                     <span>{cat.name}</span>
                     <span class="text-sm opacity-75">({cat.count})</span>
@@ -294,7 +298,7 @@ const totalPosts = initialData.totalItem;
     const title = post.title?.rendered || post.title || "Sin título";
 
     // Múltiples posibles nombres para el slug
-    const slug = post.slug || post.id || "";
+    const slug = post.id;
 
     // Múltiples posibles nombres para la categoría
     const autor = post._embedded?.["author"]?.[0]?.name;
