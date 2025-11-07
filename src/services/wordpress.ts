@@ -7,26 +7,26 @@ const API_URL = import.meta.env.PUBLIC_WORDPRESS_API_URL;
 type WpMedia = { source_url: string };
 type WpTerm = { id: number; name: string; slug: string };
 type WpPost = {
-    id: number;
-    title: { rendered: string };
-    excerpt?: { rendered: string };
-    content?: { rendered: string };
-    date: string;
-    acf?: {
-        githubUrl?: string;
-        liveurl?: string;
-        techstack?: string[];
-    };
-    _embedded?: {
-        "wp:featuredmedia"?: WpMedia[];
-        author?: Array<{ name: string }>;
-        "wp:term"?: Array<WpTerm[]>;
-    };
+  id: number;
+  title: { rendered: string };
+  excerpt?: { rendered: string };
+  content?: { rendered: string };
+  date: string;
+  acf?: {
+    githubUrl?: string;
+    liveurl?: string;
+    techstack?: string[];
+  };
+  _embedded?: {
+    "wp:featuredmedia"?: WpMedia[];
+    author?: Array<{ name: string }>;
+    "wp:term"?: Array<WpTerm[]>;
+  };
 };
 
 function stripHtml(html: string | undefined): string {
-    if (!html) return "";
-    return html.replace(/<[^>]*>?/gm, "").trim();
+  if (!html) return "";
+  return html.replace(/<[^>]*>?/gm, "").trim();
 }
 export interface Category {
   id: number;
@@ -57,13 +57,13 @@ export async function fetchCategories(): Promise<Category[]> {
 
   const data: Category[] = await res.json();
   const validCategories = data
-    .filter((cat) => cat.count > 0 && cat.slug !== "projects")
+    .filter((cat) => cat.count > 0 && cat.slug !== "projects" && !cat.name.startsWith("(P) -"))
     .sort((a, b) => b.count - a.count);
 
   return [{ id: 0, name: "Todos", slug: "all", count: 0 }, ...validCategories];
 }
 
-export async function fetchPosts(categorySlug = "all", page = 1, perPage = 6): Promise<{ posts: BlogPost[]; totalPages: number }> {
+export async function fetchPosts(categorySlug = "all", page = 1, perPage = 6): Promise<{ posts: BlogPost[]; totalPages: number, totalItem: number }> {
   let url = `${API_URL}&_embed&per_page=${perPage}&page=${page}`;
   const resCategories = await fetchCategories();
   const projectsCat = resCategories.find((c) => c.slug === "projects");
@@ -82,49 +82,50 @@ export async function fetchPosts(categorySlug = "all", page = 1, perPage = 6): P
 
   const total = Number(res.headers.get("X-WP-Total") || "0");
   const totalPages = Math.max(1, Math.ceil(total / perPage));
+  const totalItem = Number(res.headers.get("X-WP-Total") || "0");
 
   const data: BlogPost[] = await res.json();
   const filtered = data.filter(
     (post) => !post._embedded?.["wp:term"]?.some((group) => group.some((t) => t.slug === "projects"))
   );
 
-  return { posts: filtered, totalPages };
+  return { posts: filtered, totalPages, totalItem };
 }
 export async function fetchProjectsFromCategory(): Promise<Project[]> {
-    const postsEndpoint = API_URL;
-    const url = `${postsEndpoint}&_embed&per_page=100`;
+  const postsEndpoint = API_URL;
+  const url = `${postsEndpoint}&_embed&per_page=100`;
 
-    const response = await fetch(url);
-    if (!response.ok) throw new Error(`WP error ${response.status}`);
-    const posts: WpPost[] = await response.json();
-    const filtered = posts.filter((p) =>
-        p._embedded?.["wp:term"]?.some((group) => group.some((t) => t.slug === "projects"))
-    );
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`WP error ${response.status}`);
+  const posts: WpPost[] = await response.json();
+  const filtered = posts.filter((p) =>
+    p._embedded?.["wp:term"]?.some((group) => group.some((t) => t.slug === "projects"))
+  );
 
-    return filtered.map((p) => {
-        const terms = p._embedded?.["wp:term"] ?? [];
-        // Busca una categoría secundaria para usar como category de filtro (distinta a "projects")
-        const secondary = terms
-            .flat()
-            .find((t) => t.slug && t.slug !== "projects");
+  return filtered.map((p) => {
+    const terms = p._embedded?.["wp:term"] ?? [];
+    // Busca una categoría secundaria para usar como category de filtro (distinta a "projects")
+    const secondary = terms
+      .flat()
+      .find((t) => t.slug && t.slug !== "projects");
 
-        const image =
-            p._embedded?.["wp:featuredmedia"]?.[0]?.source_url ||
-            "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=1470&auto=format&fit=crop";
+    const image =
+      p._embedded?.["wp:featuredmedia"]?.[0]?.source_url ||
+      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=1470&auto=format&fit=crop";
 
-        const project: Project = {
-            id: p.id,
-            category: secondary?.name || "general",
-            title: stripHtml(p.title?.rendered),
-            description: stripHtml(p.excerpt?.rendered) || stripHtml(p.content?.rendered),
-            image,
-            techStack: Array.isArray(p.acf?.techstack) ? p.acf!.techstack : [],
-            githubUrl: p.acf?.githubUrl,
-            liveUrl: p.acf?.liveurl,
-        };
+    const project: Project = {
+      id: p.id,
+      category: secondary?.name || "general",
+      title: stripHtml(p.title?.rendered),
+      description: stripHtml(p.excerpt?.rendered) || stripHtml(p.content?.rendered),
+      image,
+      techStack: Array.isArray(p.acf?.techstack) ? p.acf!.techstack : [],
+      githubUrl: p.acf?.githubUrl,
+      liveUrl: p.acf?.liveurl,
+    };
 
-        return project;
-    });
+    return project;
+  });
 }
 
 

@@ -148,7 +148,9 @@ import Button from "./common/Button.astro";
       close.classList.remove("hidden");
       toggle.classList.remove("hidden");
       const targetId = link.getAttribute("data-target");
-      const isDetailPage = /^\/\d+$/.test(window.location.pathname);
+      const isDetailPage =
+        /^\/\d+$/.test(window.location.pathname) ||
+        window.location.pathname.startsWith("/blog");
 
       if (targetId && targetId.startsWith("#") && !isDetailPage) {
         e.preventDefault();

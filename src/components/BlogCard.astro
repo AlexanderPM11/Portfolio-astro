@@ -1,12 +1,14 @@
 ---
 import type { BlogPost } from "../services/wordpress";
-import { FaCalendarAlt, FaUser } from "react-icons/fa";
+import { Calendar, User } from "lucide-astro";
 import { defaultBlogImages } from "../util/constants/BlogImages";
 
 const { post } = Astro.props as { post: BlogPost };
 ---
 
-<article class="bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-transform duration-300 hover:-translate-y-2">
+<article
+  class="bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-transform duration-300 hover:-translate-y-2"
+>
   <img
     src={post._embedded?.["wp:featuredmedia"]
       ? post._embedded["wp:featuredmedia"][0].source_url
@@ -23,15 +25,17 @@ const { post } = Astro.props as { post: BlogPost };
     </a>
     <div class="flex items-center gap-4 text-sm text-gray-400 mb-4">
       <span class="flex items-center gap-1">
-        <FaCalendarAlt />
+        <Calendar />
         {new Date(post.date).toLocaleDateString()}
       </span>
-      {post._embedded?.author && (
-        <span class="flex items-center gap-1">
-          <FaUser />
-          {post._embedded.author[0].name}
-        </span>
-      )}
+      {
+        post._embedded?.author && (
+          <span class="flex items-center gap-1">
+            <User />
+            {post._embedded.author[0].name}
+          </span>
+        )
+      }
     </div>
     <div
       class="text-gray-300 mb-4 line-clamp-3"
