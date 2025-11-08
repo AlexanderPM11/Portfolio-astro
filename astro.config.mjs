@@ -6,7 +6,18 @@ import tailwindcss from "@tailwindcss/vite";
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [icon()],
+  integrations: [
+    icon({
+      // Especificar los icon sets que quieres usar
+      iconDir: "src/icons",
+      include: {
+        // Incluir Material Design Icons (viene por defecto)
+        mdi: ["*"],
+        // Incluir Simple Icons explícitamente
+        "simple-icons": ["*"],
+      },
+    }),
+  ],
   vite: {
     plugins: [tailwindcss()],
   },

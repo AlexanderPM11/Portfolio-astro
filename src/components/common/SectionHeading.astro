@@ -1,0 +1,37 @@
+---
+interface Props {
+  label: string;              // Texto del pequeño encabezado (ej. "Servicios Profesionales")
+  title: string;              // Parte principal del título (ej. "Soluciones")
+  highlight: string;          // Texto resaltado con color degradado (ej. "Digitales")
+  description: string;        // Descripción inferior
+  icon?: string;              // (Opcional) SVG personalizado o tipo de ícono
+}
+
+const { label, title, highlight, description } = Astro.props;
+---
+
+<div class="text-center mb-16">
+  <div
+    class="inline-flex items-center gap-2 text-orange-400/80 text-sm font-medium mb-4 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20"
+  >
+    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+      <path
+        fill-rule="evenodd"
+        d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
+        clip-rule="evenodd"
+      ></path>
+    </svg>
+    {label}
+  </div>
+
+  <h2 class="text-4xl font-bold mb-4 text-white">
+    {title}{" "}
+    <span class="text-transparent bg-clip-text bg-linear-to-r from-orange-400 to-orange-600">
+      {highlight}
+    </span>
+  </h2>
+
+  <p class="text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed">
+    {description}
+  </p>
+</div>

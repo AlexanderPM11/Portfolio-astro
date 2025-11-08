@@ -5,52 +5,40 @@ import { ArrowLeft, Github, ExternalLink, Calendar, Clock } from "lucide-astro";
 import { techIcons } from "../util/constants/TechIcons";
 import Layout from "../layouts/Layout.astro";
 import { sanitizeContent } from "../util/constants/sanitizedContent";
+import {
+  getProjectById,
+  getProjectPaths,
+} from "../services/blog/ProjectService";
+import type { ProjectPost } from "../interface/Project/ProjectInterface";
 
-interface WpMedia {
-  source_url: string;
-}
-
-interface ProjectPost {
-  id: number;
-  title: { rendered: string };
-  content?: { rendered: string };
-  date: string;
-  acf?: {
-    githubUrl?: string;
-    liveurl?: string;
-    techstack?: string[];
-  };
-  _embedded?: {
-    "wp:featuredmedia"?: WpMedia[];
-  };
-}
-
-// ------------------
-// Generación de rutas dinámicas
-// ------------------
-export async function getStaticPaths() {
-  const postsEndpoint = import.meta.env.PUBLIC_WORDPRESS_API_URL;
-
-  if (!postsEndpoint) {
-    throw new Error("Falta PUBLIC_WORDPRESS_API_URL");
-  }
-
-  const base = postsEndpoint.replace("?rest_route=/wp/v2/posts", "");
-  const res = await fetch(`${base}?rest_route=/wp/v2/posts`);
-  const posts: ProjectPost[] = await res.json();
-
-  return posts.map((post) => ({
-    params: { id: post.id.toString() },
-  }));
-}
-
-// ------------------
-// Obtener ID y fetch del post
-// ------------------
 const { id } = Astro.params;
 
-if (!id) throw new Error("ID no proporcionado");
+export async function getStaticPaths() {
+  return await getProjectPaths();
+}
 
+export async function get() {
+  if (!id) {
+    throw new Error("❌ ID de proyecto no proporcionado o inválido");
+  }
+
+  try {
+    const post = await getProjectById(Number(id));
+    return { props: { post } };
+  } catch (err) {
+    console.error("Error al obtener el proyecto:", err);
+    return {
+      props: {
+        post: null,
+        error: "No se pudo cargar el proyecto solicitado.",
+      },
+    };
+  }
+}
+
+// ------------------
+// Variables disponibles en el template
+// ------------------
 let post: ProjectPost | null = null;
 let error: string | null = null;
 

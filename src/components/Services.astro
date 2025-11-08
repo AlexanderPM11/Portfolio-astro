@@ -1,5 +1,6 @@
 ---
 import { services } from "../services/Services";
+import SectionHeading from "./common/SectionHeading.astro";
 ---
 
 <section id="services" class="py-20 px-4 bg-linear-to-b from-gray-900 to-gray-800 relative overflow-hidden">
@@ -9,20 +10,12 @@ import { services } from "../services/Services";
   <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-blue-500/3 rounded-full blur-2xl"></div>
 
   <div class="max-w-4xl mx-auto relative z-10">
-    <div class="text-center mb-16">
-      <div class="inline-flex items-center gap-2 text-orange-400/80 text-sm font-medium mb-4 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20">
-        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-          <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/>
-        </svg>
-        Servicios Profesionales
-      </div>
-      <h2 class="text-4xl font-bold mb-4 text-white">
-        Soluciones <span class="text-transparent bg-clip-text bg-linear-to-r from-orange-400 to-orange-600">Digitales</span>
-      </h2>
-      <p class="text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed">
-        Desarrollo soluciones tecnológicas innovadoras que impulsan el crecimiento de tu negocio
-      </p>
-    </div>
+    <SectionHeading
+      label="Servicios Profesionales"
+      title="Soluciones"
+      highlight="Digitales"
+      description="Desarrollo soluciones tecnológicas innovadoras que impulsan el crecimiento de tu negocio."
+    />
 
     <!-- Lista vertical mejorada -->
     <div class="space-y-8 relative">
