@@ -39,9 +39,9 @@ jobs:
     - name: SSH into VPS and update containers with Docker Compose
       run: |
         ssh -i ~/.ssh/id_rsa root@84.247.165.31 << 'EOF'
-          cd /home/docker/Portfolio
+          cd /home/docker/Astro
           docker-compose down || true
-          docker rmi alexpm11/mi-portfolio:latest || true 
+          docker rmi alexpm11/astro-portfolio:latest || true 
           docker-compose pull
           docker-compose up -d
         EOF
