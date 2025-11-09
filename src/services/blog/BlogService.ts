@@ -52,3 +52,82 @@ export async function fetchPosts(categorySlug = "all", page = 1, perPage = 6): P
     return { posts: filtered, totalPages, totalItem };
 }
 
+export async function fetchLimitedPosts(
+    limit = 5
+): Promise<{ posts: BlogPost[]; totalItem: number; totalPages: number }> {
+    try {
+        // 1) obtener la categoría "projects" (si existe)
+        const resCategories = await fetchCategories();
+        const projectsCat = resCategories.find((c) => c.slug === "projects");
+        const projectsId = projectsCat ? projectsCat.id : null;
+
+        // 2) parámetros para la paginación y eficiencia
+        //    perPage alta para reducir número de requests (ajusta si tu WP limita)
+        const perPage = 20;
+        let page = 1;
+        let collected: BlogPost[] = [];
+        let totalPagesFromHeader = 1;
+        let totalItemsFromHeader = 0;
+
+        // 3) loop: pedimos páginas hasta reunir `limit` o hasta agotar páginas
+        while (collected.length < limit) {
+            const url = `${API_URL}&_embed&per_page=${perPage}&page=${page}`;
+            const res = await fetch(url);
+            if (!res.ok) {
+                // si WP devuelve 400/404 cuando pedimos una página que no existe, salimos
+                if (res.status === 400 || res.status === 404) break;
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+
+            // leer cabeceras (solo la primera vez nos interesa)
+            if (page === 1) {
+                totalItemsFromHeader = Number(res.headers.get("X-WP-Total") || "0");
+                totalPagesFromHeader = Number(res.headers.get("X-WP-TotalPages") || "1");
+            }
+
+            const data: BlogPost[] = await res.json();
+            if (!Array.isArray(data) || data.length === 0) break;
+
+            // 4) filtrar cada post — rechazo si contiene la categoría "projects"
+            const filteredThisPage = data.filter((post) => {
+                // 4.a) si hay array de ids en post.categories
+                if (Array.isArray(post.categories) && projectsId !== null) {
+                    if (post.categories.includes(projectsId)) return false;
+                }
+
+                // 4.b) revisar _embedded -> wp:term por slug/id (más seguro)
+                const termGroups = post._embedded?.["wp:term"];
+                if (Array.isArray(termGroups)) {
+                    const flatTerms = termGroups.flat();
+                    if (flatTerms.some((t: any) => t?.slug === "projects" || t?.id === projectsId)) {
+                        return false;
+                    }
+                }
+
+                return true;
+            });
+
+            // 5) añadir, evitando duplicados por si acaso
+            for (const p of filteredThisPage) {
+                if (collected.length >= limit) break;
+                if (!collected.find((x) => x.id === p.id)) collected.push(p);
+            }
+
+            // si ya alcanzamos el límite salimos
+            if (collected.length >= limit) break;
+
+            // preparar siguiente página
+            page += 1;
+            if (page > totalPagesFromHeader) break;
+        }
+
+        return {
+            posts: collected.slice(0, limit),
+            totalItem: totalItemsFromHeader,
+            totalPages: totalPagesFromHeader,
+        };
+    } catch (error) {
+        console.error("❌ Error in fetchLimitedPosts:", error);
+        throw error;
+    }
+}

@@ -1,0 +1,182 @@
+---
+import { fetchLimitedPosts } from "../../services/blog/BlogService";
+import SectionHeading from "../common/SectionHeading.astro";
+
+// Fetch de los últimos 3 posts
+const latestPosts = await fetchLimitedPosts(3);
+
+
+// Función para formatear fecha
+const formatDate = (dateString: string) => {
+  return new Date(dateString).toLocaleDateString("es-ES", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
+
+// Función para obtener excerpt (versión segura para servidor)
+const getExcerpt = (post: any) => {
+  const excerptContent = post.excerpt?.rendered || post.excerpt || post.content?.rendered || post.content || "";
+  
+  if (typeof excerptContent === "string") {
+    // Usar replace para eliminar HTML tags de forma segura en servidor
+    const textOnly = excerptContent
+      .replace(/<[^>]*>/g, '') // Eliminar tags HTML
+      .replace(/&[^;]+;/g, '') // Eliminar entidades HTML
+      .replace(/\s+/g, ' ') // Normalizar espacios
+      .trim();
+    
+    return textOnly.substring(0, 120) + (textOnly.length > 120 ? "..." : "");
+  }
+  return "Lee este artículo para descubrir más...";
+};
+
+// Función para obtener imagen
+const getImageUrl = (post: any) => {
+  return post._embedded?.["wp:featuredmedia"]?.[0]?.source_url ||
+         "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=1470&auto=format&fit=crop";
+};
+
+// Función para obtener autor
+const getAuthor = (post: any) => {
+  return post._embedded?.["author"]?.[0]?.name || "Autor";
+};
+---
+
+<section class="bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 py-16 px-4">
+  <div class="max-w-6xl mx-auto">
+    <!-- Header -->
+   
+    <div class="flex flex-col w-full items-center text-center">
+      <SectionHeading
+        label="Novedades"
+        title="Explora Nuestros"
+        highlight="Contenidos Recientes"
+        description="Mantente al tanto de las últimas novedades y consejos útiles que compartimos en nuestro blog cada semana."
+        />
+    </div>
+
+    <!-- Posts Grid -->
+    {latestPosts.posts.length > 0 ? (
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {latestPosts.posts.map((post) => (
+          <article class="bg-gray-800/50 rounded-2xl border border-gray-700/50 overflow-hidden hover:border-orange-500/50 transition-all duration-300 hover:scale-[1.02] group">
+            <!-- Imagen -->
+            <div class="aspect-video overflow-hidden bg-gray-700">
+              <a href={`/blog/${post.id}`}>
+                <img 
+                  src={getImageUrl(post)}
+                  alt={post.title?.rendered || "Post sin título"}
+                  class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  loading="lazy"
+                  width="400"
+                  height="225"
+                />
+              </a>
+            </div>
+            
+            <!-- Contenido -->
+            <div class="p-6">
+              <!-- Meta información -->
+              <div class="flex items-center gap-2 mb-3">
+                <span class="px-3 py-1 bg-orange-500/20 text-orange-400 text-xs font-medium rounded-full">
+                  {getAuthor(post)}
+                </span>
+                <span class="text-gray-500 text-xs">
+                  {formatDate(post.date || new Date().toISOString())}
+                </span>
+              </div>
+              
+              <!-- Título -->
+              <a href={`/blog/${post.id}`}>
+                <h3 class="text-xl font-bold text-white mb-3 group-hover:text-orange-400 transition-colors line-clamp-2">
+                  {post.title?.rendered || "Sin título"}
+                </h3>
+              </a>
+              
+              <!-- Excerpt -->
+              <p class="text-gray-400 text-sm mb-4 line-clamp-3">
+                {getExcerpt(post)}
+              </p>
+              
+              <!-- Botón Leer más -->
+              <a 
+                href={`/blog/${post.id}`}
+                class="inline-flex items-center gap-2 text-orange-400 hover:text-orange-300 font-medium transition-colors"
+              >
+                Leer más
+                <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+    ) : (
+      <!-- Estado vacío -->
+      <div class="text-center py-12 bg-gray-800/30 rounded-2xl border border-gray-700/50">
+        <div class="max-w-md mx-auto">
+          <div class="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold text-white mb-2">
+            No hay artículos disponibles
+          </h3>
+          <p class="text-gray-400">
+            Próximamente publicaremos nuevos contenidos.
+          </p>
+        </div>
+      </div>
+    )}
+
+    <!-- CTA -->
+    {latestPosts.posts.length > 0 && (
+      <div class="text-center mt-12">
+        <a 
+          href="/blog"
+          class="inline-flex items-center gap-2 px-8 py-4 bg-orange-500 hover:bg-orange-600 rounded-xl text-white font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-orange-500/25"
+        >
+          Ver todos los artículos
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </a>
+      </div>
+    )}
+
+    <div class="relative my-20">
+        <div
+          class="h-px bg-linear-to-r from-transparent via-slate-600 to-transparent"
+        >
+        </div>
+        <div
+          class="absolute inset-0 flex items-center justify-center pointer-events-none"
+        >
+          <div
+            class="w-4 h-4 bg-green-600 rounded-full ring-4 ring-slate-900 shadow-lg shadow-orange-500/20 animate-pulse"
+          >
+          </div>
+        </div>
+      </div>
+  </div>
+</section>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
