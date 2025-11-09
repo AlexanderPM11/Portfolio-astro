@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  astro_app:
+    build: .
+    container_name: astro_app
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=production
