@@ -1,41 +1,47 @@
-name: 🚀 Build and Deploy Astro to VPS
+name: Docker Deploy
 
 on:
   push:
     branches:
-      - main
+      - main  # O la rama que desees
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 🧩 Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: 🔧 Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
 
-      - name: 🔑 Login to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: 🏗️ Build and push Docker image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: true
-          tags: ghcr.io/${{ github.repository }}:latest
+    - name: Build and push Docker image
+      run: |
+        docker build -t alexpm11/astro-portfolio:latest .
+        docker push alexpm11/astro-portfolio:latest
 
-      - name: 📡 Deploy to VPS via SSH
-        uses: appleboy/ssh-action@v1.1.0
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          script: |
-            docker pull ghcr.io/${{ github.repository }}:latest
-            docker compose -f /ruta/a/docker-compose.prod.yml up -d
+        # Paso 5: Configurar la clave SSH para conectar a tu VPS
+    - name: Set up SSH key
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.VPS_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H 84.247.165.31 >> ~/.ssh/known_hosts
+
+    # Paso 6: Conectar con el VPS y actualizar contenedores Docker
+    - name: SSH into VPS and update containers with Docker Compose
+      run: |
+        ssh -i ~/.ssh/id_rsa root@84.247.165.31 << 'EOF'
+          cd /home/docker/Portfolio
+          docker-compose down || true
+          docker rmi alexpm11/mi-portfolio:latest || true 
+          docker-compose pull
+          docker-compose up -d
+        EOF
