@@ -1,211 +1,130 @@
 ---
-interface Props {
-  initialData: { totalPages: number };
-  categories: any[];
-}
+import heroImg from "../../assets/img/Hero.jpeg";
+import meImg from "../../assets/img/profile.png";
+import Button from "../common/Button.astro";
+import SocialMedia from "../SocialMedia.astro";
+import "astro-icon";
 
-const { initialData, categories } = Astro.props;
+import { Folder, ArrowDown } from "lucide-astro";
 ---
 
 <section
-  class="relative min-h-screen bg-linear-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center overflow-hidden"
+  id="hero"
+  class="h-screen min-h-[600px] bg-center bg-cover bg-no-repeat flex items-center justify-center text-center text-white px-4 relative"
+  style={`background-image: linear-gradient(rgb(11 25 38 / 0%), rgba(11,25,38,0.8)), url(${heroImg.src})`}
 >
-  <!-- Fondo con efectos más dinámicos -->
-  <div class="absolute inset-0 overflow-hidden">
-    <!-- Gradientes animados -->
-    <div
-      class="absolute -top-40 -left-40 w-80 h-80 bg-orange-500/20 rounded-full blur-3xl animate-pulse"
-    >
-    </div>
-    <div
-      class="absolute -bottom-40 -right-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-1000"
-    >
-    </div>
-    <div
-      class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl animate-pulse delay-500"
-    >
-    </div>
+  <div class="absolute inset-0 bg-[#0b192680] z-0"></div>
 
-    <!-- Patrón de puntos decorativos -->
-    <div class="absolute inset-0 opacity-10">
-      <div class="absolute top-1/4 left-1/4 w-2 h-2 bg-white rounded-full">
-      </div>
-      <div
-        class="absolute top-1/3 right-1/3 w-1 h-1 bg-orange-400 rounded-full"
-      >
-      </div>
-      <div
-        class="absolute bottom-1/4 left-1/3 w-1.5 h-1.5 bg-white rounded-full"
-      >
-      </div>
-      <div
-        class="absolute top-2/3 right-1/4 w-1 h-1 bg-orange-400 rounded-full"
-      >
-      </div>
-    </div>
-  </div>
-
-  <!-- Efecto de partículas (simulado con CSS) -->
-  <div class="absolute inset-0 opacity-30">
-    <div
-      class="particle absolute top-10 left-10 w-1 h-1 bg-orange-400 rounded-full animate-float"
-    >
-    </div>
-    <div
-      class="particle absolute top-20 right-20 w-1 h-1 bg-white rounded-full animate-float delay-700"
-    >
-    </div>
-    <div
-      class="particle absolute bottom-20 left-20 w-1 h-1 bg-orange-300 rounded-full animate-float delay-300"
-    >
-    </div>
-    <div
-      class="particle absolute bottom-10 right-10 w-1 h-1 bg-white rounded-full animate-float delay-1000"
-    >
-    </div>
-  </div>
-
-  <!-- Capa de overlay para mejor contraste -->
   <div
-    class="absolute inset-0 bg-linear-to-r from-gray-900/80 via-gray-900/70 to-gray-900/80"
+    class="relative z-10 flex flex-col-reverse lg:flex-row items-center justify-between gap-10 lg:gap-20 py-10"
   >
-  </div>
-
-  <!-- Contenido principal -->
-  <div class="relative z-10 max-w-6xl mx-auto px-4 text-center">
-    <!-- Badge destacado -->
-    <div
-      class="inline-flex items-center gap-2 px-4 py-2 mb-8 rounded-full bg-gray-800/60 backdrop-blur-sm border border-gray-700/50"
-    >
-      <span class="w-2 h-2 bg-orange-400 rounded-full animate-ping"></span>
-      <span class="text-sm text-gray-300 font-medium"
-        >Explora el conocimiento</span
-      >
-    </div>
-
-    <!-- Título principal -->
-    <div class="mb-8">
+    <!-- Texto -->
+    <div class="text-center lg:text-left max-w-xl">
       <h1
-        class="text-5xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tight"
+        class="text-4xl sm:text-5xl lg:text-4xl font-bold uppercase leading-tight mb-2 text-white"
       >
-        <span
-          class="bg-linear-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent"
-        >
-          Mi Blog
-        </span>
-        <span
-          class="block text-transparent bg-linear-to-r from-orange-400 via-orange-500 to-orange-600 bg-clip-text"
-        >
-          Tecnológico
-        </span>
+        Alexander Polanco
       </h1>
 
-      <!-- Línea decorativa -->
-      <div
-        class="w-24 h-1 bg-linear-to-r from-orange-500 to-purple-500 mx-auto rounded-full mb-8"
-      >
-      </div>
-    </div>
+      <h2 id="typewriter" class="text-lg sm:text-1xl font-bold mb-4 h-8"></h2>
 
-    <!-- Descripción -->
-    <p
-      class="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed font-light"
-    >
-      Sumérgete en artículos, <span class="text-orange-400 font-medium"
-        >tutoriales prácticos</span
-      >
-      y reflexiones sobre <span class="text-white font-medium"
-        >desarrollo web</span
-      >, tecnologías emergentes y <span class="text-white font-medium"
-        >mejores prácticas</span
-      > en programación.
-    </p>
-
-    <!-- Estadísticas -->
-    <div class="flex flex-wrap justify-center gap-8 mb-12">
-      <div
-        class="group text-center transform transition-all duration-300 hover:scale-110"
-      >
-        <div class="relative">
-          <div class="text-3xl md:text-4xl font-bold text-orange-400 mb-2">
-            {initialData.totalPages}
-          </div>
-          <div
-            class="absolute -inset-1 bg-orange-500/20 rounded-full blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-          >
-          </div>
-        </div>
-        <div class="text-gray-400 text-sm font-medium">Artículos totales</div>
-      </div>
+      <p class="text-base sm:text-lg mb-6 text-white/90">
+        Me enfoco en construir aplicaciones eficientes, escalables y seguras,
+        combinando lo mejor del backend y frontend para ofrecer experiencias
+        digitales sólidas y funcionales.
+      </p>
 
       <div
-        class="group text-center transform transition-all duration-300 hover:scale-110"
+        class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4"
       >
-        <div class="relative">
-          <div class="text-3xl md:text-4xl font-bold text-orange-400 mb-2">
-            {categories.length}
-          </div>
-          <div
-            class="absolute -inset-1 bg-orange-500/20 rounded-full blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-          >
-          </div>
-        </div>
-        <div class="text-gray-400 text-sm font-medium">Categorías</div>
-      </div>
-
-      <div
-        class="group text-center transform transition-all duration-300 hover:scale-110"
-      >
-        <div class="relative">
-          <div class="text-3xl md:text-4xl font-bold text-orange-400 mb-2">
-            {new Date().getFullYear() - 2020}+
-          </div>
-          <div
-            class="absolute -inset-1 bg-orange-500/20 rounded-full blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-          >
-          </div>
-        </div>
-        <div class="text-gray-400 text-sm font-medium">Años de experiencia</div>
-      </div>
-    </div>
-
-    <!-- CTA Button -->
-    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-      <button
-        onclick="const el = document.getElementById('posts-container'); if (el) el.scrollIntoView({ behavior: 'smooth' });"
-        class="group relative px-8 py-4 bg-orange-500 hover:bg-orange-600 rounded-xl text-white font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/25 overflow-hidden"
-      >
-        <span class="relative z-10 flex items-center gap-2">
-          Explorar Artículos
-          <svg
-            class="w-5 h-5 group-hover:translate-x-1 transition-transform"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M19 9l-7 7-7-7"></path>
-          </svg>
-        </span>
-        <div
-          class="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"
+        <Button
+          href="#projects"
+          variant="primary"
+          class="bg-white text-gray-900 hover:bg-white/75"
+          icon={Folder}
+          iconPosition="right"
+          iconColor="text-gray-900"
+          iconSize="w-4 h-4"
         >
-        </div>
-      </button>
-    </div>
-  </div>
+          <span class="text-gray-900">Proyectos</span>
+        </Button>
 
-  <!-- Indicador de scroll -->
-  <div
-    class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce"
-  >
+        <Button
+          href="/CV_Alexander_Polanco_Desarrollo_de_Software.pdf"
+          variant="primary"
+          class="bg-transparent hover:bg-white/10 border border-gray-500 text-white"
+          icon={ArrowDown}
+          iconPosition="left"
+          iconSize="w-5 h-5"
+        >
+          Descargar
+        </Button>
+      </div>
+
+      <div class="flex justify-center md:justify-start mt-4">
+        <SocialMedia />
+      </div>
+    </div>
+
+    <!-- Imagen -->
     <div
-      class="w-6 h-10 border-2 border-gray-400 rounded-full flex justify-center"
+      class="w-48 h-48 sm:w-64 sm:h-64 lg:w-80 lg:h-80 overflow-hidden rounded-full shadow-lg animate__animated animate__backInLeft"
     >
-      <div class="w-1 h-3 bg-gray-400 rounded-full mt-2"></div>
+      <img
+        src={meImg.src}
+        alt="Alexander Polanco"
+        class="w-full h-full object-cover"
+      />
     </div>
   </div>
 </section>
+
+<!-- 🧠 Typewriter + Scroll suave -->
+<script>
+  const words = [
+    "Full Stack Developer",
+    "Frontend Developer",
+    "Backend Specialist",
+    "React Lover",
+    "ASP.NET Expert",
+    "Software Architect",
+  ];
+  const typewriterEl = document.getElementById("typewriter")!;
+  let wordIndex = 0;
+  let charIndex = 0;
+  let isDeleting = false;
+
+  function typeEffect() {
+    const currentWord = words[wordIndex];
+    const displayed = isDeleting
+      ? currentWord.substring(0, charIndex--)
+      : currentWord.substring(0, charIndex++);
+    typewriterEl.textContent = displayed + "|";
+    if (!isDeleting && charIndex === currentWord.length + 1) {
+      setTimeout(() => (isDeleting = true), 2000);
+    } else if (isDeleting && charIndex === 0) {
+      isDeleting = false;
+      wordIndex = (wordIndex + 1) % words.length;
+    }
+    const speed = isDeleting ? 40 : 80;
+    setTimeout(typeEffect, speed);
+  }
+
+  typeEffect();
+
+  // 🧭 Scroll suave
+  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+    const anchorEl = anchor as HTMLAnchorElement;
+    anchorEl.addEventListener("click", function (e) {
+      const targetId = anchorEl.getAttribute("href");
+      if (!targetId?.startsWith("#")) return;
+
+      const target = document.querySelector(targetId);
+      if (!target) return;
+
+      e.preventDefault();
+      const offset = target.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top: offset, behavior: "smooth" });
+    });
+  });
+</script>

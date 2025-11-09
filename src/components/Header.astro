@@ -124,47 +124,106 @@ import Button from "./common/Button.astro";
   const toggle = document.getElementById("menu-toggle")!;
   const close = document.getElementById("menu-close")!;
   const menu = document.getElementById("mobile-menu")!;
-  const links = document.querySelectorAll(".mobile-link, .nav-link");
+  const links = document.querySelectorAll(".mobile-link, .nav-link")!;
+
+  // Función para verificar si estamos en una página de blog
+  function isBlogPage() {
+    const path = window.location.pathname;
+    return path === "/blog" || /^\/blog\/.+/.test(path);
+  }
+
+  // Función para activar el enlace del blog
+  function activateBlogLink() {
+    links.forEach((link) => {
+      if (link.getAttribute("href") === "/blog") {
+        link.classList.add("active");
+      } else {
+        link.classList.remove("active");
+      }
+    });
+  }
+
+  // Función para activar enlace basado en la URL actual
+  function activateCurrentPageLink() {
+    const currentPath = window.location.pathname;
+    const currentHash = window.location.hash;
+
+    // Si estamos en una página de blog, activar el enlace del blog
+    if (isBlogPage()) {
+      activateBlogLink();
+      return;
+    }
+
+    // Si estamos en la página principal con hash, usar el observer
+    if (currentPath === "/" && currentHash) {
+      // El IntersectionObserver se encargará de esto
+      return;
+    }
+
+    // Para otras páginas, activar el enlace correspondiente
+    links.forEach((link) => {
+      const linkHref = link.getAttribute("href");
+      if (
+        linkHref === currentPath ||
+        (currentPath === "/" && linkHref === "/")
+      ) {
+        link.classList.add("active");
+      } else {
+        link.classList.remove("active");
+      }
+    });
+  }
 
   // Toggle menú móvil
   toggle.addEventListener("click", () => {
     menu.classList.remove("hidden");
-    toggle.classList.add("hidden"); // Oculta hamburguesa
-    close.classList.remove("hidden"); // Muestra X
+    toggle.classList.add("hidden");
+    close.classList.remove("hidden");
   });
 
   close.addEventListener("click", () => {
     menu.classList.add("hidden");
-    toggle.classList.remove("hidden"); // Muestra hamburguesa
-    close.classList.add("hidden"); // Oculta X
+    toggle.classList.remove("hidden");
+    close.classList.add("hidden");
   });
 
   // Smooth scroll + cerrar menú al hacer clic en link
   links.forEach((link) => {
     link.addEventListener("click", (e) => {
-      menu.classList.remove("hidden");
-      close.classList.remove("hidden");
-      toggle.classList.remove("hidden");
       const targetId = link.getAttribute("data-target");
-      const isDetailPage =
-        /^\/\d+$/.test(window.location.pathname) ||
-        window.location.pathname.startsWith("/blog");
+      const href = link.getAttribute("href");
+      const isBlogLink = href === "/blog";
 
-      if (targetId && targetId.startsWith("#") && !isDetailPage) {
+      // Si es un enlace del blog, activarlo inmediatamente
+      if (isBlogLink) {
+        links.forEach((l) => l.classList.remove("active"));
+        link.classList.add("active");
+      }
+
+      // Cerrar menú móvil si está abierto
+      if (!link.classList.contains("nav-link")) {
+        menu.classList.add("hidden");
+        toggle.classList.remove("hidden");
+        close.classList.add("hidden");
+      }
+
+      // Manejar smooth scroll solo para enlaces internos en la página principal
+      if (
+        targetId &&
+        targetId.startsWith("#") &&
+        window.location.pathname === "/"
+      ) {
         e.preventDefault();
         const el = document.querySelector(targetId);
         if (el) {
-          const offset = el.getBoundingClientRect().top + window.scrollY - 80; // Ajusta según altura header
+          const offset = el.getBoundingClientRect().top + window.scrollY - 80;
           window.scrollTo({ top: offset, behavior: "smooth" });
-        }
-        // Cerrar menú móvil si está abierto
-        if (!link.classList.contains("nav-link")) {
-          menu.classList.add("hidden");
         }
       }
     });
   });
 
+  // Scroll effect para el header
   window.addEventListener("scroll", () => {
     if (window.scrollY > 50) {
       header.classList.add(
@@ -185,23 +244,39 @@ import Button from "./common/Button.astro";
     }
   });
 
-  // IntersectionObserver para resaltar sección activa
+  // IntersectionObserver para resaltar sección activa (solo en página principal)
   const observer = new IntersectionObserver(
     (entries) => {
+      // Solo aplicar en la página principal que no sea blog
+      if (window.location.pathname !== "/" || isBlogPage()) return;
+
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           links.forEach((l) => l.classList.remove("active"));
           const active = document.querySelector(
             `[data-target="#${entry.target.id}"]`
           );
-          active?.classList.add("active");
+          if (active) {
+            active.classList.add("active");
+          }
         }
       });
     },
     { threshold: 0.4 }
   );
 
-  document
-    .querySelectorAll("section[id]")
-    .forEach((section) => observer.observe(section));
+  // Solo observar secciones si estamos en la página principal
+  if (window.location.pathname === "/" && !isBlogPage()) {
+    document
+      .querySelectorAll("section[id]")
+      .forEach((section) => observer.observe(section));
+  }
+
+  // Activar el enlace correcto al cargar la página
+  document.addEventListener("DOMContentLoaded", () => {
+    activateCurrentPageLink();
+  });
+
+  // También activar cuando cambia la URL (navegación SPA)
+  window.addEventListener("popstate", activateCurrentPageLink);
 </script>
