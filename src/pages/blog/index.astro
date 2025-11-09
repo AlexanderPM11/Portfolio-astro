@@ -1,7 +1,8 @@
 ---
-import { ChevronLeft, ChevronRight, Search, Filter } from "lucide-astro";
-import { fetchCategories, fetchPosts } from "../../services/wordpress";
+import { Filter } from "lucide-astro";
 import Layout from "../../layouts/Layout.astro";
+import { fetchCategories, fetchPosts } from "../../services/blog/BlogService";
+import Hero from "../../components/blog/Hero.astro";
 
 // Fetch inicial de datos
 const [categories, initialData] = await Promise.all([
@@ -14,48 +15,7 @@ const totalPosts = initialData.totalItem;
 
 <Layout>
   <!-- Hero Section -->
-  <section
-    class="relative min-h-[50vh] bg-linear-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center overflow-hidden"
-  >
-    <div
-      class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--tw-gradient-stops))] from-orange-500/10 via-transparent to-transparent"
-    >
-    </div>
-    <div
-      class="absolute inset-0 bg-linear-to-r from-gray-900/90 to-gray-900/80"
-    >
-    </div>
-
-    <div class="relative z-10 max-w-4xl mx-auto px-4 text-center">
-      <h1
-        class="text-5xl md:text-6xl font-bold mb-6 bg-linear-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent leading-tight"
-      >
-        Mi <span
-          class="bg-linear-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent"
-          >Blog</span
-        >
-      </h1>
-      <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed">
-        Descubre artículos, tutoriales y reflexiones sobre desarrollo web,
-        tecnología y mejores prácticas en programación.
-      </p>
-
-      <div class="flex flex-wrap justify-center gap-8 mb-8">
-        <div class="text-center">
-          <div class="text-2xl font-bold text-orange-400">
-            {initialData.totalPages}
-          </div>
-          <div class="text-gray-400 text-sm">Artículos totales</div>
-        </div>
-        <div class="text-center">
-          <div class="text-2xl font-bold text-orange-400">
-            {categories.length}
-          </div>
-          <div class="text-gray-400 text-sm">Categorías</div>
-        </div>
-      </div>
-    </div>
-  </section>
+  <Hero initialData={initialData} categories={categories} />
 
   <!-- Contenido Dinámico -->
   <section class="bg-gray-900 py-12 px-4">
@@ -246,6 +206,8 @@ const totalPosts = initialData.totalItem;
 </script>
 
 <script>
+  import { fetchPosts } from "../../services/blog/BlogService";
+
   // Datos iniciales pasados desde Astro
   const categories = window.__BLOG_CATEGORIES__;
   const initialData = window.__BLOG_INITIAL_DATA__;
@@ -591,7 +553,6 @@ const totalPosts = initialData.totalItem;
 
     try {
       // Importar dinámicamente la función fetchPosts
-      const { fetchPosts } = await import("../../services/wordpress.js");
       const data = await fetchPosts(category, page);
 
       state.posts = data.posts;
@@ -662,3 +623,4 @@ const totalPosts = initialData.totalItem;
 
   //
 </script>
+

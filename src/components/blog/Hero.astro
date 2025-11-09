@@ -1,6 +1,6 @@
 ---
 interface Props {
-  initialData: { totalPages: number };
+  initialData: any;
   categories: any[];
 }
 
@@ -11,8 +11,27 @@ const { initialData, categories } = Astro.props;
   class="relative min-h-screen bg-linear-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center overflow-hidden"
 >
   <!-- Fondo con efectos más dinámicos -->
+  <div class="absolute inset-0">
+    <!-- Imagen de fondo principal -->
+    <img
+      src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+      alt="Background"
+      class="w-full h-full object-cover"
+    />
+
+    <!-- Overlay gradiente para mejor legibilidad -->
+    <div
+      class="absolute inset-0 bg-linear-to-br from-gray-900/90 via-gray-900/80 to-gray-900/95"
+    >
+    </div>
+
+    <!-- Overlay con patrón sutil -->
+    <div
+      class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--tw-gradient-stops))] from-orange-500/5 via-transparent to-transparent"
+    >
+    </div>
+  </div>
   <div class="absolute inset-0 overflow-hidden">
-    <!-- Gradientes animados -->
     <div
       class="absolute -top-40 -left-40 w-80 h-80 bg-orange-500/20 rounded-full blur-3xl animate-pulse"
     >
@@ -45,7 +64,7 @@ const { initialData, categories } = Astro.props;
     </div>
   </div>
 
-  <!-- Efecto de partículas (simulado con CSS) -->
+  <!-- Efecto de partículas -->
   <div class="absolute inset-0 opacity-30">
     <div
       class="particle absolute top-10 left-10 w-1 h-1 bg-orange-400 rounded-full animate-float"
@@ -65,7 +84,7 @@ const { initialData, categories } = Astro.props;
     </div>
   </div>
 
-  <!-- Capa de overlay para mejor contraste -->
+  <!-- Capa de overlay -->
   <div
     class="absolute inset-0 bg-linear-to-r from-gray-900/80 via-gray-900/70 to-gray-900/80"
   >
@@ -83,7 +102,7 @@ const { initialData, categories } = Astro.props;
       >
     </div>
 
-    <!-- Título principal -->
+    <!-- Título -->
     <div class="mb-8">
       <h1
         class="text-5xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tight"
@@ -100,7 +119,6 @@ const { initialData, categories } = Astro.props;
         </span>
       </h1>
 
-      <!-- Línea decorativa -->
       <div
         class="w-24 h-1 bg-linear-to-r from-orange-500 to-purple-500 mx-auto rounded-full mb-8"
       >
@@ -111,14 +129,12 @@ const { initialData, categories } = Astro.props;
     <p
       class="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed font-light"
     >
-      Sumérgete en artículos, <span class="text-orange-400 font-medium"
-        >tutoriales prácticos</span
-      >
-      y reflexiones sobre <span class="text-white font-medium"
-        >desarrollo web</span
-      >, tecnologías emergentes y <span class="text-white font-medium"
-        >mejores prácticas</span
-      > en programación.
+      Sumérgete en artículos,
+      <span class="text-orange-400 font-medium">tutoriales prácticos</span> y reflexiones
+      sobre
+      <span class="text-white font-medium">desarrollo web</span>, tecnologías
+      emergentes y
+      <span class="text-white font-medium">mejores prácticas</span> en programación.
     </p>
 
     <!-- Estadísticas -->
@@ -169,11 +185,10 @@ const { initialData, categories } = Astro.props;
       </div>
     </div>
 
-    <!-- CTA Button -->
+    <!-- Botón CTA -->
     <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
       <button
-        onclick="const el = document.getElementById('posts-container'); if (el) el.scrollIntoView({ behavior: 'smooth' });"
-        class="group relative px-8 py-4 bg-orange-500 hover:bg-orange-600 rounded-xl text-white font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/25 overflow-hidden"
+        class="scrollToPosts cursor-pointer group relative px-8 py-4 bg-orange-500 hover:bg-orange-600 rounded-xl text-white font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/25 overflow-hidden"
       >
         <span class="relative z-10 flex items-center gap-2">
           Explorar Artículos
@@ -200,7 +215,7 @@ const { initialData, categories } = Astro.props;
 
   <!-- Indicador de scroll -->
   <div
-    class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce"
+    class="scrollToPosts cursor-pointer absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce"
   >
     <div
       class="w-6 h-10 border-2 border-gray-400 rounded-full flex justify-center"
@@ -209,3 +224,18 @@ const { initialData, categories } = Astro.props;
     </div>
   </div>
 </section>
+
+<!-- Script para scroll suave -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.querySelectorAll(".scrollToPosts");
+    if (btn) {
+      btn.forEach((button) => {
+        button.addEventListener("click", () => {
+          const el = document.getElementById("posts-container");
+          if (el) el.scrollIntoView({ behavior: "smooth" });
+        });
+      });
+    }
+  });
+</script>
