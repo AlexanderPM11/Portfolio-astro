@@ -10,6 +10,7 @@ import {
   Layout, // WordPress
   Sliders, // Tailwind CSS
 } from "lucide-astro";
+import SectionHeading from "./common/SectionHeading.astro";
 
 interface Skill {
   name: string;
@@ -64,17 +65,14 @@ const skillFilters = [
 ];
 ---
 
-<section
-  id="skills"
-  class="py-16 px-4 bg-[#0B0F1A] text-white relative z-10"
->
+<section id="skills" class="py-16 px-4 bg-[#0B0F1A] text-white relative z-10">
   <div class="max-w-6xl mx-auto text-center">
-    <h2 class="text-3xl font-bold mb-2">
-      Habilidades <span class="text-orange-500">Técnica</span>
-    </h2>
-    <p class="max-w-xl mx-auto text-gray-400 font-medium">
-      Tecnologías y herramientas que domino.
-    </p>
+    <SectionHeading
+      label="Tecnologías y herramientas"
+      title="Habilidades"
+      highlight="Técnica"
+      description="Conjunto de tecnologías y herramientas que utilizo para diseñar, desarrollar y optimizar soluciones digitales."
+    />
 
     <!-- Tabs -->
     <div

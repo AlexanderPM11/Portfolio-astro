@@ -1,6 +1,7 @@
 ---
 import { Send, MessageCircle, User, Mail, MapPin, Github } from "lucide-astro";
 import { sendMessage } from "../util/sendMessage";
+import SectionHeading from "./common/SectionHeading.astro";
 ---
 
 <section
@@ -19,24 +20,12 @@ import { sendMessage } from "../util/sendMessage";
 
   <div class="max-w-7xl mx-auto relative z-10">
     <!-- Header de sección -->
-    <div class="text-center mb-20">
-      <div
-        class="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-linear-to-r from-orange-500/10 to-orange-600/10 border border-orange-500/20 text-orange-300 text-base font-medium mb-6 backdrop-blur-sm"
-      >
-        <MessageCircle class="w-5 h-5" />
-        <span>Disponible para Proyectos</span>
-      </div>
-      <h2 class="text-5xl font-bold text-white mb-6">
-        Trabajemos <span
-          class="text-transparent bg-clip-text bg-linear-to-r from-orange-400 to-orange-600"
-          >Juntos</span
-        >
-      </h2>
-      <p class="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
-        ¿Tienes una idea innovadora? Hablemos sobre cómo puedo ayudarte a
-        hacerla realidad.
-      </p>
-    </div>
+    <SectionHeading
+      label="Disponible para Proyectos"
+      title="Trabajemos"
+      highlight=" Juntos"
+      description="¿Tienes una idea innovadora? Hablemos sobre cómo puedo ayudarte a hacerla realidad."
+    />
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
       <!-- Información de Contacto -->

@@ -2,6 +2,7 @@
 import { Download, Mail, Award, Code, Target } from "lucide-astro";
 import imgAbout01 from "../assets/img/about04-CJBXsyAU.jpg";
 import imgAbout02 from "../assets/img/about02-BIKhex6S.jpg";
+import SectionHeading from "./common/SectionHeading.astro";
 ---
 
 <!-- Sección About Mejorada -->
@@ -21,23 +22,13 @@ import imgAbout02 from "../assets/img/about02-BIKhex6S.jpg";
 
   <div class="max-w-7xl mx-auto relative z-10">
     <!-- Header de sección -->
-    <div class="text-center mb-16">
-      <div
-        class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-sm font-medium mb-4"
-      >
-        <Award class="w-4 h-4" />
-        Desarrollador Full Stack
-      </div>
-      <h2 class="text-5xl font-bold text-white mb-4">
-        Conoce <span
-          class="text-transparent bg-clip-text bg-linear-to-r from-orange-400 to-orange-600"
-          >Mi Trayectoria</span
-        >
-      </h2>
-      <p class="text-xl text-gray-300 max-w-2xl mx-auto">
-        Pasión por el código, dedicación a la excelencia y compromiso con la
-        innovación
-      </p>
+    <div class="flex flex-col w-full items-center text-center">
+      <SectionHeading
+        label="Conoce Sobre Mí"
+        title="Conoce Sobre Mí"
+        highlight="Mi Trayectoria"
+        description="Pasión por el código, dedicación a la excelencia y compromiso con la innovación"
+      />
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">

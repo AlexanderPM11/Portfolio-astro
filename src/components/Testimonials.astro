@@ -1,6 +1,7 @@
 ---
 import { Quote, ChevronLeft, ChevronRight, Star, Award } from "lucide-astro";
 import { testimonials } from "../util/constants/Testimonials";
+import SectionHeading from "./common/SectionHeading.astro";
 ---
 
 <section id="testimonials" class="py-28 px-6 bg-linear-to-br from-gray-900 via-gray-950 to-black text-white relative overflow-hidden">
@@ -11,18 +12,12 @@ import { testimonials } from "../util/constants/Testimonials";
   
   <div class="max-w-5xl mx-auto relative z-10">
     <!-- Header de sección -->
-    <div class="text-center mb-20">
-      <div class="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-linear-to-r from-orange-500/10 to-orange-600/10 border border-orange-500/20 text-orange-300 text-base font-medium mb-6 backdrop-blur-sm">
-        <Award class="w-5 h-5" />
-        <span>Testimonios Verificados</span>
-      </div>
-      <h2 class="text-5xl font-bold text-white mb-6 leading-tight">
-        Confían en <span class="text-transparent bg-clip-text bg-linear-to-r from-orange-400 via-orange-500 to-orange-600">Mi Trabajo</span>
-      </h2>
-      <p class="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
-        Experiencias reales de colaboradores y clientes que han trabajado conmigo
-      </p>
-    </div>
+     <SectionHeading
+        label="Testimonios Verificados"
+        title="Confían en"
+        highlight="Mí Trabajo"
+        description="Experiencias reales de colaboradores y clientes que han trabajado conmigo"
+      />    
 
     <!-- Contenedor principal -->
     <div class="relative">
