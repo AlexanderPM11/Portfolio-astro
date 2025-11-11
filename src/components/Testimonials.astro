@@ -22,7 +22,7 @@ import SectionHeading from "./common/SectionHeading.astro";
     <!-- Contenedor principal -->
     <div class="relative">
       <!-- Testimonios -->
-      <div class="relative min-h-[480px] mb-16" id="testimonial-container">
+      <div class="relative min-h-[380px] mb-5" id="testimonial-container">
         {testimonials.map((item, i) => (
           <div
             class={`testimonial-slide absolute inset-0 transition-all duration-700 ease-out transform ${
@@ -57,13 +57,13 @@ import SectionHeading from "./common/SectionHeading.astro";
 
                   <!-- Texto del testimonio -->
                   <blockquote>
-                    <p class="text-2xl lg:text-3xl leading-relaxed text-white font-light mb-10 italic tracking-tight">
+                    <p class="text-[18px] leading-relaxed text-white font-light mb-10 italic tracking-tight">
                       "{item.quote}"
                     </p>
                   </blockquote>
 
                   <!-- Información de la persona -->
-                  <footer class="flex items-center gap-5 pt-8 border-t border-white/10">
+                  <footer class="flex items-center gap-5 border-t border-white/10">
                     <div class="relative">
                       <div class="w-16 h-16 bg-linear-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-orange-500/25">
                         {item.name.split(' ').map(n => n[0]).join('')}
