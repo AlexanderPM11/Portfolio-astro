@@ -120,9 +120,8 @@ const formatDate = (dateString: string) => {
       <!-- Title -->
       <h1
         class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8 leading-tight tracking-tight"
-      >
-        {post.title.rendered}
-      </h1>
+        set:html={post.title.rendered}
+      />
 
       <!-- Excerpt -->
       {
