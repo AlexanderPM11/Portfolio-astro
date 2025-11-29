@@ -111,10 +111,13 @@ const formatDate = (dateString: string) => {
       <!-- Excerpt -->
       {
         post.description && (
-          <p class="text-base text-gray-400 mb-10">
-            {post.description.rendered.replace(/<[^>]*>/g, "").slice(0, 250)}
-            {post.description.rendered.length > 250 ? "..." : ""}
-          </p>
+          <p
+            class="text-base text-gray-400 mb-10"
+            set:html={post.description.rendered
+              .replace(/<[^>]*>/g, "")
+              .slice(0, 250)}
+            set:html={post.description.rendered.length > 250 ? "..." : ""}
+          />
         )
       }
       <div class="flex flex-wrap items-center gap-4 mb-8">
