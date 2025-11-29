@@ -97,7 +97,7 @@ const formatDate = (dateString: string) => {
           >Proyectos</a
         >
         <span class="text-gray-600">/</span>
-        <span class="text-orange-400 truncate">{post.title.rendered}</span>
+        <span class="text-orange-400 truncate" set:html={post.title.rendered} />
       </nav>
 
       <!-- Meta Information -->

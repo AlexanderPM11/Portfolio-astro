@@ -185,7 +185,11 @@
     margin-top: 2rem;
     margin-bottom: 1rem;
 }
-
+.project-content h2 {
+    font-size: 1rem;
+    line-height: 2.25rem;
+    font-weight: 700;
+}
 .project-content p {
     color: #d1d5db;
     margin-bottom: 1rem;
