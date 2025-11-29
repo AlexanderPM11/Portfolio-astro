@@ -9,7 +9,7 @@ const API_URL = import.meta.env.PUBLIC_WORDPRESS_API_URL;
  * Obtiene las rutas dinámicas para los proyectos desde la API de WordPress.
  */
 export async function getProjectPaths() {
-  const posts = await get<ProjectPost[]>("/?rest_route=/wp/v2/posts");
+  const posts = await GetProjects();
 
   return posts.map((post) => ({
     params: { id: post.id.toString() },

@@ -1,4 +1,5 @@
 import type { BlogPost, Category } from "../../interface/Blog/BlogInterface";
+import type { ProjectPost } from "../../interface/Project/ProjectInterface";
 import { get } from "../apiClient";
 
 
@@ -7,6 +8,14 @@ const API_URL = import.meta.env.PUBLIC_WORDPRESS_API_URL;
 function stripHtml(html: string | undefined): string {
     if (!html) return "";
     return html.replace(/<[^>]*>?/gm, "").trim();
+}
+
+export async function getPostPaths() {
+  const posts = await get<ProjectPost[]>("/?rest_route=/wp/v2/posts");
+
+  return posts.map((post) => ({
+    params: { id: post.id.toString() },
+  }));
 }
 
 
