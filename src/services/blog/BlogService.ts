@@ -11,11 +11,14 @@ function stripHtml(html: string | undefined): string {
 }
 
 export async function getPostPaths() {
-  const posts = await get<ProjectPost[]>("/?rest_route=/wp/v2/posts");
+        const url = API_URL.replace("?rest_route=/wp/v2/posts", "/?rest_route=/wp/v2/posts") + "&per_page=100";
 
-  return posts.map((post) => ({
-    params: { id: post.id.toString() },
-  }));
+    const posts = await get<ProjectPost[]>(url);
+    console.log("Fetched posts for paths:", posts.map(p => p.id));
+
+    return posts.map((post) => ({
+        params: { id: post.id.toString() },
+    }));
 }
 
 
