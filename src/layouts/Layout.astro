@@ -67,6 +67,125 @@ import "../styles/global.css";
       s0.parentNode.insertBefore(s1, s0);
     })();
   </script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const images = document.querySelectorAll(".project-content img");
+
+      if (images.length === 0) return;
+
+      // Crear modal
+      const modal = document.createElement("div");
+      modal.className =
+        "fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-[999] opacity-0 pointer-events-none transition-opacity duration-300";
+      modal.innerHTML = `
+      <div id="lightbox-container" 
+        class="relative max-w-5xl max-h-[90vh] p-4 rounded-2xl border border-white/10 
+               shadow-2xl bg-slate-900/40 backdrop-blur-xl transition-all duration-500 scale-95">
+        
+        <img id="lightbox-img" 
+             class="rounded-xl shadow-2xl max-h-[80vh] object-contain select-none transition-transform duration-300 ease-in-out" />
+
+        <button id="close-lightbox"
+          class="absolute top-4 right-4 bg-black/60 hover:bg-black/80 text-white
+                 p-3 rounded-full shadow-lg transition-all duration-200 hover:scale-110">
+          ✕
+        </button>
+      </div>
+    `;
+      document.body.appendChild(modal);
+
+      const modalImg = modal.querySelector("#lightbox-img") as HTMLImageElement;
+      const closeBtn = modal.querySelector(
+        "#close-lightbox"
+      ) as HTMLButtonElement;
+      const container = modal.querySelector(
+        "#lightbox-container"
+      ) as HTMLDivElement;
+
+      if (!modalImg || !closeBtn || !container) return;
+
+      let scale = 1;
+      let isDragging = false;
+      let startX = 0;
+      let startY = 0;
+      let translateX = 0;
+      let translateY = 0;
+
+      // ---- Abrir modal ----
+      images.forEach((img) => {
+        img.classList.add("cursor-zoom-in");
+
+        img.addEventListener("click", () => {
+          modalImg.src = (img as HTMLImageElement).src;
+
+          scale = 1;
+          translateX = 0;
+          translateY = 0;
+          modalImg.style.transform = "scale(1) translate(0, 0)";
+
+          modal.classList.remove("pointer-events-none");
+          modal.classList.add("opacity-100");
+          container.classList.remove("scale-95");
+          container.classList.add("scale-100");
+        });
+      });
+
+      // ---- Cerrar modal ----
+      const closeModal = () => {
+        modal.classList.remove("opacity-100");
+        modal.classList.add("pointer-events-none");
+        container.classList.add("scale-95");
+      };
+
+      closeBtn.addEventListener("click", closeModal);
+
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) closeModal();
+      });
+
+      // ---- Escape para cerrar ----
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeModal();
+      });
+
+      // ---- Zoom con rueda ----
+      modalImg.addEventListener("wheel", (e: WheelEvent) => {
+        e.preventDefault();
+
+        scale += e.deltaY * -0.001;
+        scale = Math.min(Math.max(1, scale), 4);
+
+        modalImg.style.transform = `scale(${scale}) translate(${translateX}px, ${translateY}px)`;
+      });
+
+      // ---- Drag para mover imagen cuando está ampliada ----
+      modalImg.addEventListener("mousedown", (e) => {
+        if (scale === 1) return;
+
+        isDragging = true;
+        startX = e.clientX - translateX;
+        startY = e.clientY - translateY;
+        modalImg.classList.add("cursor-grabbing");
+      });
+
+      document.addEventListener("mouseup", () => {
+        isDragging = false;
+        modalImg.classList.remove("cursor-grabbing");
+      });
+
+      document.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+
+        translateX = e.clientX - startX;
+        translateY = e.clientY - startY;
+
+        modalImg.style.transform = `scale(${scale}) translate(${translateX}px, ${translateY}px)`;
+      });
+    });
+  </script>
+
+  
   <!--End of Tawk.to Script-->
 </html>
 

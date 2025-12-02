@@ -63,6 +63,12 @@ export const techIcons: Record<string, TechIcon> = {
     color: "#F7DF1E",
     title: "JavaScript"
   },
+  JQuery: {
+    name: "simple-icons:jquery",
+    class: "text-blue-400 hover:text-blue-300",
+    color: "#0769AD",
+    title: "jQuery"
+  },
   SQL: {
     name: "mdi:database",
     class: "text-gray-400 hover:text-gray-300",
