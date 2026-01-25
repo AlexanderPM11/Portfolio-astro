@@ -51,3 +51,48 @@ export const sendMessage = async (
         return { success: false, message: "Hubo un error al enviar el mensaje." };
     }
 };
+
+export type VisitorData = {
+    ip: string;
+    city: string;
+    region: string;
+    country: string;
+    time: string;
+    userAgent: string;
+    language: string;
+};
+
+export const sendVisitorAlert = async (data: VisitorData): Promise<boolean> => {
+    const templateIdVisitor = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID_VISITOR;
+
+    if (!serviceId || !templateIdVisitor || !publicKey) {
+        console.error("Faltan variables de entorno para Visitor Alert.");
+        return false;
+    }
+
+    try {
+        await emailjs.send(
+            serviceId,
+            templateIdVisitor,
+            {
+                title: "Nueva Visita Detectada",
+                name: "System Visitor",
+                email: "visitor@portfolio.com",
+                message: `Se ha detectado una nueva visita desde ${data.city}, ${data.country}.`,
+                
+                // Mapeo exacto a las variables de tu template HTML
+                visitante_ip: data.ip,
+                visitante_pais: data.country,
+                visitante_region: data.region,
+                visitante_ciudad: data.city,
+                user_agent: data.userAgent,
+                timestamp: data.time
+            },
+            publicKey
+        );
+        return true;
+    } catch (error) {
+        console.error("Error enviando alerta de visita:", error);
+        return false;
+    }
+};

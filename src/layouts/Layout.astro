@@ -69,6 +69,11 @@ import "../styles/global.css";
   </script>
 
   <script>
+    import { handleVisitorNotification } from "../util/visitorTracking";
+
+    // Ejecutar cuando el DOM esté listo
+    document.addEventListener("DOMContentLoaded", handleVisitorNotification);
+
     document.addEventListener("DOMContentLoaded", () => {
       const images = document.querySelectorAll(".project-content img");
 
@@ -97,10 +102,10 @@ import "../styles/global.css";
 
       const modalImg = modal.querySelector("#lightbox-img") as HTMLImageElement;
       const closeBtn = modal.querySelector(
-        "#close-lightbox"
+        "#close-lightbox",
       ) as HTMLButtonElement;
       const container = modal.querySelector(
-        "#lightbox-container"
+        "#lightbox-container",
       ) as HTMLDivElement;
 
       if (!modalImg || !closeBtn || !container) return;
@@ -185,7 +190,6 @@ import "../styles/global.css";
     });
   </script>
 
-  
   <!--End of Tawk.to Script-->
 </html>
 
