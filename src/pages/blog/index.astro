@@ -29,22 +29,37 @@ const totalPosts = initialData.totalItem;
           <!--  -->
           <div class="flex justify-center items-center gap-3 w-full">
             <Filter class="w-5 h-5 text-orange-400" />
-            <h3 class="text-lg font-semibold text-white">
-              Filtrar por Categoría
+            <h3
+              class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-orange-200"
+            >
+              Categorías
             </h3>
           </div>
           <!--  -->
 
           <div
             id="categories-container"
-            class="flex justify-center flex-wrap gap-3"
+            class="flex flex-wrap justify-center gap-3 p-4 bg-gray-900/40 rounded-3xl"
           >
             <button
               data-category="all"
-              class="cursor-pointer category-btn inline-flex items-center gap-2 px-4 py-2 rounded-full border transition-all duration-300 bg-orange-500 border-orange-500 text-white shadow-lg shadow-orange-500/25"
+              class="category-btn group relative px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ease-out border border-transparent overflow-hidden active-category"
             >
-              <span>Todas</span>
-              <span class="text-sm opacity-75">({totalPosts})</span>
+              <div
+                class="absolute inset-0 bg-gradient-to-r from-orange-600 to-orange-500 opacity-100 transition-opacity duration-300"
+              >
+              </div>
+              <div
+                class="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              >
+              </div>
+              <span class="relative z-10 text-white flex items-center gap-2">
+                Todos
+                <span
+                  class="bg-black/20 px-2 py-0.5 rounded-full text-xs text-white/90"
+                  >{totalPosts}</span
+                >
+              </span>
             </button>
 
             {
@@ -53,10 +68,15 @@ const totalPosts = initialData.totalItem;
                 .map((cat) => (
                   <button
                     data-category={cat.slug}
-                    class="cursor-pointer category-btn inline-flex items-center gap-2 px-4 py-2 rounded-full border transition-all duration-300 bg-gray-700/50 border-gray-600 text-gray-300 hover:bg-gray-600 hover:border-gray-500"
+                    class="category-btn group relative px-6 py-2.5 rounded-full text-sm font-medium text-gray-400 transition-all duration-300 ease-out border border-gray-700/50 hover:border-orange-500/30 hover:text-white bg-gray-800/40"
                   >
-                    <span>{cat.name}</span>
-                    <span class="text-sm opacity-75">({cat.count})</span>
+                    <div class="absolute inset-0 bg-gradient-to-r from-orange-600 to-orange-500 opacity-0 transition-opacity duration-300" />
+                    <span class="relative z-10 flex items-center gap-2">
+                      {cat.name}
+                      <span class="bg-gray-700/50 group-hover:bg-black/20 px-2 py-0.5 rounded-full text-xs transition-colors duration-300">
+                        {cat.count}
+                      </span>
+                    </span>
                   </button>
                 ))
             }
@@ -267,7 +287,7 @@ const totalPosts = initialData.totalItem;
 
     // Múltiples posibles nombres para la fecha
     const date = new Date(
-      post.date || post.published || Date.now()
+      post.date || post.published || Date.now(),
     ).toLocaleDateString("es-ES", {
       year: "numeric",
       month: "long",
@@ -356,7 +376,7 @@ const totalPosts = initialData.totalItem;
       elements.pagination.classList.add("hidden");
 
       const categoryName = categories.find(
-        (cat: any) => cat.slug === state.currentCategory
+        (cat: any) => cat.slug === state.currentCategory,
       )?.name;
       elements.emptyMessage.textContent =
         state.currentCategory === "all"
@@ -392,7 +412,7 @@ const totalPosts = initialData.totalItem;
     // Actualizar info de categoría
     if (state.currentCategory !== "all") {
       const category = categories.find(
-        (cat: any) => cat.slug === state.currentCategory
+        (cat: any) => cat.slug === state.currentCategory,
       );
       const categoryName = category?.name || state.currentCategory;
       elements.categoryInfo.innerHTML = ` en <span class="text-orange-400 font-semibold">${categoryName}</span>`;
@@ -423,27 +443,27 @@ const totalPosts = initialData.totalItem;
       elements.prevBtn.classList.add(
         "pointer-events-none",
         "text-gray-600",
-        "border-gray-700"
+        "border-gray-700",
       );
       elements.prevBtn.classList.remove(
         "text-white",
         "border-gray-600",
         "hover:bg-orange-500",
         "hover:border-orange-500",
-        "hover:scale-105"
+        "hover:scale-105",
       );
     } else {
       elements.prevBtn.classList.remove(
         "pointer-events-none",
         "text-gray-600",
-        "border-gray-700"
+        "border-gray-700",
       );
       elements.prevBtn.classList.add(
         "text-white",
         "border-gray-600",
         "hover:bg-orange-500",
         "hover:border-orange-500",
-        "hover:scale-105"
+        "hover:scale-105",
       );
     }
 
@@ -451,27 +471,27 @@ const totalPosts = initialData.totalItem;
       elements.nextBtn.classList.add(
         "pointer-events-none",
         "text-gray-600",
-        "border-gray-700"
+        "border-gray-700",
       );
       elements.nextBtn.classList.remove(
         "text-white",
         "border-gray-600",
         "hover:bg-orange-500",
         "hover:border-orange-500",
-        "hover:scale-105"
+        "hover:scale-105",
       );
     } else {
       elements.nextBtn.classList.remove(
         "pointer-events-none",
         "text-gray-600",
-        "border-gray-700"
+        "border-gray-700",
       );
       elements.nextBtn.classList.add(
         "text-white",
         "border-gray-600",
         "hover:bg-orange-500",
         "hover:border-orange-500",
-        "hover:scale-105"
+        "hover:scale-105",
       );
     }
   }
@@ -553,7 +573,8 @@ const totalPosts = initialData.totalItem;
 
     try {
       // Importar dinámicamente la función fetchPosts
-      const data = await fetchPosts(category, page);
+      // Pasamos 'categories' para evitar re-fetching
+      const data = await fetchPosts(category, page, 12, categories);
 
       state.posts = data.posts;
       state.totalPages = data.totalPages;
@@ -586,12 +607,40 @@ const totalPosts = initialData.totalItem;
   // Función para cambiar de categoría
   function changeCategory(category: any) {
     document.querySelectorAll<HTMLElement>(".category-btn").forEach((btn) => {
+      const gradient = btn.querySelector("div:first-child"); // Primer div es el gradiente de fondo
+
       if (btn.dataset.category === category) {
-        btn.className =
-          "category-btn inline-flex items-center gap-2 px-4 py-2 rounded-full border transition-all duration-300 bg-orange-500 border-orange-500 text-white shadow-lg shadow-orange-500/25";
+        // Active state
+        btn.classList.remove(
+          "text-gray-400",
+          "bg-gray-800/40",
+          "border-gray-700/50",
+        );
+        btn.classList.add(
+          "text-white",
+          "border-transparent",
+          "active-category",
+        );
+        if (gradient) {
+          gradient.classList.remove("opacity-0");
+          gradient.classList.add("opacity-100");
+        }
       } else {
-        btn.className =
-          "category-btn inline-flex items-center gap-2 px-4 py-2 rounded-full border transition-all duration-300 bg-gray-700/50 border-gray-600 text-gray-300 hover:bg-gray-600 hover:border-gray-500";
+        // Inactive state
+        btn.classList.add(
+          "text-gray-400",
+          "bg-gray-800/40",
+          "border-gray-700/50",
+        );
+        btn.classList.remove(
+          "text-white",
+          "border-transparent",
+          "active-category",
+        );
+        if (gradient) {
+          gradient.classList.add("opacity-0");
+          gradient.classList.remove("opacity-100");
+        }
       }
     });
 
@@ -610,10 +659,10 @@ const totalPosts = initialData.totalItem;
   });
 
   elements.prevBtn.addEventListener("click", () =>
-    changePage(state.currentPage - 1)
+    changePage(state.currentPage - 1),
   );
   elements.nextBtn.addEventListener("click", () =>
-    changePage(state.currentPage + 1)
+    changePage(state.currentPage + 1),
   );
   elements.clearFilter.addEventListener("click", () => changeCategory("all"));
   elements.viewAllBtn.addEventListener("click", () => changeCategory("all"));
@@ -623,4 +672,3 @@ const totalPosts = initialData.totalItem;
 
   //
 </script>
-

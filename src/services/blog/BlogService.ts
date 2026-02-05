@@ -34,9 +34,12 @@ export async function fetchCategories(): Promise<Category[]> {
     return [{ id: 0, name: "Todos", slug: "all", count: 0 }, ...validCategories];
 }
 
-export async function fetchPosts(categorySlug = "all", page = 1, perPage = 6): Promise<{ posts: BlogPost[]; totalPages: number, totalItem: number }> {
+export async function fetchPosts(categorySlug = "all", page = 1, perPage = 12, knownCategories: Category[] | null = null): Promise<{ posts: BlogPost[]; totalPages: number, totalItem: number }> {
     let url = `${API_URL}&_embed&per_page=${perPage}&page=${page}`;
-    const resCategories = await fetchCategories();
+    
+    // Si ya tenemos las categorías, las usamos. Si no, las buscamos.
+    const resCategories = knownCategories || await fetchCategories();
+    
     const projectsCat = resCategories.find((c) => c.slug === "projects");
 
     if (projectsCat) {
