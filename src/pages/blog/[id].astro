@@ -122,11 +122,17 @@ const formatDate = (dateString: string) => {
       }
       <div class="flex flex-wrap items-center gap-4 mb-8">
         {
-          post.category && (
-            <span class="px-3 py-1 bg-orange-500/20 text-orange-400 rounded-full text-sm font-medium border border-orange-500/30">
-              {post.category}
-            </span>
-          )
+          post.categories && post.categories.length > 0
+            ? post.categories.map((cat) => (
+                <span class="px-3 py-1 bg-orange-500/20 text-orange-400 rounded-full text-sm font-medium border border-orange-500/30">
+                  {cat}
+                </span>
+              ))
+            : post.category && (
+                <span class="px-3 py-1 bg-orange-500/20 text-orange-400 rounded-full text-sm font-medium border border-orange-500/30">
+                  {post.category}
+                </span>
+              )
         }
       </div>
     </div>

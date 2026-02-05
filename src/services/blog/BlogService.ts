@@ -14,7 +14,6 @@ export async function getPostPaths() {
         const url = API_URL.replace("?rest_route=/wp/v2/posts", "/?rest_route=/wp/v2/posts") + "&per_page=100";
 
     const posts = await get<ProjectPost[]>(url);
-    console.log("Fetched posts for paths:", posts.map(p => p.id));
 
     return posts.map((post) => ({
         params: { id: post.id.toString() },

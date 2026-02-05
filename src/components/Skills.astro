@@ -9,6 +9,7 @@ import {
   Box, // Docker
   Layout, // WordPress
   Sliders, // Tailwind CSS
+  Workflow, // Automation
 } from "lucide-astro";
 import SectionHeading from "./common/SectionHeading.astro";
 
@@ -54,6 +55,9 @@ export const skills: Skill[] = [
   { name: "Trello", Icon: Code, category: "Concepts" },
   { name: "Jira", Icon: Code, category: "Concepts" },
   { name: "API Design", Icon: Code, category: "Concepts" },
+
+  // Automation
+  { name: "n8n", Icon: Workflow, category: "Automation" },
 ];
 
 let activeCategory = "Languages";
@@ -62,6 +66,7 @@ const skillFilters = [
   "Frameworks/Libraries",
   "Cloud/DevOps",
   "Concepts",
+  "Automation",
 ];
 ---
 
@@ -110,7 +115,7 @@ const skillFilters = [
 </section>
 <script>
   const buttons = document.querySelectorAll<HTMLButtonElement>(
-    "#skills-tabs button"
+    "#skills-tabs button",
   );
   const cards = document.querySelectorAll<HTMLDivElement>(".skill-card");
 

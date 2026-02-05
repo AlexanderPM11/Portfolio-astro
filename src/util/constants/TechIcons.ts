@@ -94,7 +94,7 @@ export const techIcons: Record<string, TechIcon> = {
     title: ".NET Framework"
   },
   Figma: {
-    name: "mdi:figma",
+    name: "simple-icons:figma",
     class: "text-purple-500 hover:text-purple-400",
     color: "#F24E1E",
     title: "Figma"
@@ -250,5 +250,13 @@ export const techIcons: Record<string, TechIcon> = {
     class: "text-green-400 hover:text-green-300",
     color: "#00DC82",
     title: "Nuxt.js"
+  },
+  
+  // Automation
+  n8n: {
+    name: "simple-icons:n8n",
+    class: "text-red-500 hover:text-red-400",
+    color: "#EA4B71",
+    title: "n8n"
   }
 };

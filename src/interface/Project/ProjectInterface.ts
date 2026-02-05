@@ -13,6 +13,7 @@ export interface ProjectPost {
   content?: { rendered: string };
   date: string;
   category: string;
+  categories: string[]; 
   image: string;
   description: {
     rendered: string;

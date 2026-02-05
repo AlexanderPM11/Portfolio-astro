@@ -27,6 +27,9 @@ export async function getProjectById(id: number): Promise<ProjectPost> {
 
   // 🔹 Encuentra una categoría distinta a "projects"
   const secondary = flatTerms.find((t) => t.slug && t.slug !== "projects");
+  const allCategories = flatTerms
+    .filter((t) => t.taxonomy === "category" && t.slug !== "projects")
+    .map((t) => t.name);
 
   // 🔹 Usa la imagen destacada o una por defecto
   const image =
@@ -37,6 +40,7 @@ export async function getProjectById(id: number): Promise<ProjectPost> {
   const project: ProjectPost = {
     id: p.id,
     category: secondary?.name || "General",
+    categories: allCategories.length > 0 ? allCategories : ["General"],
     title: stripHtml(p.title?.rendered || ""),
     content: { rendered: p.content?.rendered || "" },
     description:
@@ -79,6 +83,9 @@ export async function GetProjects(): Promise<ProjectPost[]> {
 
     // Busca una categoría secundaria (distinta de "projects")
     const secondary = flatTerms.find((t) => t.slug && t.slug !== "projects");
+    const allCategories = flatTerms
+      .filter((t) => t.taxonomy === "category" && t.slug !== "projects")
+      .map((t) => t.name);
 
     // Usa la imagen destacada o una por defecto
     const image =
@@ -88,6 +95,7 @@ export async function GetProjects(): Promise<ProjectPost[]> {
     const project: ProjectPost = {
       id: p.id,
       category: secondary?.name || "General",
+      categories: allCategories.length > 0 ? allCategories : ["General"],
       title: stripHtml(p.title?.rendered || ""),
       description: stripHtml((p as any).excerpt?.rendered || "") ||
         stripHtml(p.content?.rendered || ""),
