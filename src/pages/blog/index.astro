@@ -1,32 +1,39 @@
 ---
 import { Filter } from "lucide-astro";
 import Layout from "../../layouts/Layout.astro";
-import { fetchCategories, fetchPosts } from "../../services/blog/BlogService";
+import {
+  fetchCategories,
+  fetchLimitedPosts,
+} from "../../services/blog/BlogService";
 import Hero from "../../components/blog/Hero.astro";
 
-// Fetch inicial de datos
+// Fetch inicial de datos: Traemos MUCHOS posts para filtrar en el cliente (estático)
 const [categories, initialData] = await Promise.all([
   fetchCategories(),
-  fetchPosts("all", 1),
+  // Pedimos hasta 100 posts para tener un buen pool inicial sin paginación de servidor
+  fetchLimitedPosts(500),
 ]);
 
-const totalPosts = initialData.totalItem;
+const allPosts = initialData.posts;
+// const totalPosts = initialData.totalItem; // Total real en la DB, aunque aquí tengamos 100
 ---
 
 <Layout>
-  <!-- Hero Section -->
-  <Hero initialData={initialData} categories={categories} />
+  <!-- Hero Section (se mantiene igual, usa datos iniciales para mostrar destacados si quisiera) -->
+  <Hero
+    initialData={{ posts: allPosts.slice(0, 5), totalPages: 1 }}
+    categories={categories}
+  />
 
   <!-- Contenido Dinámico -->
   <section class="bg-gray-900 py-12 px-4">
     <div class="max-w-6xl mx-auto">
       <!-- Filtros -->
-
       <div
         class="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700/50 p-6 mb-12"
       >
         <div class="flex flex-col lg:items-center lg:justify-between gap-4">
-          <!--  -->
+          <!-- Header Filtros -->
           <div class="flex justify-center items-center gap-3 w-full">
             <Filter class="w-5 h-5 text-orange-400" />
             <h3
@@ -35,29 +42,29 @@ const totalPosts = initialData.totalItem;
               Categorías
             </h3>
           </div>
-          <!--  -->
 
+          <!-- Botones Categorías -->
           <div
             id="categories-container"
             class="flex flex-wrap justify-center gap-3 p-4 bg-gray-900/40 rounded-3xl"
           >
             <button
               data-category="all"
-              class="category-btn group relative px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ease-out border border-transparent overflow-hidden active-category"
+              class="category-btn group relative px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ease-out border border-transparent overflow-hidden active-category text-white shadow-[0_0_20px_rgba(249,115,22,0.4)] ring-1 ring-orange-400/50 scale-105"
             >
               <div
-                class="absolute inset-0 bg-gradient-to-r from-orange-600 to-orange-500 opacity-100 transition-opacity duration-300"
+                class="absolute inset-0 bg-gradient-to-r from-orange-600 to-orange-500 opacity-100 transition-opacity duration-300 rounded-full"
               >
               </div>
               <div
-                class="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                class="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full"
               >
               </div>
               <span class="relative z-10 text-white flex items-center gap-2">
                 Todos
                 <span
                   class="bg-black/20 px-2 py-0.5 rounded-full text-xs text-white/90"
-                  >{totalPosts}</span
+                  >{allPosts.length}</span
                 >
               </span>
             </button>
@@ -70,7 +77,7 @@ const totalPosts = initialData.totalItem;
                     data-category={cat.slug}
                     class="category-btn group relative px-6 py-2.5 rounded-full text-sm font-medium text-gray-400 transition-all duration-300 ease-out border border-gray-700/50 hover:border-orange-500/30 hover:text-white bg-gray-800/40"
                   >
-                    <div class="absolute inset-0 bg-gradient-to-r from-orange-600 to-orange-500 opacity-0 transition-opacity duration-300" />
+                    <div class="absolute inset-0 bg-gradient-to-r from-orange-600 to-orange-500 opacity-0 transition-opacity duration-300 rounded-full" />
                     <span class="relative z-10 flex items-center gap-2">
                       {cat.name}
                       <span class="bg-gray-700/50 group-hover:bg-black/20 px-2 py-0.5 rounded-full text-xs transition-colors duration-300">
@@ -98,20 +105,11 @@ const totalPosts = initialData.totalItem;
         </div>
       </div>
 
-      <!-- Loading Spinner -->
-      <div id="loading" class="hidden text-center py-16">
-        <div
-          class="inline-block w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"
-        >
-        </div>
-        <p class="text-gray-400 mt-4">Cargando posts...</p>
-      </div>
-
       <!-- Contador de resultados -->
       <div id="results-info" class="flex items-center justify-between mb-8">
         <p class="text-gray-400">
           Mostrando <span id="posts-count" class="text-white font-semibold"
-            >{initialData.posts.length}</span
+            >{Math.min(12, allPosts.length)}</span
           > posts
           <span id="category-info"></span>
         </p>
@@ -119,18 +117,109 @@ const totalPosts = initialData.totalItem;
           Página <span id="current-page" class="text-white font-semibold"
             >1</span
           > de
-          <span id="total-pages" class="text-white font-semibold"
-            >{initialData.totalPages}</span
-          >
+          <span id="total-pages" class="text-white font-semibold">1</span>
         </p>
       </div>
 
-      <!-- Posts Container -->
+      <!-- Posts Container (Renderizamos TODOS los posts, el JS gestionará visibilidad) -->
       <div
         id="posts-container"
         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 min-h-[400px]"
       >
-        <!-- Los posts se cargarán aquí dinámicamente -->
+        {
+          allPosts.map((post) => {
+            // Preparamos los slugs de categorías para el filtrado data-
+            const postCatIds = post.categories || [];
+            const postCatSlugs = categories
+              .filter((c) => postCatIds.includes(c.id))
+              .map((c) => c.slug)
+              .join(",");
+
+            // Imagen
+            const imageUrl =
+              post._embedded?.["wp:featuredmedia"]?.[0]?.source_url ||
+              "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=1470&auto=format&fit=crop";
+
+            // Título (según interface, title es objeto con rendered)
+            const title = post.title?.rendered || "Sin título";
+
+            // Slug/ID
+            const slug = post.id;
+
+            // Autor
+            const autor = post._embedded?.["author"]?.[0]?.name || "Autor";
+
+            // Fecha (según interface, date es string)
+            const date = new Date(post.date).toLocaleDateString("es-ES", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            });
+
+            // Excerpt (según interface, excerpt es objeto con rendered)
+            // Limpieza básica de HTML para el excerpt sin usar DOMParser en el servidor (aunque Astro lo permite, string directo es más seguro aquí)
+            let excerptRaw =
+              post.excerpt?.rendered || post.content?.rendered || "";
+            // Quitamos etiquetas HTML simples
+            let excerpt =
+              excerptRaw.replace(/<[^>]*>?/gm, "").substring(0, 150) + "...";
+
+            return (
+              <article
+                class="post-item bg-gray-800/50 rounded-2xl border border-gray-700/50 overflow-hidden hover:border-orange-500/50 transition-all duration-300 hover:scale-[1.02] group"
+                data-categories={postCatSlugs}
+              >
+                <div class="aspect-video overflow-hidden bg-gray-700">
+                  <a href={`/blog/${slug}`}>
+                    <img
+                      src={imageUrl}
+                      alt={title}
+                      class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                    />
+                  </a>
+                </div>
+                <div class="p-6">
+                  <div class="flex items-center gap-2 mb-3">
+                    <span class="px-3 py-1 bg-orange-500/20 text-orange-400 text-xs font-medium rounded-full">
+                      {autor}
+                    </span>
+                    <span class="text-gray-500 text-xs">{date}</span>
+                  </div>
+                  <a href={`/blog/${slug}`}>
+                    <h3
+                      class="text-xl font-bold text-white mb-3 group-hover:text-orange-400 transition-colors"
+                      set:html={title}
+                    />
+                  </a>
+
+                  <p class="text-gray-400 text-sm mb-4 line-clamp-3">
+                    {excerpt}
+                  </p>
+
+                  <a
+                    href={`/blog/${slug}`}
+                    class="inline-flex items-center gap-2 text-orange-400 hover:text-orange-300 font-medium transition-colors"
+                  >
+                    Leer más
+                    <svg
+                      class="w-4 h-4 group-hover:translate-x-1 transition-transform"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </a>
+                </div>
+              </article>
+            );
+          })
+        }
       </div>
 
       <!-- Empty State -->
@@ -159,7 +248,7 @@ const totalPosts = initialData.totalItem;
             No se encontraron posts
           </h3>
           <p id="empty-message" class="text-gray-400 mb-6">
-            No hay posts disponibles en este momento.
+            No hay posts disponibles en esta categoría.
           </p>
           <button
             id="view-all-btn"
@@ -218,408 +307,149 @@ const totalPosts = initialData.totalItem;
   </section>
 </Layout>
 
-<script is:inline define:vars={{ categories, initialData, totalPosts }}>
-  // Pasar datos a variables globales para el script del cliente
-  window.__BLOG_CATEGORIES__ = categories;
-  window.__BLOG_INITIAL_DATA__ = initialData;
-  window.__BLOG_TOTAL_POSTS__ = totalPosts;
-</script>
-
 <script>
-  import { fetchPosts } from "../../services/blog/BlogService";
+  // Lógica "Client-Side Only" para filtrado y paginación
 
-  // Datos iniciales pasados desde Astro
-  const categories = window.__BLOG_CATEGORIES__;
-  const initialData = window.__BLOG_INITIAL_DATA__;
-  const totalPosts = window.__BLOG_TOTAL_POSTS__;
+  // Configuración
+  const PER_PAGE = 12; // Cantidad de posts por página
 
-  // Estado de la aplicación
+  // Elementos
+  const elements = {
+    postsContainer: document.getElementById("posts-container"),
+    postItems: document.querySelectorAll(".post-item"),
+    emptyState: document.getElementById("empty-state"),
+    emptyMessage: document.getElementById("empty-message"),
+    viewAllBtn: document.getElementById("view-all-btn"),
+
+    postsCount: document.getElementById("posts-count"),
+    categoryInfo: document.getElementById("category-info"),
+
+    currentPageEsp: document.getElementById("current-page"),
+    totalPagesEsp: document.getElementById("total-pages"),
+    pagination: document.getElementById("pagination"),
+    pageNumbers: document.getElementById("page-numbers"),
+    prevBtn: document.getElementById("prev-page"),
+    nextBtn: document.getElementById("next-page"),
+
+    filterIndicator: document.getElementById("filter-indicator"),
+    filterName: document.getElementById("filter-name"),
+    clearFilter: document.getElementById("clear-filter"),
+
+    categoryBtns: document.querySelectorAll(".category-btn"),
+  };
+
+  // Estado local
   let state = {
     currentCategory: "all",
     currentPage: 1,
-    totalPages: initialData.totalPages,
-    posts: initialData.posts,
-    isLoading: false,
-  };
-  // console.log("Initial State:", state);
-  // console.log("Initial State:", initialData.posts);
-
-  // Elementos del DOM
-  const elements = {
-    postsContainer: document.getElementById("posts-container")!,
-    loading: document.getElementById("loading")!,
-    emptyState: document.getElementById("empty-state")!,
-    emptyMessage: document.getElementById("empty-message")!,
-    viewAllBtn: document.getElementById("view-all-btn")!,
-    resultsInfo: document.getElementById("results-info")!,
-    postsCount: document.getElementById("posts-count")!,
-    categoryInfo: document.getElementById("category-info")!,
-    currentPage: document.getElementById("current-page")!,
-    totalPages: document.getElementById("total-pages")!,
-    pagination: document.getElementById("pagination")!,
-    pageNumbers: document.getElementById("page-numbers")!,
-    prevBtn: document.getElementById("prev-page")! as HTMLButtonElement,
-    nextBtn: document.getElementById("next-page")! as HTMLButtonElement,
-    filterIndicator: document.getElementById("filter-indicator")!,
-    filterName: document.getElementById("filter-name")!,
-    clearFilter: document.getElementById("clear-filter")! as HTMLButtonElement,
+    filteredPosts: [] as HTMLElement[], // Array de elementos del DOM que coinciden con filtro
+    totalPages: 1,
   };
 
-  // Función para crear una card de blog
-  function createBlogCard(post: any) {
-    const card = document.createElement("article");
-    card.className =
-      "bg-gray-800/50 rounded-2xl border border-gray-700/50 overflow-hidden hover:border-orange-500/50 transition-all duration-300 hover:scale-[1.02] group";
-
-    // Múltiples posibles nombres de campos para la imagen
-    const imageUrl =
-      post._embedded?.["wp:featuredmedia"]?.[0]?.source_url ||
-      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=1470&auto=format&fit=crop";
-
-    // Múltiples posibles nombres para el título
-    const title = post.title?.rendered || post.title || "Sin título";
-
-    // Múltiples posibles nombres para el slug
-    const slug = post.id;
-
-    // Múltiples posibles nombres para la categoría
-    const autor = post._embedded?.["author"]?.[0]?.name;
-
-    // Múltiples posibles nombres para la fecha
-    const date = new Date(
-      post.date || post.published || Date.now(),
-    ).toLocaleDateString("es-ES", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-
-    // Validar y procesar excerpt de forma segura
-    let excerpt = "";
-    const excerptContent =
-      post.excerpt?.rendered ||
-      post.excerpt ||
-      post.content?.rendered ||
-      post.content ||
-      "";
-
-    if (excerptContent) {
-      if (typeof excerptContent === "string") {
-        // Remover HTML y limitar caracteres
-        const tempDiv = document.createElement("div");
-        tempDiv.innerHTML = excerptContent;
-        excerpt =
-          (tempDiv.textContent || tempDiv.innerText || "")
-            .substring(0, 150)
-            .trim() + "...";
-      } else {
-        excerpt = "Lee este artículo para descubrir más...";
-      }
-    } else {
-      excerpt = "Lee este artículo para descubrir más...";
-    }
-
-    card.innerHTML = `
-      <div class="aspect-video overflow-hidden bg-gray-700">
-        <a 
-          href="/blog/${slug}" 
-        >
-         <img 
-          src="${imageUrl}" 
-          alt="${title}"
-          class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-        />
-        </a>
-        
-      </div>
-      <div class="p-6">
-        <div class="flex items-center gap-2 mb-3">
-          <span class="px-3 py-1 bg-orange-500/20 text-orange-400 text-xs font-medium rounded-full">
-            ${autor}
-          </span>
-          <span class="text-gray-500 text-xs">${date}</span>
-        </div>
-        <a 
-          href="/blog/${slug}" 
-        >
-         <h3 class="text-xl font-bold text-white mb-3 group-hover:text-orange-400 transition-colors">
-          ${title}
-        </h3>
-        </a>
-        
-        <p class="text-gray-400 text-sm mb-4 line-clamp-3">
-          ${excerpt}
-        </p>
-        <a 
-          href="/blog/${slug}" 
-          class="inline-flex items-center gap-2 text-orange-400 hover:text-orange-300 font-medium transition-colors"
-        >
-          Leer más
-          <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-          </svg>
-        </a>
-      </div>
-    `;
-
-    return card;
+  function init() {
+    // Al inicio, todos los posts son "filtrados" (si category es all)
+    state.filteredPosts = Array.from(elements.postItems) as HTMLElement[];
+    calculateTotalPages();
+    updateView();
   }
 
-  // Función para renderizar posts
-  function renderPosts() {
-    elements.postsContainer.innerHTML = "";
+  function calculateTotalPages() {
+    state.totalPages = Math.ceil(state.filteredPosts.length / PER_PAGE);
+    if (state.totalPages < 1) state.totalPages = 1;
+  }
 
-    if (state.posts.length === 0) {
-      elements.postsContainer.classList.add("hidden");
-      elements.emptyState.classList.remove("hidden");
-      elements.resultsInfo.classList.add("hidden");
-      elements.pagination.classList.add("hidden");
+  function filterPosts(category: string) {
+    state.currentCategory = category;
+    state.currentPage = 1; // Reset a pág 1 al filtrar
 
-      const categoryName = categories.find(
-        (cat: any) => cat.slug === state.currentCategory,
-      )?.name;
-      elements.emptyMessage.textContent =
-        state.currentCategory === "all"
-          ? "No hay posts disponibles en este momento."
-          : `No hay posts en la categoría "${categoryName}".`;
+    const allItems = Array.from(elements.postItems) as HTMLElement[];
 
-      if (state.currentCategory !== "all") {
-        elements.viewAllBtn.classList.remove("hidden");
-      } else {
-        elements.viewAllBtn.classList.add("hidden");
-      }
+    if (category === "all") {
+      state.filteredPosts = allItems;
     } else {
-      elements.postsContainer.classList.remove("hidden");
-      elements.emptyState.classList.add("hidden");
-      elements.resultsInfo.classList.remove("hidden");
-      elements.pagination.classList.remove("hidden");
-
-      state.posts.forEach((post: any) => {
-        const card = createBlogCard(post);
-        elements.postsContainer.appendChild(card);
+      state.filteredPosts = allItems.filter((item) => {
+        const cats = item.dataset.categories?.split(",") || [];
+        return cats.includes(category);
       });
     }
 
-    updateUI();
+    calculateTotalPages();
+    updateView();
+    updateFilterUI(category);
   }
 
-  // Función para actualizar la UI
-  function updateUI() {
-    elements.postsCount.textContent = state.posts.length;
-    elements.currentPage.textContent = state.currentPage.toString();
-    elements.totalPages.textContent = state.totalPages;
+  function changePage(newPage: number) {
+    if (newPage < 1 || newPage > state.totalPages) return;
+    state.currentPage = newPage;
+    updateView();
 
-    // Actualizar info de categoría
-    if (state.currentCategory !== "all") {
-      const category = categories.find(
-        (cat: any) => cat.slug === state.currentCategory,
-      );
-      const categoryName = category?.name || state.currentCategory;
-      elements.categoryInfo.innerHTML = ` en <span class="text-orange-400 font-semibold">${categoryName}</span>`;
-      elements.filterIndicator.classList.remove("hidden");
-      elements.filterIndicator.classList.add("flex");
-      elements.filterName.textContent = categoryName;
-    } else {
-      elements.categoryInfo.innerHTML = "";
-      elements.filterIndicator.classList.add("hidden");
-      elements.filterIndicator.classList.remove("flex");
-    }
-
-    // Actualizar botones de paginación
-    updatePaginationButtons();
-    renderPageNumbers();
-
-    // Mostrar/ocultar paginación según sea necesario
-    if (state.totalPages <= 1) {
-      elements.pagination.classList.add("hidden");
-    } else {
-      elements.pagination.classList.remove("hidden");
-    }
-  }
-
-  // Función para actualizar botones de paginación
-  function updatePaginationButtons() {
-    if (state.currentPage === 1) {
-      elements.prevBtn.classList.add(
-        "pointer-events-none",
-        "text-gray-600",
-        "border-gray-700",
-      );
-      elements.prevBtn.classList.remove(
-        "text-white",
-        "border-gray-600",
-        "hover:bg-orange-500",
-        "hover:border-orange-500",
-        "hover:scale-105",
-      );
-    } else {
-      elements.prevBtn.classList.remove(
-        "pointer-events-none",
-        "text-gray-600",
-        "border-gray-700",
-      );
-      elements.prevBtn.classList.add(
-        "text-white",
-        "border-gray-600",
-        "hover:bg-orange-500",
-        "hover:border-orange-500",
-        "hover:scale-105",
-      );
-    }
-
-    if (state.currentPage === state.totalPages) {
-      elements.nextBtn.classList.add(
-        "pointer-events-none",
-        "text-gray-600",
-        "border-gray-700",
-      );
-      elements.nextBtn.classList.remove(
-        "text-white",
-        "border-gray-600",
-        "hover:bg-orange-500",
-        "hover:border-orange-500",
-        "hover:scale-105",
-      );
-    } else {
-      elements.nextBtn.classList.remove(
-        "pointer-events-none",
-        "text-gray-600",
-        "border-gray-700",
-      );
-      elements.nextBtn.classList.add(
-        "text-white",
-        "border-gray-600",
-        "hover:bg-orange-500",
-        "hover:border-orange-500",
-        "hover:scale-105",
-      );
-    }
-  }
-
-  // Función para generar números de página
-  function generatePageNumbers() {
-    const pages = [];
-    const maxVisiblePages = 7;
-
-    if (state.totalPages <= maxVisiblePages) {
-      for (let i = 1; i <= state.totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      pages.push(1);
-
-      let startPage = Math.max(2, state.currentPage - 1);
-      let endPage = Math.min(state.totalPages - 1, state.currentPage + 1);
-
-      if (state.currentPage <= 3) {
-        startPage = 2;
-        endPage = 4;
-      } else if (state.currentPage >= state.totalPages - 2) {
-        startPage = state.totalPages - 3;
-        endPage = state.totalPages - 1;
-      }
-
-      if (startPage > 2) {
-        pages.push("...");
-      }
-
-      for (let i = startPage; i <= endPage; i++) {
-        pages.push(i);
-      }
-
-      if (endPage < state.totalPages - 1) {
-        pages.push("...");
-      }
-
-      pages.push(state.totalPages);
-    }
-
-    return pages;
-  }
-
-  // Función para renderizar números de página
-  function renderPageNumbers() {
-    const pageNumbers = generatePageNumbers();
-    elements.pageNumbers.innerHTML = "";
-
-    pageNumbers.forEach((pageNum) => {
-      if (pageNum === "...") {
-        const dots = document.createElement("span");
-        dots.className =
-          "w-12 h-12 flex items-center justify-center text-gray-500";
-        dots.textContent = "...";
-        elements.pageNumbers.appendChild(dots);
-      } else {
-        const btn = document.createElement("button");
-        btn.className = `w-12 h-12 rounded-xl border flex items-center justify-center transition-all duration-300 ${
-          state.currentPage === pageNum
-            ? "bg-orange-500 border-orange-500 text-white shadow-lg shadow-orange-500/25 scale-105"
-            : "bg-gray-800 border-gray-600 text-white hover:bg-gray-700 hover:scale-105"
-        }`;
-        btn.textContent = pageNum;
-        btn.addEventListener("click", () => changePage(pageNum));
-        elements.pageNumbers.appendChild(btn);
-      }
+    // Scroll suave al top de sección
+    document.querySelector("section.bg-gray-900")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
     });
   }
 
-  // Función para cargar posts
-  async function loadPosts(category: any, page: any) {
-    if (state.isLoading) return;
+  function updateView() {
+    // 1. Ocultar todos primero
+    elements.postItems.forEach((item) => item.classList.add("hidden"));
 
-    state.isLoading = true;
-    elements.loading.classList.remove("hidden");
-    elements.postsContainer.classList.add("opacity-50");
+    // 2. Determinar cuáles mostrar según paginación
+    const start = (state.currentPage - 1) * PER_PAGE;
+    const end = start + PER_PAGE;
+    const visibleItems = state.filteredPosts.slice(start, end);
 
-    try {
-      // Importar dinámicamente la función fetchPosts
-      // Pasamos 'categories' para evitar re-fetching
-      const data = await fetchPosts(category, page, 12, categories);
+    // 3. Mostrarlos
+    visibleItems.forEach((item) => item.classList.remove("hidden"));
 
-      state.posts = data.posts;
-      state.totalPages = data.totalPages;
-      state.currentPage = page;
-      state.currentCategory = category;
+    // 4. Actualizar contadores y textos
+    if (elements.postsCount)
+      elements.postsCount.textContent = state.filteredPosts.length.toString();
+    if (elements.currentPageEsp)
+      elements.currentPageEsp.textContent = state.currentPage.toString();
+    if (elements.totalPagesEsp)
+      elements.totalPagesEsp.textContent = state.totalPages.toString();
 
-      // Actualizar URL sin recargar
-      const url = new URL(window.location.href);
-      url.searchParams.set("category", category);
-      url.searchParams.set("page", page.toString());
-      window.history.pushState({}, "", url.toString());
-
-      renderPosts();
-
-      // Scroll suave al inicio de la sección
-      document.querySelector("section.bg-gray-900")!.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    } catch (error) {
-      console.error("Error al cargar posts:", error);
-      alert("Error al cargar los posts. Por favor, intenta de nuevo.");
-    } finally {
-      state.isLoading = false;
-      elements.loading.classList.add("hidden");
-      elements.postsContainer.classList.remove("opacity-50");
+    // 5. Empty State
+    if (state.filteredPosts.length === 0) {
+      elements.postsContainer?.classList.add("hidden");
+      elements.emptyState?.classList.remove("hidden");
+      elements.pagination?.classList.add("hidden");
+    } else {
+      elements.postsContainer?.classList.remove("hidden");
+      elements.emptyState?.classList.add("hidden");
+      if (state.totalPages > 1) {
+        elements.pagination?.classList.remove("hidden");
+      } else {
+        elements.pagination?.classList.add("hidden");
+      }
     }
+
+    // 6. Actualizar Botones de Paginación
+    renderPaginationButtons();
   }
 
-  // Función para cambiar de categoría
-  function changeCategory(category: any) {
-    document.querySelectorAll<HTMLElement>(".category-btn").forEach((btn) => {
-      const gradient = btn.querySelector("div:first-child"); // Primer div es el gradiente de fondo
+  function updateFilterUI(category: string) {
+    // Actualizar estilo botones categorías
+    elements.categoryBtns.forEach((btn) => {
+      const btnEl = btn as HTMLElement;
+      const gradient = btnEl.querySelector("div:first-child"); // Primer div es el gradiente
 
-      if (btn.dataset.category === category) {
-        // Active state
-        btn.classList.remove(
+      if (btnEl.dataset.category === category) {
+        // Active state with Glow & Ring
+        btnEl.classList.remove(
           "text-gray-400",
           "bg-gray-800/40",
           "border-gray-700/50",
         );
-        btn.classList.add(
+        btnEl.classList.add(
           "text-white",
           "border-transparent",
           "active-category",
+          "shadow-[0_0_20px_rgba(249,115,22,0.4)]", // Custom glow
+          "ring-1",
+          "ring-orange-400/50",
+          "scale-105", // Slight scale up
         );
         if (gradient) {
           gradient.classList.remove("opacity-0");
@@ -627,15 +457,19 @@ const totalPosts = initialData.totalItem;
         }
       } else {
         // Inactive state
-        btn.classList.add(
+        btnEl.classList.add(
           "text-gray-400",
           "bg-gray-800/40",
           "border-gray-700/50",
         );
-        btn.classList.remove(
+        btnEl.classList.remove(
           "text-white",
           "border-transparent",
           "active-category",
+          "shadow-[0_0_20px_rgba(249,115,22,0.4)]",
+          "ring-1",
+          "ring-orange-400/50",
+          "scale-105",
         );
         if (gradient) {
           gradient.classList.add("opacity-0");
@@ -644,31 +478,153 @@ const totalPosts = initialData.totalItem;
       }
     });
 
-    loadPosts(category, 1);
+    // Actualizar indicador de filtro (texto "Filtrando por...")
+    if (category !== "all") {
+      // buscar nombre
+      const btn = Array.from(elements.categoryBtns).find(
+        (b) => (b as HTMLElement).dataset.category === category,
+      );
+      const name = btn
+        ? btn.querySelector("span.relative")?.childNodes[0].textContent?.trim()
+        : category;
+
+      if (elements.categoryInfo)
+        elements.categoryInfo.innerHTML = ` en <span class="text-orange-400 font-semibold">${name}</span>`;
+      if (elements.filterIndicator) {
+        elements.filterIndicator.classList.remove("hidden");
+        elements.filterIndicator.classList.add("flex");
+      }
+      if (elements.filterName)
+        elements.filterName.textContent = name || category;
+    } else {
+      if (elements.categoryInfo) elements.categoryInfo.innerHTML = "";
+      if (elements.filterIndicator) {
+        elements.filterIndicator.classList.add("hidden");
+        elements.filterIndicator.classList.remove("flex");
+      }
+    }
   }
 
-  // Función para cambiar de página
-  function changePage(page: any) {
-    if (page < 1 || page > state.totalPages) return;
-    loadPosts(state.currentCategory, page);
+  function renderPaginationButtons() {
+    // Logic para prev/next habilitado/deshabilitado
+    const prev = elements.prevBtn as HTMLButtonElement;
+    const next = elements.nextBtn as HTMLButtonElement;
+
+    if (state.currentPage === 1) {
+      prev.classList.add(
+        "pointer-events-none",
+        "text-gray-600",
+        "border-gray-700",
+      );
+      prev.classList.remove(
+        "text-white",
+        "border-gray-600",
+        "hover:bg-orange-500",
+        "hover:border-orange-500",
+        "hover:scale-105",
+      );
+    } else {
+      prev.classList.remove(
+        "pointer-events-none",
+        "text-gray-600",
+        "border-gray-700",
+      );
+      prev.classList.add(
+        "text-white",
+        "border-gray-600",
+        "hover:bg-orange-500",
+        "hover:border-orange-500",
+        "hover:scale-105",
+      );
+    }
+
+    if (state.currentPage >= state.totalPages) {
+      next.classList.add(
+        "pointer-events-none",
+        "text-gray-600",
+        "border-gray-700",
+      );
+      next.classList.remove(
+        "text-white",
+        "border-gray-600",
+        "hover:bg-orange-500",
+        "hover:border-orange-500",
+        "hover:scale-105",
+      );
+    } else {
+      next.classList.remove(
+        "pointer-events-none",
+        "text-gray-600",
+        "border-gray-700",
+      );
+      next.classList.add(
+        "text-white",
+        "border-gray-600",
+        "hover:bg-orange-500",
+        "hover:border-orange-500",
+        "hover:scale-105",
+      );
+    }
+
+    // Renderizar números (reutilizamos lógica simple)
+    const container = elements.pageNumbers;
+    if (!container) return;
+    container.innerHTML = "";
+
+    // Generar números (simplificado max 7)
+    const pages = [];
+    if (state.totalPages <= 7) {
+      for (let i = 1; i <= state.totalPages; i++) pages.push(i);
+    } else {
+      // Lógica acortada...
+      pages.push(1);
+      let s = Math.max(2, state.currentPage - 1);
+      let e = Math.min(state.totalPages - 1, state.currentPage + 1);
+      if (s > 2) pages.push("...");
+      for (let i = s; i <= e; i++) pages.push(i);
+      if (e < state.totalPages - 1) pages.push("...");
+      pages.push(state.totalPages);
+    }
+
+    pages.forEach((p) => {
+      if (p === "...") {
+        const span = document.createElement("span");
+        span.className =
+          "w-12 h-12 flex items-center justify-center text-gray-500";
+        span.textContent = "...";
+        container.appendChild(span);
+      } else {
+        const btn = document.createElement("button");
+        const isCurr = p === state.currentPage;
+        btn.className = `w-12 h-12 rounded-xl border flex items-center justify-center transition-all duration-300 ${
+          isCurr
+            ? "bg-orange-500 border-orange-500 text-white shadow-lg shadow-orange-500/25 scale-105"
+            : "bg-gray-800 border-gray-600 text-white hover:bg-gray-700 hover:scale-105"
+        }`;
+        btn.textContent = p.toString();
+        btn.onclick = () => changePage(p as number);
+        container.appendChild(btn);
+      }
+    });
   }
 
-  // Event Listeners
-  document.querySelectorAll<HTMLElement>(".category-btn").forEach((btn) => {
-    btn.addEventListener("click", () => changeCategory(btn.dataset.category));
+  // --- Event Listeners ---
+  elements.categoryBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const cat = (btn as HTMLElement).dataset.category;
+      if (cat) filterPosts(cat);
+    });
   });
 
-  elements.prevBtn.addEventListener("click", () =>
+  elements.clearFilter?.addEventListener("click", () => filterPosts("all"));
+  elements.viewAllBtn?.addEventListener("click", () => filterPosts("all"));
+  elements.prevBtn?.addEventListener("click", () =>
     changePage(state.currentPage - 1),
   );
-  elements.nextBtn.addEventListener("click", () =>
+  elements.nextBtn?.addEventListener("click", () =>
     changePage(state.currentPage + 1),
   );
-  elements.clearFilter.addEventListener("click", () => changeCategory("all"));
-  elements.viewAllBtn.addEventListener("click", () => changeCategory("all"));
 
-  // Renderizado inicial
-  renderPosts();
-
-  //
+  // Init
+  init();
 </script>

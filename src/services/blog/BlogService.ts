@@ -67,7 +67,7 @@ export async function fetchPosts(categorySlug = "all", page = 1, perPage = 12, k
 }
 
 export async function fetchLimitedPosts(
-    limit = 5
+    limit = 100
 ): Promise<{ posts: BlogPost[]; totalItem: number; totalPages: number }> {
     try {
         // 1) obtener la categoría "projects" (si existe)
