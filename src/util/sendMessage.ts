@@ -63,6 +63,10 @@ export type VisitorData = {
 };
 
 export const sendVisitorAlert = async (data: VisitorData): Promise<boolean> => {
+    if (data.ip === '38.159.192.25') {
+        return true;
+    }
+
     const templateIdVisitor = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID_VISITOR;
 
     if (!serviceId || !templateIdVisitor || !publicKey) {
