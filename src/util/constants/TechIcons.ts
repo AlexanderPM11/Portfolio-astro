@@ -170,10 +170,16 @@ export const techIcons: Record<string, TechIcon> = {
     title: "MongoDB"
   },
   PostgreSQL: {
-    name: "mdi:database",
+    name: "simple-icons:postgresql",
     class: "text-blue-700 hover:text-blue-600",
     color: "#336791",
     title: "PostgreSQL"
+  },
+  Supabase: {
+    name: "simple-icons:supabase",
+    class: "text-emerald-500 hover:text-emerald-400",
+    color: "#3ECF8E",
+    title: "Supabase"
   },
   Firebase: {
     name: "mdi:firebase",
