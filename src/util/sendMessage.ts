@@ -60,6 +60,7 @@ export type VisitorData = {
     time: string;
     userAgent: string;
     language: string;
+    page: string;
 };
 
 export const sendVisitorAlert = async (data: VisitorData): Promise<boolean> => {
@@ -82,13 +83,14 @@ export const sendVisitorAlert = async (data: VisitorData): Promise<boolean> => {
                 title: "Nueva Visita Detectada",
                 name: "System Visitor",
                 email: "visitor@portfolio.com",
-                message: `Se ha detectado una nueva visita desde ${data.city}, ${data.country}.`,
+                message: `Se ha detectado una nueva visita en la página "${data.page}" desde ${data.city}, ${data.country}.`,
                 
                 // Mapeo exacto a las variables de tu template HTML
                 visitante_ip: data.ip,
                 visitante_pais: data.country,
                 visitante_region: data.region,
                 visitante_ciudad: data.city,
+                visitante_pagina: data.page,
                 user_agent: data.userAgent,
                 timestamp: data.time
             },

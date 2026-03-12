@@ -30,6 +30,7 @@ export async function handleVisitorNotification() {
       time: new Date().toLocaleString(),
       userAgent: navigator.userAgent,
       language: navigator.language,
+      page: window.location.pathname,
     };
 
     console.log("Intentando enviar alerta de visita...");
