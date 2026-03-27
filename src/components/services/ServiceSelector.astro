@@ -1,32 +1,45 @@
 ---
+import { getIconComponent } from "../../utils/iconMapper";
+
 interface Props {
   id: string | number;
   title: string;
   index: number;
   isActive: boolean;
+  iconName: string;
 }
 
-const { id, title, index, isActive } = Astro.props;
+const { id, title, index, isActive, iconName } = Astro.props;
+const Icon = getIconComponent(iconName);
 ---
 
 <button 
   type="button" 
   role="tab"
   aria-selected={isActive ? "true" : "false"}
-  class={`service-tab-btn flex-none lg:w-full text-left relative transition-all duration-300 py-3 lg:py-5 px-6 lg:px-10 group ${isActive ? 'active' : ''}`}
+  class={`service-tab-btn flex-none lg:w-full text-left relative transition-all duration-300 py-4 lg:py-5 px-6 lg:px-10 group ${isActive ? 'active' : ''}`}
   data-service-id={id}
 >
-  <!-- Línea Indicadora Vertical (Inactiva: Sutil / Activa: Naranja) -->
+  <!-- Línea Indicadora (Móvil: Inferior / Escritorio: Lateral Izquierda) -->
   <div 
-    class={`absolute left-0 top-0 bottom-0 w-[2px] transition-all duration-300 ${isActive ? 'bg-orange-500 scale-y-100' : 'bg-white/10 group-hover:bg-white/50 scale-y-50 group-hover:scale-y-100 group-hover:w-[1px]'}`}
+    class={`absolute transition-all duration-300 
+      bottom-0 left-0 right-0 h-[2.5px] lg:h-auto lg:top-0 lg:left-0 lg:w-[2.5px]
+      ${isActive ? 'bg-orange-500 opacity-100' : 'bg-white/10 opacity-0 group-hover:opacity-100 group-hover:scale-100 scale-75'}`}
   ></div>
 
   <!-- Contenido del Selector -->
-  <div class="flex items-center gap-6">
-    <span class={`font-light text-[10px] tracking-widest transition-all duration-300 ${isActive ? 'text-orange-500 opacity-100' : 'text-white/20 group-hover:text-white/60 group-hover:opacity-100'}`}>
+  <div class="flex items-center gap-3 lg:gap-6">
+    <!-- Icono solo visible en móvil (para sugerir desplazamiento y clarificar secciones) -->
+    <div class={`lg:hidden transition-all duration-300 ${isActive ? 'text-orange-500 scale-110' : 'text-white/20 group-hover:text-white/60'}`}>
+        <Icon class="w-4 h-4" />
+    </div>
+
+    <!-- Número (Desktop focus) -->
+    <span class={`hidden lg:inline font-light text-[10px] tracking-widest transition-all duration-300 ${isActive ? 'text-orange-500 opacity-100' : 'text-white/20 group-hover:text-white/60 group-hover:opacity-100'}`}>
       {(index + 1).toString().padStart(2, '0')}
     </span>
-    <span class={`text-[11px] font-bold uppercase tracking-[0.3em] whitespace-nowrap lg:whitespace-normal transition-all duration-300 ${isActive ? 'text-orange-500' : 'text-white/40 group-hover:text-white'}`}>
+
+    <span class={`text-[10px] lg:text-[12px] font-bold uppercase tracking-[0.3em] whitespace-nowrap lg:whitespace-normal transition-all duration-300 ${isActive ? 'text-orange-500' : 'text-white/40 group-hover:text-white'}`}>
       {title}
     </span>
   </div>

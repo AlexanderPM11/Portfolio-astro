@@ -7,7 +7,7 @@ import ServicePanel from "./services/ServicePanel.astro";
 const services = await GetWpServices();
 ---
 
-<section id="services" class="py-20 px-8 bg-gray-900 border-t border-white/5 relative overflow-hidden">
+<section id="services" class="py-20 px-6 lg:px-8 bg-gray-900 border-t border-white/5 relative overflow-hidden">
   <!-- Elementos decorativos de fondo -->
   <div class="absolute top-10 left-10 w-32 h-32 bg-orange-500/5 rounded-full blur-xl animate-pulse"></div>
   <div class="absolute bottom-10 right-10 w-40 h-40 bg-purple-500/5 rounded-full blur-xl animate-pulse"></div>
@@ -21,25 +21,49 @@ const services = await GetWpServices();
     />
 
     <!-- Tabbed Switcher Layout -->
-    <div class="grid grid-cols-1 lg:grid-cols-[1fr_2.5fr] gap-12 relative mt-20 min-h-[500px]">
+    <div class="grid grid-cols-1 lg:grid-cols-[1fr_2.5fr] gap-8 lg:gap-32 relative mt-16 lg:mt-24 min-h-[500px]">
       
-      <!-- Selectores de Servicios (Navegación Lateral) -->
-      <nav 
-        class="sticky top-24 z-30 flex lg:flex-col overflow-x-auto lg:overflow-x-visible pb-6 lg:pb-0 scrollbar-hide space-x-3 lg:space-x-0 lg:space-y-4"
-        role="tablist"
-      >
-        {services.map((service, index) => (
-          <ServiceSelector 
-            id={service.id}
-            title={service.title}
-            index={index}
-            isActive={index === 0}
-          />
-        ))}
-      </nav>
+      <!-- Selectores de Servicios (Navegación Lateral / Superior en Mobile) -->
+      <div class="sticky top-[72px] lg:top-32 z-30 lg:h-fit -mx-6 lg:mx-0 group/nav-container">
+        <!-- Sombras indicadoras de scroll en móvil -->
+        <div class="absolute inset-y-0 left-0 w-12 bg-linear-to-r from-gray-900 to-transparent z-40 pointer-events-none lg:hidden"></div>
+        <div class="absolute inset-y-0 right-0 w-12 bg-linear-to-l from-gray-900 to-transparent z-40 pointer-events-none lg:hidden"></div>
+
+        <!-- Flechas de navegación móvil -->
+        <button 
+            id="nav-prev-btn"
+            class="absolute left-2 top-1/2 -translate-y-1/2 z-50 w-8 h-8 rounded-full bg-orange-500/10 backdrop-blur-md border border-white/10 flex items-center justify-center text-white/50 active:scale-95 transition-all lg:hidden"
+            aria-label="Anterior"
+        >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+        </button>
+        <button 
+            id="nav-next-btn"
+            class="absolute right-2 top-1/2 -translate-y-1/2 z-50 w-8 h-8 rounded-full bg-orange-500/10 backdrop-blur-md border border-white/10 flex items-center justify-center text-white/50 active:scale-95 transition-all lg:hidden"
+            aria-label="Siguiente"
+        >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+        </button>
+
+        <nav 
+          id="services-nav-scroll"
+          class="flex lg:flex-col overflow-x-auto lg:overflow-x-visible pb-4 lg:pb-0 scrollbar-hide space-x-2 lg:space-x-0 lg:space-y-4 bg-gray-900/60 lg:bg-transparent backdrop-blur-md lg:backdrop-blur-none px-10 lg:px-0 border-b border-white/5 lg:border-b-0 scroll-smooth"
+          role="tablist"
+        >
+          {services.map((service, index) => (
+            <ServiceSelector 
+              id={service.id}
+              title={service.title}
+              index={index}
+              isActive={index === 0}
+              iconName={service.iconName}
+            />
+          ))}
+        </nav>
+      </div>
 
       <!-- Lado Derecho: Contenido Dinámico -->
-      <div class="relative">
+      <div class="relative pt-4 lg:pt-0">
         {services.map((service, index) => (
           <ServicePanel 
             id={service.id}
@@ -57,14 +81,14 @@ const services = await GetWpServices();
 
     <!-- Call to Action final -->
     <div class="text-center mt-20 pt-10 border-t border-white/5">
-      <div class="bg-gray-800/50 backdrop-blur-md border border-white/5 rounded-3xl p-10 relative overflow-hidden group">
+      <div class="bg-gray-800/50 backdrop-blur-md border border-white/5 rounded-3xl p-8 lg:p-10 relative overflow-hidden group">
         <div class="absolute top-0 right-0 w-64 h-64 bg-orange-500/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl group-hover:scale-110 transition-transform duration-700"></div>
         
         <div class="relative z-10">
-          <h3 class="text-2xl font-bold text-white mb-4">
+          <h3 class="text-xl lg:text-2xl font-bold text-white mb-4">
             ¿Listo para llevar tu proyecto al siguiente nivel?
           </h3>
-          <p class="text-gray-400 mb-10 max-w-xl mx-auto text-sm leading-relaxed">
+          <p class="text-gray-400 mb-8 lg:mb-10 max-w-xl mx-auto text-sm leading-relaxed">
             Combinamos técnica, diseño y estrategia para crear soluciones digitales que marquen la diferencia. ¿Hablamos?
           </p>
           <div class="flex flex-col sm:flex-row gap-5 justify-center">
@@ -80,6 +104,21 @@ const services = await GetWpServices();
     </div>
   </div>
 </section>
+
+<style>
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Esconder scrollbar pero permitir scroll horizontal en mobile */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+</style>
 
 <script>
   /**
@@ -134,7 +173,38 @@ const services = await GetWpServices();
     });
 
     // ---------------------------------------------------------
-    // 3. Lógica del Conmutador de Servicios (Tabs)
+    // 3. Flechas de Navegación Móvil
+    // ---------------------------------------------------------
+    const navScroll = document.getElementById('services-nav-scroll');
+    const prevBtn = document.getElementById('nav-prev-btn');
+    const nextBtn = document.getElementById('nav-next-btn');
+
+    if (navScroll && prevBtn && nextBtn) {
+        prevBtn.addEventListener('click', () => {
+            navScroll.scrollBy({ left: -200, behavior: 'smooth' });
+        });
+        nextBtn.addEventListener('click', () => {
+            navScroll.scrollBy({ left: 200, behavior: 'smooth' });
+        });
+
+        // Ocultar flechas si no hay scroll
+        const updateArrows = () => {
+            const isAtStart = navScroll.scrollLeft <= 5;
+            const isAtEnd = navScroll.scrollLeft + navScroll.clientWidth >= navScroll.scrollWidth - 5;
+            
+            prevBtn.style.opacity = isAtStart ? '0' : '1';
+            prevBtn.style.pointerEvents = isAtStart ? 'none' : 'auto';
+            nextBtn.style.opacity = isAtEnd ? '0' : '1';
+            nextBtn.style.pointerEvents = isAtEnd ? 'none' : 'auto';
+        };
+
+        navScroll.addEventListener('scroll', updateArrows);
+        window.addEventListener('resize', updateArrows);
+        updateArrows();
+    }
+
+    // ---------------------------------------------------------
+    // 4. Lógica del Conmutador de Servicios (Tabs)
     // ---------------------------------------------------------
     const tabBtns = document.querySelectorAll('.service-tab-btn');
     const contentPanels = document.querySelectorAll('.service-content-panel');
@@ -147,8 +217,9 @@ const services = await GetWpServices();
         // A. Actualizar estado de los botones (Navegación)
         tabBtns.forEach(b => {
           const bIndicator = b.querySelector('div:first-child');
-          const bNum = b.querySelector('span:nth-child(1)');
-          const bTitle = b.querySelector('span:nth-child(2)');
+          const bIconWrapper = b.querySelector('div:nth-child(2)');
+          const bNum = b.querySelector('span:nth-child(3)');
+          const bTitle = b.querySelector('span:nth-last-child(1)');
           const isTarget = b === btn;
           
           b.setAttribute('aria-selected', isTarget ? 'true' : 'false');
@@ -156,8 +227,12 @@ const services = await GetWpServices();
           if (isTarget) {
             b.classList.add('active');
             if (bIndicator) {
-              bIndicator.classList.add('bg-orange-500', 'scale-y-100');
-              bIndicator.classList.remove('bg-white/10', 'scale-y-50', 'w-[1px]');
+              bIndicator.classList.add('bg-orange-500', 'opacity-100');
+              bIndicator.classList.remove('bg-white/10', 'opacity-0');
+            }
+            if (bIconWrapper) {
+                bIconWrapper.classList.add('text-orange-500', 'scale-110');
+                bIconWrapper.classList.remove('text-white/20');
             }
             if (bNum) {
               bNum.classList.add('text-orange-500', 'opacity-100');
@@ -167,11 +242,20 @@ const services = await GetWpServices();
               bTitle.classList.add('text-orange-500');
               bTitle.classList.remove('text-white/40');
             }
+            
+            // Auto-scroll horizontal para mobile
+            if (window.innerWidth < 1024) {
+              b.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            }
           } else {
             b.classList.remove('active');
             if (bIndicator) {
-              bIndicator.classList.remove('bg-orange-500', 'scale-y-100');
-              bIndicator.classList.add('bg-white/10', 'scale-y-50');
+              bIndicator.classList.remove('bg-orange-500', 'opacity-100');
+              bIndicator.classList.add('bg-white/10', 'opacity-0');
+            }
+            if (bIconWrapper) {
+                bIconWrapper.classList.remove('text-orange-500', 'scale-110');
+                bIconWrapper.classList.add('text-white/20');
             }
             if (bNum) {
               bNum.classList.remove('text-orange-500', 'opacity-100');
