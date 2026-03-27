@@ -1,6 +1,9 @@
 ---
-import { services } from "../services/Services";
+import { GetWpServices } from "../services/wpServices";
+import { getIconComponent } from "../utils/iconMapper";
 import SectionHeading from "./common/SectionHeading.astro";
+
+const services = await GetWpServices();
 ---
 
 <section id="services" class="py-20 px-4 bg-linear-to-b from-gray-900 to-gray-800 relative overflow-hidden">
@@ -22,20 +25,22 @@ import SectionHeading from "./common/SectionHeading.astro";
       <!-- Línea vertical decorativa -->
       <div class="absolute left-8 top-0 bottom-0 w-0.5 bg-linear-to-b from-orange-500/20 via-orange-500/10 to-transparent hidden md:block"></div>
       
-      {services.map((service, index) => (
-        <div 
-          class="flex flex-col md:flex-row gap-6 items-start group relative"
-          data-aos="fade-up"
-          data-aos-delay={(index * 150).toString()}
-        >
-          <!-- Ícono con efecto mejorado -->
-          <div class="shrink-0 relative">
-            <div class="w-20 h-20 rounded-2xl bg-linear-to-br from-orange-500 to-orange-600 flex items-center justify-center text-white group-hover:scale-110 transition-all duration-500 shadow-lg shadow-orange-500/25 relative z-10">
-              <service.Icon class="w-9 h-9" />
+      {services.map((service, index) => {
+        const Icon = getIconComponent(service.iconName);
+        return (
+          <div 
+            class="flex flex-col md:flex-row gap-6 items-start group relative"
+            data-aos="fade-up"
+            data-aos-delay={(index * 150).toString()}
+          >
+            <!-- Ícono con efecto mejorado -->
+            <div class="shrink-0 relative">
+              <div class="w-20 h-20 rounded-2xl bg-linear-to-br from-orange-500 to-orange-600 flex items-center justify-center text-white group-hover:scale-110 transition-all duration-500 shadow-lg shadow-orange-500/25 relative z-10">
+                <Icon class="w-9 h-9" />
+              </div>
+              <!-- Efecto de brillo en hover -->
+              <div class="absolute inset-0 rounded-2xl bg-orange-400 blur-md opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
             </div>
-            <!-- Efecto de brillo en hover -->
-            <div class="absolute inset-0 rounded-2xl bg-orange-400 blur-md opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
-          </div>
 
           <!-- Contenido mejorado -->
           <div class="grow bg-white/3 backdrop-blur-sm border border-white/10 rounded-2xl p-6 group-hover:bg-white/5 group-hover:border-orange-500/20 transition-all duration-500">
@@ -45,7 +50,7 @@ import SectionHeading from "./common/SectionHeading.astro";
                   {service.title}
                 </h3>
                 <div class="flex items-center gap-2 text-sm text-gray-400 mb-3">
-                  <span>Servicio profesional</span>
+                  <span>{service.label}</span>
                   <span class="w-1 h-1 bg-gray-500 rounded-full"></span>
                   <span>{index + 1} de {services.length}</span>
                 </div>
@@ -85,7 +90,8 @@ import SectionHeading from "./common/SectionHeading.astro";
             </div>
           </div>
         </div>
-      ))}
+        );
+      })}
     </div>
 
     <!-- Call to Action final mejorado -->
