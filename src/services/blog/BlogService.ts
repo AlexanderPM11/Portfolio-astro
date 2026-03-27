@@ -81,7 +81,7 @@ export async function fetchLimitedPosts(
         const resCategories = await fetchCategories();
         const projectsCat = resCategories.find((c) => c.slug === "projects");
         const servicesCat = resCategories.find((c) => c.slug === "_servicesonly");
-        const highlightsCat = resCategories.find((c) => c.slug === "highlights");
+        const highlightsCat = resCategories.find((c) => c.slug === "_highlights");
         
         const projectsId = projectsCat ? projectsCat.id : null;
         const servicesId = servicesCat ? servicesCat.id : null;
