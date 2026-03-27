@@ -1,0 +1,81 @@
+---
+import { getIconComponent } from "../../utils/iconMapper";
+
+interface Props {
+  id: string | number;
+  title: string;
+  description: string;
+  label: string;
+  iconName: string;
+  features: string[];
+  index: number;
+  isActive: boolean;
+}
+
+const { id, title, description, label, iconName, features, index, isActive } = Astro.props;
+const Icon = getIconComponent(iconName);
+---
+
+<div 
+  class={`service-content-panel transition-all duration-700 transform ${isActive ? 'opacity-100 translate-y-0 relative z-10' : 'opacity-0 translate-y-12 hidden absolute inset-0'}`}
+  data-service-id={id}
+>
+  <!-- Cabecera del Servicio -->
+  <header class="mb-10 flex items-center justify-between border-b border-white/5 pb-8">
+    <div class="flex items-center gap-6">
+      <div class="w-14 h-14 rounded-2xl bg-linear-to-br from-orange-500 to-orange-600 flex items-center justify-center text-white shadow-2xl shadow-orange-500/20">
+        <Icon class="w-7 h-7" />
+      </div>
+      <div>
+        <span class="text-[9px] uppercase tracking-[0.4em] font-bold text-orange-500 block mb-1">
+           {label}
+        </span>
+        <h3 class="text-2xl md:text-3xl font-black text-white leading-tight">
+          {title}
+        </h3>
+      </div>
+    </div>
+    <span class="text-6xl font-black text-white/5 select-none hidden md:block">
+      {(index + 1).toString().padStart(2, '0')}
+    </span>
+  </header>
+
+  <!-- Detalles del Servicio -->
+  <div class="space-y-12">
+    <p class="text-gray-300 text-lg md:text-xl leading-relaxed max-w-2xl font-light">
+      {description}
+    </p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-end">
+      <div class="space-y-6">
+        <h4 class="text-[10px] font-bold uppercase tracking-[0.2em] text-white/20 flex items-center gap-4">
+          <span class="w-10 h-px bg-white/10"></span>
+          Características
+        </h4>
+        <div class="grid grid-cols-1 gap-5">
+          {features.map((feature) => (
+            <div class="flex items-center gap-4 group/feature transition-all duration-300">
+              <div class="w-1 h-1 rounded-full bg-orange-500/30 group-hover/feature:bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.3)]"></div>
+              <span class="text-[13px] font-medium text-white/60 group-hover/feature:text-white transition-colors">
+                {feature}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="flex justify-end p-2">
+        <a
+          href="#contact"
+          class="group/cta relative inline-flex items-center gap-4 text-[11px] font-black uppercase tracking-[0.2em] text-white overflow-hidden py-4 px-10 rounded-2xl border border-white/10 hover:border-orange-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/10"
+        >
+          <span class="relative z-10">Saber más</span>
+          <svg class="w-4 h-4 relative z-10 group-hover/cta:translate-x-2 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+          </svg>
+          <div class="absolute inset-0 bg-orange-500 translate-y-full group-hover/cta:translate-y-0 transition-transform duration-500"></div>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

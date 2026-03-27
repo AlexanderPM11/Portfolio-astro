@@ -1,7 +1,8 @@
 ---
 import { GetWpServices } from "../services/wpServices";
-import { getIconComponent } from "../utils/iconMapper";
 import SectionHeading from "./common/SectionHeading.astro";
+import ServiceSelector from "./services/ServiceSelector.astro";
+import ServicePanel from "./services/ServicePanel.astro";
 
 const services = await GetWpServices();
 ---
@@ -28,102 +29,29 @@ const services = await GetWpServices();
         role="tablist"
       >
         {services.map((service, index) => (
-          <button 
-            type="button" 
-            role="tab"
-            aria-selected={index === 0 ? "true" : "false"}
-            class={`service-tab-btn flex-none lg:w-full text-left relative transition-all duration-300 py-3 lg:py-5 px-6 lg:px-10 group ${index === 0 ? 'active' : ''}`}
-            data-service-id={service.id}
-          >
-            <!-- Línea Indicadora Vertical (Inactiva: Sutil / Activa: Naranja) -->
-            <div 
-              class={`absolute left-0 top-0 bottom-0 w-[2px] transition-all duration-300 ${index === 0 ? 'bg-orange-500 scale-y-100' : 'bg-white/10 group-hover:bg-white/50 scale-y-50 group-hover:scale-y-100 group-hover:w-[1px]'}`}
-            ></div>
-
-            <!-- Contenido del Selector -->
-            <div class="flex items-center gap-6">
-              <span class={`font-light text-[10px] tracking-widest transition-all duration-300 ${index === 0 ? 'text-orange-500 opacity-100' : 'text-white/20 group-hover:text-white/60 group-hover:opacity-100'}`}>
-                {(index + 1).toString().padStart(2, '0')}
-              </span>
-              <span class={`text-[11px] font-bold uppercase tracking-[0.3em] whitespace-nowrap lg:whitespace-normal transition-all duration-300 ${index === 0 ? 'text-orange-500' : 'text-white/40 group-hover:text-white'}`}>
-                {service.title}
-              </span>
-            </div>
-          </button>
+          <ServiceSelector 
+            id={service.id}
+            title={service.title}
+            index={index}
+            isActive={index === 0}
+          />
         ))}
       </nav>
 
       <!-- Lado Derecho: Contenido Dinámico -->
       <div class="relative">
-        {services.map((service, index) => {
-          const Icon = getIconComponent(service.iconName);
-          return (
-            <div 
-              class={`service-content-panel transition-all duration-700 transform ${index === 0 ? 'opacity-100 translate-y-0 relative z-10' : 'opacity-0 translate-y-12 hidden absolute inset-0'}`}
-              data-service-id={service.id}
-            >
-              <!-- Cabecera del Servicio -->
-              <header class="mb-10 flex items-center justify-between border-b border-white/5 pb-8">
-                <div class="flex items-center gap-6">
-                  <div class="w-14 h-14 rounded-2xl bg-linear-to-br from-orange-500 to-orange-600 flex items-center justify-center text-white shadow-2xl shadow-orange-500/20">
-                    <Icon class="w-7 h-7" />
-                  </div>
-                  <div>
-                    <span class="text-[9px] uppercase tracking-[0.4em] font-bold text-orange-500 block mb-1">
-                       {service.label}
-                    </span>
-                    <h3 class="text-2xl md:text-4xl font-black text-white leading-tight">
-                      {service.title}
-                    </h3>
-                  </div>
-                </div>
-                <span class="text-6xl font-black text-white/5 select-none hidden md:block">
-                  {(index + 1).toString().padStart(2, '0')}
-                </span>
-              </header>
-
-              <!-- Detalles del Servicio -->
-              <div class="space-y-12">
-                <p class="text-gray-300 text-lg md:text-xl leading-relaxed max-w-2xl font-light">
-                  {service.description}
-                </p>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-end">
-                  <div class="space-y-6">
-                    <h4 class="text-[10px] font-bold uppercase tracking-[0.2em] text-white/20 flex items-center gap-4">
-                      <span class="w-10 h-px bg-white/10"></span>
-                      Características
-                    </h4>
-                    <div class="grid grid-cols-1 gap-5">
-                      {service.features.map((feature) => (
-                        <div class="flex items-center gap-4 group/feature transition-all duration-300">
-                          <div class="w-1 h-1 rounded-full bg-orange-500/30 group-hover/feature:bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.3)]"></div>
-                          <span class="text-[13px] font-medium text-white/60 group-hover/feature:text-white transition-colors">
-                            {feature}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div class="flex justify-end p-2">
-                    <a
-                      href="#contact"
-                      class="group/cta relative inline-flex items-center gap-4 text-[11px] font-black uppercase tracking-[0.2em] text-white overflow-hidden py-4 px-10 rounded-2xl border border-white/10 hover:border-orange-500/30 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/10"
-                      onclick="scrollToSection(event, '#contact')"
-                    >
-                      <span class="relative z-10">Saber más</span>
-                      <svg class="w-4 h-4 relative z-10 group-hover/cta:translate-x-2 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                      </svg>
-                      <div class="absolute inset-0 bg-orange-500 translate-y-full group-hover/cta:translate-y-0 transition-transform duration-500"></div>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          );
-        })}
+        {services.map((service, index) => (
+          <ServicePanel 
+            id={service.id}
+            title={service.title}
+            description={service.description}
+            label={service.label}
+            iconName={service.iconName}
+            features={service.features}
+            index={index}
+            isActive={index === 0}
+          />
+        ))}
       </div>
     </div>
 
@@ -142,8 +70,7 @@ const services = await GetWpServices();
           <div class="flex flex-col sm:flex-row gap-5 justify-center">
             <a
               href="#contact"
-              class="bg-linear-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-10 py-4 rounded-2xl text-[12px] font-black uppercase tracking-widest transition-all duration-300 hover:shadow-2xl hover:shadow-orange-500/30 hover:-translate-y-1"
-              onclick="scrollToSection(event, '#contact')"
+              class="cta-scroll-btn bg-linear-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-10 py-4 rounded-2xl text-[12px] font-black uppercase tracking-widest transition-all duration-300 hover:shadow-2xl hover:shadow-orange-500/30 hover:-translate-y-1"
             >
               Iniciar Proyecto
             </a>
@@ -155,7 +82,11 @@ const services = await GetWpServices();
 </section>
 
 <script>
+  /**
+   * Maneja el scroll suave a secciones específicas.
+   */
   function scrollToSection(e: Event, targetId: string) {
+    if (!targetId.startsWith('#')) return;
     e.preventDefault();
     const target = document.querySelector(targetId);
     if (target) {
@@ -170,7 +101,19 @@ const services = await GetWpServices();
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    // 1. Animaciones de Entrada (AOS)
+    // ---------------------------------------------------------
+    // 1. Manejo de Scroll para CTAs
+    // ---------------------------------------------------------
+    document.querySelectorAll('.cta-scroll-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const href = (btn as HTMLAnchorElement).getAttribute('href');
+        if (href) scrollToSection(e, href);
+      });
+    });
+
+    // ---------------------------------------------------------
+    // 2. Animaciones de Entrada (AOS básico)
+    // ---------------------------------------------------------
     const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
     const entryObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -190,7 +133,9 @@ const services = await GetWpServices();
       entryObserver.observe(el);
     });
 
-    // 2. Lógica del Conmutador de Servicios (Tabs)
+    // ---------------------------------------------------------
+    // 3. Lógica del Conmutador de Servicios (Tabs)
+    // ---------------------------------------------------------
     const tabBtns = document.querySelectorAll('.service-tab-btn');
     const contentPanels = document.querySelectorAll('.service-content-panel');
 
@@ -199,7 +144,7 @@ const services = await GetWpServices();
         if (btn.classList.contains('active')) return;
         const targetId = btn.getAttribute('data-service-id');
 
-        // A. Actualizar estado de los botones
+        // A. Actualizar estado de los botones (Navegación)
         tabBtns.forEach(b => {
           const bIndicator = b.querySelector('div:first-child');
           const bNum = b.querySelector('span:nth-child(1)');
@@ -210,34 +155,28 @@ const services = await GetWpServices();
           
           if (isTarget) {
             b.classList.add('active');
-            // Indicador
             if (bIndicator) {
               bIndicator.classList.add('bg-orange-500', 'scale-y-100');
               bIndicator.classList.remove('bg-white/10', 'scale-y-50', 'w-[1px]');
             }
-            // Numero
             if (bNum) {
               bNum.classList.add('text-orange-500', 'opacity-100');
               bNum.classList.remove('text-white/20');
             }
-            // Titulo
             if (bTitle) {
               bTitle.classList.add('text-orange-500');
               bTitle.classList.remove('text-white/40');
             }
           } else {
             b.classList.remove('active');
-            // Indicador
             if (bIndicator) {
               bIndicator.classList.remove('bg-orange-500', 'scale-y-100');
               bIndicator.classList.add('bg-white/10', 'scale-y-50');
             }
-            // Numero
             if (bNum) {
               bNum.classList.remove('text-orange-500', 'opacity-100');
               bNum.classList.add('text-white/20');
             }
-            // Titulo
             if (bTitle) {
               bTitle.classList.remove('text-orange-500');
               bTitle.classList.add('text-white/40');
@@ -245,7 +184,7 @@ const services = await GetWpServices();
           }
         });
 
-        // B. Cambiar paneles de contenido
+        // B. Cambiar paneles de contenido (Detalles)
         contentPanels.forEach(panel => {
           const htmlPanel = panel as HTMLElement;
           const isTarget = htmlPanel.getAttribute('data-service-id') === targetId;

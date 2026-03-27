@@ -1,0 +1,33 @@
+---
+interface Props {
+  id: string | number;
+  title: string;
+  index: number;
+  isActive: boolean;
+}
+
+const { id, title, index, isActive } = Astro.props;
+---
+
+<button 
+  type="button" 
+  role="tab"
+  aria-selected={isActive ? "true" : "false"}
+  class={`service-tab-btn flex-none lg:w-full text-left relative transition-all duration-300 py-3 lg:py-5 px-6 lg:px-10 group ${isActive ? 'active' : ''}`}
+  data-service-id={id}
+>
+  <!-- Línea Indicadora Vertical (Inactiva: Sutil / Activa: Naranja) -->
+  <div 
+    class={`absolute left-0 top-0 bottom-0 w-[2px] transition-all duration-300 ${isActive ? 'bg-orange-500 scale-y-100' : 'bg-white/10 group-hover:bg-white/50 scale-y-50 group-hover:scale-y-100 group-hover:w-[1px]'}`}
+  ></div>
+
+  <!-- Contenido del Selector -->
+  <div class="flex items-center gap-6">
+    <span class={`font-light text-[10px] tracking-widest transition-all duration-300 ${isActive ? 'text-orange-500 opacity-100' : 'text-white/20 group-hover:text-white/60 group-hover:opacity-100'}`}>
+      {(index + 1).toString().padStart(2, '0')}
+    </span>
+    <span class={`text-[11px] font-bold uppercase tracking-[0.3em] whitespace-nowrap lg:whitespace-normal transition-all duration-300 ${isActive ? 'text-orange-500' : 'text-white/40 group-hover:text-white'}`}>
+      {title}
+    </span>
+  </div>
+</button>
