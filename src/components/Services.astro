@@ -12,84 +12,71 @@ const services = await GetWpServices();
   <div class="absolute bottom-10 right-10 w-40 h-40 bg-purple-500/5 rounded-full blur-xl"></div>
   <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-blue-500/3 rounded-full blur-2xl"></div>
 
-  <div class="max-w-4xl mx-auto relative z-10">
+  <div class="max-w-5xl mx-auto relative z-10 px-4">
     <SectionHeading
       label="Servicios Profesionales"
-      title="Soluciones"
-      highlight="Digitales"
-      description="Desarrollo soluciones tecnológicas innovadoras que impulsan el crecimiento de tu negocio."
+      title="Expertiz"
+      highlight="Técnica"
+      description="Soluciones digitales diseñadas con precisión y un enfoque en el rendimiento."
     />
 
-    <!-- Lista vertical mejorada -->
-    <div class="space-y-8 relative">
-      <!-- Línea vertical decorativa -->
-      <div class="absolute left-8 top-0 bottom-0 w-0.5 bg-linear-to-b from-orange-500/20 via-orange-500/10 to-transparent hidden md:block"></div>
+    <!-- Lista minimalista de servicios -->
+    <div class="flex flex-col border-t border-white/5">
       
       {services.map((service, index) => {
         const Icon = getIconComponent(service.iconName);
         return (
           <div 
-            class="flex flex-col md:flex-row gap-6 items-start group relative"
+            class="group py-12 flex flex-col md:flex-row gap-8 items-start md:items-center border-b border-white/5 last:border-0 hover:bg-white/5 transition-all duration-300 px-4 lg:px-8 relative"
             data-aos="fade-up"
-            data-aos-delay={(index * 150).toString()}
+            data-aos-delay={(index * 100).toString()}
           >
-            <!-- Ícono con efecto mejorado -->
+            <!-- Ícono minimalista -->
             <div class="shrink-0 relative">
-              <div class="w-20 h-20 rounded-2xl bg-linear-to-br from-orange-500 to-orange-600 flex items-center justify-center text-white group-hover:scale-110 transition-all duration-500 shadow-lg shadow-orange-500/25 relative z-10">
-                <Icon class="w-9 h-9" />
+              <div class="w-14 h-14 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500 group-hover:bg-orange-500 group-hover:text-white transition-all duration-500 shadow-sm border border-orange-500/20">
+                <Icon class="w-7 h-7" />
               </div>
-              <!-- Efecto de brillo en hover -->
-              <div class="absolute inset-0 rounded-2xl bg-orange-400 blur-md opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
             </div>
 
-          <!-- Contenido mejorado -->
-          <div class="grow bg-white/3 backdrop-blur-sm border border-white/10 rounded-2xl p-6 group-hover:bg-white/5 group-hover:border-orange-500/20 transition-all duration-500">
-            <div class="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
-              <div>
-                <h3 class="text-2xl font-bold text-white mb-2 group-hover:text-orange-400 transition-colors duration-300">
+            <!-- Contenido principal -->
+            <div class="grow min-w-0">
+              <div class="flex flex-col mb-4">
+                <span class="text-[10px] uppercase tracking-[0.2em] font-bold text-orange-500/70 mb-1">
+                  {service.label}
+                </span>
+                <h3 class="text-xl md:text-2xl font-bold text-white group-hover:text-orange-400 transition-colors duration-300">
                   {service.title}
                 </h3>
-                <div class="flex items-center gap-2 text-sm text-gray-400 mb-3">
-                  <span>{service.label}</span>
-                  <span class="w-1 h-1 bg-gray-500 rounded-full"></span>
-                  <span>{index + 1} de {services.length}</span>
-                </div>
               </div>
               
-              <a
-                href="#contact"
-                class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-medium transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/25 hover:-translate-y-0.5 group/btn"
-                onclick="scrollToSection(event, '#contact')"
-              >
-                <span>Consultar</span>
-                <svg class="w-4 h-4 group-hover/btn:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                </svg>
-              </a>
-            </div>
-            
-            <p class="text-gray-300 text-lg leading-relaxed mb-6 border-l-2 border-orange-500/30 pl-4">
-              {service.description}
-            </p>
-            
-            <div class="space-y-3">
-              <div class="flex items-center gap-2 text-sm text-gray-400 font-medium">
-                <svg class="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                </svg>
-                Características principales:
-              </div>
-              <div class="flex flex-wrap gap-3">
+              <p class="text-gray-400 text-sm md:text-base leading-relaxed max-w-2xl mb-5 group-hover:text-gray-300 transition-colors duration-300">
+                {service.description}
+              </p>
+              
+              <!-- Características compactas -->
+              <div class="flex flex-wrap gap-2">
                 {service.features.map((feature) => (
-                  <span class="inline-flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-gray-300 text-sm border border-white/10 hover:border-orange-500/30 transition-all duration-300 group/feature">
-                    <div class="w-2 h-2 bg-orange-500 rounded-full group-hover/feature:scale-150 transition-transform duration-300"></div>
+                  <span class="text-[10px] text-gray-500 bg-white/5 px-2 py-0.5 rounded border border-white/5 group-hover:border-orange-500/20 transition-all duration-300">
                     {feature}
                   </span>
                 ))}
               </div>
             </div>
+
+            <!-- CTA Integrado -->
+            <div class="shrink-0 w-full md:w-auto mt-6 md:mt-0 pt-6 md:pt-0 border-t md:border-t-0 border-white/5">
+              <a
+                href="#contact"
+                class="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-orange-500 transition-all duration-300 group/link"
+                onclick="scrollToSection(event, '#contact')"
+              >
+                <span>Saber más</span>
+                <svg class="w-4 h-4 group-hover/link:translate-x-1 transition-transform duration-300 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                </svg>
+              </a>
+            </div>
           </div>
-        </div>
         );
       })}
     </div>

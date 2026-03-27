@@ -28,7 +28,7 @@ export async function fetchCategories(): Promise<Category[]> {
     const data = await get<Category[]>(url);
 
     const validCategories = data
-        .filter((cat) => cat.count > 0 && cat.slug !== "projects" && !cat.name.startsWith("(P) -"))
+        .filter((cat) => cat.count > 0 && cat.slug !== "projects" && cat.slug !== "_servicesonly" && !cat.name.startsWith("(P) -"))
         .sort((a, b) => b.count - a.count);
 
     return [{ id: 0, name: "Todos", slug: "all", count: 0 }, ...validCategories];
@@ -44,6 +44,11 @@ export async function fetchPosts(categorySlug = "all", page = 1, perPage = 12, k
 
     if (projectsCat) {
         url += `&categories_exclude=${projectsCat.id}`;
+    }
+
+    const servicesCat = resCategories.find((c) => c.slug === "_servicesonly");
+    if (servicesCat) {
+        url += `${projectsCat ? "," : "&categories_exclude="}${servicesCat.id}`;
     }
 
     if (categorySlug !== "all") {
@@ -73,7 +78,10 @@ export async function fetchLimitedPosts(
         // 1) obtener la categoría "projects" (si existe)
         const resCategories = await fetchCategories();
         const projectsCat = resCategories.find((c) => c.slug === "projects");
+        const servicesCat = resCategories.find((c) => c.slug === "_servicesonly");
+        
         const projectsId = projectsCat ? projectsCat.id : null;
+        const servicesId = servicesCat ? servicesCat.id : null;
 
         // 2) parámetros para la paginación y eficiencia
         //    perPage alta para reducir número de requests (ajusta si tu WP limita)
@@ -113,7 +121,7 @@ export async function fetchLimitedPosts(
                 const termGroups = post._embedded?.["wp:term"];
                 if (Array.isArray(termGroups)) {
                     const flatTerms = termGroups.flat();
-                    if (flatTerms.some((t: any) => t?.slug === "projects" || t?.id === projectsId)) {
+                    if (flatTerms.some((t: any) => t?.slug === "projects" || t?.id === projectsId || t?.slug === "_servicesonly" || t?.id === servicesId)) {
                         return false;
                     }
                 }
