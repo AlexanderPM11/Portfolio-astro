@@ -26,20 +26,20 @@ const services = await GetWpServices();
       <!-- Selectores de Servicios (Navegación Lateral / Superior en Mobile) -->
       <div class="sticky top-[72px] lg:top-32 z-30 lg:h-fit -mx-6 lg:mx-0 group/nav-container">
         <!-- Sombras indicadoras de scroll en móvil -->
-        <div class="absolute inset-y-0 left-0 w-12 bg-linear-to-r from-gray-900 to-transparent z-40 pointer-events-none lg:hidden"></div>
-        <div class="absolute inset-y-0 right-0 w-12 bg-linear-to-l from-gray-900 to-transparent z-40 pointer-events-none lg:hidden"></div>
+        <div class="absolute inset-y-0 left-0 w-12 bg-linear-to-r from-gray-900 to-transparent z-40 pointer-events-none lg:hidden transition-opacity duration-300"></div>
+        <div class="absolute inset-y-0 right-0 w-12 bg-linear-to-l from-gray-900 to-transparent z-40 pointer-events-none lg:hidden transition-opacity duration-300"></div>
 
         <!-- Flechas de navegación móvil -->
         <button 
             id="nav-prev-btn"
-            class="absolute left-2 top-1/2 -translate-y-1/2 z-50 w-8 h-8 rounded-full bg-orange-500/10 backdrop-blur-md border border-white/10 flex items-center justify-center text-white/50 active:scale-95 transition-all lg:hidden"
+            class="absolute left-2 top-1/2 -translate-y-1/2 z-50 w-8 h-8 rounded-full bg-gray-800/80 backdrop-blur-md border border-white/10 flex items-center justify-center text-white/50 active:scale-95 transition-all lg:hidden shadow-lg shadow-black/20"
             aria-label="Anterior"
         >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
         </button>
         <button 
             id="nav-next-btn"
-            class="absolute right-2 top-1/2 -translate-y-1/2 z-50 w-8 h-8 rounded-full bg-orange-500/10 backdrop-blur-md border border-white/10 flex items-center justify-center text-white/50 active:scale-95 transition-all lg:hidden"
+            class="absolute right-2 top-1/2 -translate-y-1/2 z-50 w-8 h-8 rounded-full bg-gray-800/80 backdrop-blur-md border border-white/10 flex items-center justify-center text-white/50 active:scale-95 transition-all lg:hidden shadow-lg shadow-black/20"
             aria-label="Siguiente"
         >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
@@ -47,7 +47,7 @@ const services = await GetWpServices();
 
         <nav 
           id="services-nav-scroll"
-          class="flex lg:flex-col overflow-x-auto lg:overflow-x-visible pb-4 lg:pb-0 scrollbar-hide space-x-2 lg:space-x-0 lg:space-y-4 bg-gray-900/60 lg:bg-transparent backdrop-blur-md lg:backdrop-blur-none px-10 lg:px-0 border-b border-white/5 lg:border-b-0 scroll-smooth"
+          class="flex lg:flex-col overflow-x-auto lg:overflow-x-visible pb-4 lg:pb-0 scrollbar-hide space-x-2 lg:space-x-0 lg:space-y-4 bg-gray-900/40 lg:bg-transparent backdrop-blur-sm lg:backdrop-blur-none px-10 lg:px-0 border-b border-white/5 lg:border-b-0 scroll-smooth"
           role="tablist"
         >
           {services.map((service, index) => (
@@ -79,28 +79,25 @@ const services = await GetWpServices();
       </div>
     </div>
 
-    <!-- Call to Action final -->
-    <div class="text-center mt-20 pt-10 border-t border-white/5">
-      <div class="bg-gray-800/50 backdrop-blur-md border border-white/5 rounded-3xl p-8 lg:p-10 relative overflow-hidden group">
-        <div class="absolute top-0 right-0 w-64 h-64 bg-orange-500/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl group-hover:scale-110 transition-transform duration-700"></div>
-        
-        <div class="relative z-10">
-          <h3 class="text-xl lg:text-2xl font-bold text-white mb-4">
-            ¿Listo para llevar tu proyecto al siguiente nivel?
-          </h3>
-          <p class="text-gray-400 mb-8 lg:mb-10 max-w-xl mx-auto text-sm leading-relaxed">
-            Combinamos técnica, diseño y estrategia para crear soluciones digitales que marquen la diferencia. ¿Hablamos?
-          </p>
-          <div class="flex flex-col sm:flex-row gap-5 justify-center">
+    <!-- Call to Action final (Más Minimalista) -->
+    <div class="mt-16 pt-12 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12">
+        <div class="text-center md:text-left">
+            <h3 class="text-lg md:text-xl font-bold text-white mb-2">
+                ¿Listo para elevar tu presencia digital?
+            </h3>
+            <p class="text-gray-400 text-xs md:text-sm max-w-lg leading-relaxed">
+                Transformamos ideas complejas en realidades técnicas impecables. Hablemos de tu próximo proyecto.
+            </p>
+        </div>
+        <div class="flex-none">
             <a
               href="#contact"
-              class="cta-scroll-btn bg-linear-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-10 py-4 rounded-2xl text-[12px] font-black uppercase tracking-widest transition-all duration-300 hover:shadow-2xl hover:shadow-orange-500/30 hover:-translate-y-1"
+              class="cta-scroll-btn group/cta relative inline-flex items-center gap-4 text-[11px] font-black uppercase tracking-[0.2em] text-white bg-linear-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 py-4 px-10 rounded-2xl shadow-xl shadow-orange-500/20 transition-all duration-300 hover:-translate-y-1"
             >
               Iniciar Proyecto
+              <svg class="w-4 h-4 group-hover/cta:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
             </a>
-          </div>
         </div>
-      </div>
     </div>
   </div>
 </section>

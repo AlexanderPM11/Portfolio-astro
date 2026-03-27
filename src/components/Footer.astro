@@ -9,6 +9,7 @@ import {
   User,
 } from "lucide-astro";
 import SocialMedia from "./SocialMedia.astro";
+import FeaturedProjects from "./FeaturedProjects.astro";
 import logo from "../assets/img/Logo.png";
 ---
 
@@ -241,6 +242,9 @@ import logo from "../assets/img/Logo.png";
       </div>
     </div>
 
+    <!-- Proyectos Extra (Ultra Compacto) -->
+    <FeaturedProjects />
+
     <!-- Footer inferior -->
     <div
       class="flex flex-col lg:flex-row justify-between items-center pt-8 gap-6"
@@ -349,11 +353,11 @@ import logo from "../assets/img/Logo.png";
     if (newsletterForm) {
       newsletterForm.addEventListener("submit", (e) => {
         e.preventDefault();
-        const emailInput = newsletterForm.querySelector('input[type="email"]')!;
+        const emailInput = newsletterForm.querySelector('input[type="email"]') as HTMLInputElement;
         const button =
           newsletterForm.querySelector<HTMLButtonElement>("button")!;
 
-        if (emailInput.value) {
+        if (emailInput && emailInput.value) {
           // Simular envío
           const originalText = button.innerHTML;
           button.innerHTML = "Suscribiendo...";
