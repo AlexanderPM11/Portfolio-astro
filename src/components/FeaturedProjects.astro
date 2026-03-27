@@ -1,108 +1,134 @@
 ---
-const projects = [
-  { title: "Future Banking", icon: "🚀", link: "#" },
-  { title: "Smart System", icon: "🏫", link: "#" },
-  { title: "RealEstate", icon: "🏠", link: "#" },
-  { title: "Social Media", icon: "📱", link: "#" },
-  { title: "You E-Market", icon: "🛒", link: "#" },
-  { title: "SIGPRO (MES)", icon: "🏭", link: "#" },
-  { title: "AJP Notes", icon: "📝", link: "#" },
-  { title: "DayTracker", icon: "🗓️", link: "#" }
-];
+import { GetWpHighlights } from "../services/wpHighlights";
+
+const highlights = await GetWpHighlights();
+
+const projects = highlights.length > 0 ? highlights : [];
 ---
 
 <div class="projects-scroll-section py-6 group/scroll relative">
   <div class="flex items-center gap-3 mb-4 md:mb-6">
-    <span class="text-[9px] uppercase font-black tracking-[0.3em] text-orange-500 whitespace-nowrap">
-      Explorar Ecosistema
+    <span
+      class="text-[9px] uppercase font-black tracking-[0.3em] text-orange-500 whitespace-nowrap"
+    >
+      Todos mis proyectos
     </span>
     <div class="h-px bg-white/5 grow"></div>
   </div>
 
   <div class="relative group/nav">
     <!-- Sombras de degradado -->
-    <div id="projects-left-mask" class="absolute inset-y-0 left-0 w-12 bg-linear-to-r from-gray-900 to-transparent z-10 pointer-events-none opacity-0 transition-opacity duration-300"></div>
-    <div id="projects-right-mask" class="absolute inset-y-0 right-0 w-12 bg-linear-to-l from-black to-transparent z-10 pointer-events-none transition-opacity duration-300"></div>
+    <div
+      id="projects-left-mask"
+      class="absolute inset-y-0 left-0 w-12 bg-linear-to-r from-gray-900 to-transparent z-10 pointer-events-none opacity-0 transition-opacity duration-300"
+    >
+    </div>
+    <div
+      id="projects-right-mask"
+      class="absolute inset-y-0 right-0 w-12 bg-linear-to-l from-black to-transparent z-10 pointer-events-none transition-opacity duration-300"
+    >
+    </div>
 
     <!-- Flechas -->
-    <button 
-        id="projects-prev-btn"
-        class="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-orange-500/20 active:scale-95 transition-all opacity-0 pointer-events-none"
-        aria-label="Anterior"
+    <button
+      id="projects-prev-btn"
+      class="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-orange-500/20 active:scale-95 transition-all opacity-0 pointer-events-none"
+      aria-label="Anterior"
     >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+        ><path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2.5"
+          d="M15 19l-7-7 7-7"></path></svg
+      >
     </button>
-    <button 
-        id="projects-next-btn"
-        class="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-orange-500/20 active:scale-95 transition-all shadow-lg"
-        aria-label="Siguiente"
+    <button
+      id="projects-next-btn"
+      class="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:bg-orange-500/20 active:scale-95 transition-all shadow-lg"
+      aria-label="Siguiente"
     >
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+        ><path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2.5"
+          d="M9 5l7 7-7 7"></path></svg
+      >
     </button>
 
-    <div 
-        id="projects-nav-scroll"
-        class="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-2 pt-1"
+    <div
+      id="projects-nav-scroll"
+      class="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-2 pt-1"
     >
-        {projects.map((project) => (
-        <a 
-            href={project.link} 
+      {
+        projects.map((project) => (
+          <a
+            href={"url" in project ? project.url : "#"}
             class="flex-none flex items-center gap-3 px-5 py-2.5 rounded-xl bg-white/3 border border-white/5 hover:border-orange-500/30 hover:bg-white/6 transition-all duration-300 group"
-        >
+          >
             <span class="text-base group-hover:scale-110 transition-transform">
-            {project.icon}
+              {project.icon}
             </span>
             <span class="text-[11px] font-bold text-white/50 group-hover:text-white transition-colors whitespace-nowrap uppercase tracking-wider">
-            {project.title}
+              {project.title}
             </span>
-        </a>
-        ))}
+          </a>
+        ))
+      }
     </div>
   </div>
 </div>
 
 <style>
-  .scrollbar-hide::-webkit-scrollbar { display: none; }
-  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 </style>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const scrollContainer = document.getElementById('projects-nav-scroll');
-        const prevBtn = document.getElementById('projects-prev-btn');
-        const nextBtn = document.getElementById('projects-next-btn');
-        const leftMask = document.getElementById('projects-left-mask');
-        const rightMask = document.getElementById('projects-right-mask');
+  document.addEventListener("DOMContentLoaded", () => {
+    const scrollContainer = document.getElementById("projects-nav-scroll");
+    const prevBtn = document.getElementById("projects-prev-btn");
+    const nextBtn = document.getElementById("projects-next-btn");
+    const leftMask = document.getElementById("projects-left-mask");
+    const rightMask = document.getElementById("projects-right-mask");
 
-        if (scrollContainer && prevBtn && nextBtn && leftMask && rightMask) {
-            const scrollAmount = 300;
+    if (scrollContainer && prevBtn && nextBtn && leftMask && rightMask) {
+      const scrollAmount = 300;
 
-            prevBtn.addEventListener('click', () => {
-                scrollContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-            });
+      prevBtn.addEventListener("click", () => {
+        scrollContainer.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+      });
 
-            nextBtn.addEventListener('click', () => {
-                scrollContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-            });
+      nextBtn.addEventListener("click", () => {
+        scrollContainer.scrollBy({ left: scrollAmount, behavior: "smooth" });
+      });
 
-            const updateUI = () => {
-                const isAtStart = scrollContainer.scrollLeft <= 10;
-                const isAtEnd = scrollContainer.scrollLeft + scrollContainer.clientWidth >= scrollContainer.scrollWidth - 10;
-                
-                // Botones
-                prevBtn.style.opacity = isAtStart ? '0' : '1';
-                prevBtn.style.pointerEvents = isAtStart ? 'none' : 'auto';
-                nextBtn.style.opacity = isAtEnd ? '0' : '1';
-                nextBtn.style.pointerEvents = isAtEnd ? 'none' : 'auto';
+      const updateUI = () => {
+        const isAtStart = scrollContainer.scrollLeft <= 10;
+        const isAtEnd =
+          scrollContainer.scrollLeft + scrollContainer.clientWidth >=
+          scrollContainer.scrollWidth - 10;
 
-                // Máscaras
-                leftMask.style.opacity = isAtStart ? '0' : '1';
-                rightMask.style.opacity = isAtEnd ? '0' : '1';
-            };
+        // Botones
+        prevBtn.style.opacity = isAtStart ? "0" : "1";
+        prevBtn.style.pointerEvents = isAtStart ? "none" : "auto";
+        nextBtn.style.opacity = isAtEnd ? "0" : "1";
+        nextBtn.style.pointerEvents = isAtEnd ? "none" : "auto";
 
-            scrollContainer.addEventListener('scroll', updateUI, { passive: true });
-            window.addEventListener('resize', updateUI);
-            updateUI();
-        }
-    });
+        // Máscaras
+        leftMask.style.opacity = isAtStart ? "0" : "1";
+        rightMask.style.opacity = isAtEnd ? "0" : "1";
+      };
+
+      scrollContainer.addEventListener("scroll", updateUI, { passive: true });
+      window.addEventListener("resize", updateUI);
+      updateUI();
+    }
+  });
 </script>
