@@ -43,9 +43,9 @@ export async function getProjectById(id: number): Promise<ProjectPost> {
     categories: allCategories.length > 0 ? allCategories : ["General"],
     title: stripHtml(p.title?.rendered || ""),
     content: { rendered: p.content?.rendered || "" },
-    description:
-      stripHtml((p as any).excerpt?.rendered || "") ||
-      stripHtml(p.content?.rendered || ""),
+    description: ((p as any).excerpt?.rendered?.trim()) 
+      ? stripHtml((p as any).excerpt.rendered) 
+      : stripHtml(p.content?.rendered || ""),
     image,
     date: p.date,
     techStack: Array.isArray(p.acf?.techstack) ? p.acf!.techstack : [],
@@ -97,8 +97,9 @@ export async function GetProjects(): Promise<ProjectPost[]> {
       category: secondary?.name || "General",
       categories: allCategories.length > 0 ? allCategories : ["General"],
       title: stripHtml(p.title?.rendered || ""),
-      description: stripHtml((p as any).excerpt?.rendered || "") ||
-        stripHtml(p.content?.rendered || ""),
+      description: ((p as any).excerpt?.rendered?.trim()) 
+        ? stripHtml((p as any).excerpt.rendered) 
+        : stripHtml(p.content?.rendered || ""),
       image,
       date: p.date,
       techStack: Array.isArray(p.acf?.techstack) ? p.acf!.techstack : [],

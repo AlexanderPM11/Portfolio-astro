@@ -1,10 +1,9 @@
 ---
-import { Github, ExternalLink } from "lucide-astro";
-import { techIcons } from "../../util/constants/TechIcons";
+// src/components/project/Projects.astro
 import { GetProjects } from "../../services/blog/ProjectService";
 import type { ProjectPost } from "../../interface/Project/ProjectInterface";
 import SectionHeading from "../common/SectionHeading.astro";
-import { Icon } from "astro-icon/components";
+import ProjectCard from "./ProjectCard.astro";
 
 let projects: ProjectPost[] = [];
 let categories = ["all"];
@@ -19,41 +18,34 @@ try {
 }
 ---
 
-<section id="projects" class="py-20 bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 text-white relative overflow-hidden">
-  <!-- Background decoration -->
-  <div class="absolute inset-0 bg-grid-white/[0.02] bg-size-[60px_60px]"></div>
-  <div class="absolute top-0 left-0 w-72 h-72 bg-purple-500/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
-  <div class="absolute bottom-0 right-0 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
+<section id="projects" class="py-24 bg-[#0a0a0c] text-white relative overflow-hidden">
+  <!-- Dynamic Aura Background -->
+  <div class="absolute inset-x-0 -top-40 h-[1000px] bg-[radial-gradient(circle_at_50%_0%,rgba(249,115,22,0.06),transparent_80%)] pointer-events-none"></div>
   
-  <div class="container mx-auto px-4 relative z-10">
-    <div class="flex flex-col w-full items-center text-center">
+  <div class="container mx-auto px-6 relative z-10">
+    <div class="flex flex-col w-full items-start animate-in fade-in slide-in-from-bottom-5 duration-700">
       <SectionHeading
         label="Proyectos"
         title="Proyectos"
         highlight="Destacados"
-        description="Una selección de proyectos recientes que reflejan mi pasión por la tecnología y la innovación."
+        description="Selección de trabajos recientes que combinan tecnología de vanguardia con un diseño de alta gama."
       />
     </div>
 
     {fetchError ? (
-      <div class="max-w-md mx-auto bg-red-900/20 backdrop-blur-sm border border-red-500/30 rounded-2xl p-6 text-center">
-        <div class="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
-          <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/>
-          </svg>
-        </div>
-        <p class="text-red-300 font-medium">No se pudieron cargar los proyectos. Intenta nuevamente más tarde.</p>
+      <div class="max-w-md mx-auto bg-red-900/10 backdrop-blur-sm border border-red-500/20 rounded-2xl p-6 text-center">
+        <p class="text-red-300 font-medium italic">Hubo un problema al cargar los proyectos activos.</p>
       </div>
     ) : (
       <>
-        <!-- Filtros mejorados -->
-       <div id="filter-tabs" class="flex flex-wrap justify-center gap-3 mb-10">
+        <!-- Modern SaaS Chip Filter Bar -->
+        <div id="filter-tabs" class="flex flex-wrap gap-2 mb-16 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
           {categories.map((cat) => (
             <button
-              class={`filter-btn px-5 py-2.5 rounded-full font-medium cursor-pointer capitalize transition-all duration-300 ${
-                cat === "all"
-                  ? "bg-orange-500 text-white shadow-lg shadow-orange-500/30 scale-105"
-                  : "bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white hover:scale-105"
+              class={`filter-btn px-6 py-2 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all duration-500 border ${
+                cat === "all" 
+                  ? "bg-orange-500 border-orange-500 text-white shadow-[0_10px_20px_-5px_rgba(249,115,22,0.3)]" 
+                  : "bg-white/5 border-white/5 text-gray-400 hover:text-white hover:bg-white/10"
               }`}
               data-category={cat}
             >
@@ -62,115 +54,25 @@ try {
           ))}
         </div>
 
-        <!-- Grid de proyectos mejorado -->
-        <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-          {projects.map((project, index) => (
-            <div
-              class="project-card group relative rounded-3xl overflow-hidden border border-gray-700/50 bg-linear-to-br from-gray-800/40 to-gray-900/60 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 hover:border-orange-400/50"
-              data-category={project.category}
-              style={`animation-delay: ${index * 100}ms`}
-            >
-              <!-- Efecto de brillo al hover -->
-              <div class="absolute inset-0 bg-linear-to-r from-orange-500/0 to-amber-500/0 group-hover:from-orange-500/5 group-hover:to-amber-500/5 transition-all duration-500 pointer-events-none"></div>
-              
-              <!-- Imagen del proyecto -->
-              <div class="h-60 overflow-hidden relative">
-                <a href={`/${project.id}`} class="block h-full">
-                  <img
-                    src={project.image}
-                    alt={project.title.rendered}
-                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                  <div class="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent opacity-70 group-hover:opacity-90 transition-opacity duration-500"></div>
-                  <!-- Badge overlay -->
-                  <div class="absolute top-4 left-4">
-                    <span class="inline-block px-3 py-1 bg-black/60 backdrop-blur-sm text-orange-400 font-semibold rounded-full text-sm border border-orange-500/30">
-                      {project.category}
-                    </span>
-                  </div>
-                </a>
-              </div>
-
-              <!-- Contenido del proyecto -->
-              <div class="p-6 relative">
-                <h3 class="text-xl font-bold mb-3 text-white group-hover:text-orange-400 transition-colors duration-300">
-                  <a href={`/${project.id}`} class="hover:underline decoration-orange-400 decoration-2"  set:html= {project.title.rendered}/>
-                 
-                </h3>
-
-                <!-- Tecnologías - Diseño mejorado -->
-                <div class="flex flex-wrap gap-2 items-center mb-4">
-                  {project.techStack?.map((tech) => {
-                    const iconData = techIcons[tech];
-                    return iconData ? (
-                      <div class="relative group/tech">
-                        <div class="p-2 bg-white/5 rounded-lg border border-gray-600/50 hover:bg-white/10 hover:border-orange-400/50 transition-all duration-300">
-                          <Icon 
-                            name={iconData.name} 
-                            class="w-5 h-5 hover:scale-110 transition-transform duration-300"
-                            style={`color: ${iconData.color}`}
-                            title={iconData.title}
-                          />
-                        </div>
-                        <!-- Tooltip -->
-                        <div class="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs font-medium px-3 py-2 rounded-lg opacity-0 group-hover/tech:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap z-20 border border-gray-700 shadow-lg">
-                          {iconData.title}
-                          <div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45 border-b border-r border-gray-700"></div>
-                        </div>
-                      </div>
-                    ) : null;
-                  })}
-                </div>
-
-                <!-- Descripción -->
-                <p class="text-gray-300 mb-6 leading-relaxed text-sm line-clamp-3">
-                  {project.description.rendered.replace(/<[^>]*>/g, '')}
-                </p>
-
-                <!-- Acciones -->
-                <div class="flex justify-between items-center pt-4 border-t border-gray-700/50">
-                  <span class="text-sm text-gray-400 font-medium">
-                    Ver detalles
-                  </span>
-                  <div class="flex gap-3 items-center">
-                    {project.acf?.githubUrl && (
-                      <a
-                        href={project.acf?.githubUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="p-2 bg-white/5 rounded-lg border border-gray-600/50 text-gray-400 hover:bg-orange-500 hover:text-white hover:border-orange-500 hover:scale-110 transition-all duration-300 group/github"
-                        aria-label="Código en GitHub"
-                      >
-                        <Github class="w-4 h-4 group-hover/github:scale-110 transition-transform" />
-                      </a>
-                    )}
-                    {project.acf?.liveurl && (
-                      <a
-                        href={project.acf?.liveurl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="p-2 bg-white/5 rounded-lg border border-gray-600/50 text-gray-400 hover:bg-green-500 hover:text-white hover:border-green-500 hover:scale-110 transition-all duration-300 group/live"
-                        aria-label="Ver proyecto en vivo"
-                      >
-                        <ExternalLink class="w-4 h-4 group-hover/live:scale-110 transition-transform" />
-                      </a>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
+        <!-- Compact Project Grid (4-cols) -->
+        <div id="projects-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 items-stretch">
+          {projects.map((project) => (
+            <ProjectCard
+              id={project.id}
+              title={project.title.rendered}
+              category={project.category}
+              description={project.description.rendered.replace(/<[^>]*>/g, '')}
+              image={project.image}
+              techStack={project.techStack}
+              githubUrl={project.acf?.githubUrl}
+              liveUrl={project.acf?.liveurl}
+            />
           ))}
         </div>
 
-        <!-- Mensaje si no hay proyectos -->
         {projects.length === 0 && (
-          <div class="text-center py-16">
-            <div class="w-20 h-20 bg-gray-700/50 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg class="w-10 h-10 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
-              </svg>
-            </div>
-            <p class="text-gray-400 text-lg font-medium">No hay proyectos para mostrar en este momento.</p>
+          <div class="text-center py-32 border-t border-white/5">
+            <p class="text-gray-500 text-xs uppercase tracking-[0.4em] animate-pulse">Sin proyectos en esta sección</p>
           </div>
         )}
       </>
@@ -180,82 +82,41 @@ try {
 
 <script>
   const buttons = document.querySelectorAll(".filter-btn") as NodeListOf<HTMLButtonElement>;
-  const cards = document.querySelectorAll(".project-card") as NodeListOf<HTMLElement>;
+  const cards = document.querySelectorAll("[data-category]") as NodeListOf<HTMLElement>;
 
-  buttons.forEach((btn: HTMLButtonElement) => {
+  buttons.forEach((btn) => {
     btn.addEventListener("click", () => {
-      const category = btn.dataset.category as string;
+      const category = btn.dataset.category || "all";
       
-      // Actualizar estado de botones
-      buttons.forEach((b: HTMLButtonElement) => {
-        b.classList.remove(
-          "bg-gradient-to-r", "from-orange-500", "to-amber-500", 
-          "text-white", "border-orange-500", "shadow-lg", "shadow-orange-500/25", "scale-105"
-        );
-        b.classList.add(
-          "bg-white/5", "text-gray-300", "border-gray-600"
-        );
+      // Update Button Styles
+      buttons.forEach((b) => {
+        b.classList.remove("bg-orange-500", "border-orange-500", "text-white", "shadow-[0_10px_20px_-5px_rgba(249,115,22,0.3)]");
+        b.classList.add("bg-white/5", "border-white/5", "text-gray-400");
       });
-      
-      // Activar botón clickeado
-      btn.classList.add(
-        "bg-gradient-to-r", "from-orange-500", "to-amber-500", 
-        "text-white", "border-orange-500", "shadow-lg", "shadow-orange-500/25", "scale-105"
-      );
-      btn.classList.remove(
-        "bg-white/5", "text-gray-300", "border-gray-600"
-      );
 
-      // Filtrar proyectos
-      cards.forEach((card: HTMLElement) => {
-        const cardCategory = card.dataset.category as string;
-        
-        if (category === "all" || cardCategory === category) {
+      btn.classList.add("bg-orange-500", "border-orange-500", "text-white", "shadow-[0_10px_20px_-5px_rgba(249,115,22,0.3)]");
+      btn.classList.remove("bg-white/5", "border-white/5", "text-gray-400");
+
+      // Filter Cards
+      cards.forEach((card) => {
+        // Only target the top-level project card div
+        if (!card.classList.contains('group')) return;
+
+        const cardCat = card.dataset.category || "all";
+        if (category === "all" || cardCat === category) {
           card.classList.remove("hidden");
           card.style.opacity = "0";
-          card.style.transform = "translateY(20px)";
-          
-          setTimeout(() => {
-            card.style.opacity = "1";
-            card.style.transform = "translateY(0)";
-          }, 50);
+          setTimeout(() => card.style.opacity = "1", 50);
         } else {
           card.classList.add("hidden");
         }
       });
     });
   });
-
-  // Animación inicial de las tarjetas
-  document.addEventListener('DOMContentLoaded', () => {
-    const projectCards = document.querySelectorAll('.project-card') as NodeListOf<HTMLElement>;
-    
-    projectCards.forEach((card: HTMLElement, index: number) => {
-      card.style.animation = `fadeInUp 0.6s ease-out ${index * 0.1}s both`;
-    });
-  });
 </script>
 
 <style>
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .line-clamp-3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .project-card {
-    animation: fadeInUp 0.6s ease-out both;
+  [data-category] {
+    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
 </style>

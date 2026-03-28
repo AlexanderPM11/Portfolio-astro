@@ -1,0 +1,82 @@
+---
+// src/components/project/ProjectRow.astro
+import { Github, ExternalLink, ArrowUpRight } from "lucide-astro";
+import { Icon } from "astro-icon/components";
+import { techIcons } from "../../util/constants/TechIcons";
+
+interface Props {
+  id: number;
+  index: number;
+  title: string;
+  category: string;
+  image: string;
+  techStack: string[];
+  githubUrl?: string;
+  liveUrl?: string;
+}
+
+const { id, index, title, category, image, techStack, githubUrl, liveUrl } = Astro.props;
+---
+
+<div
+  class="project-row group relative flex items-center gap-6 py-6 border-b border-white/5 transition-all duration-300 hover:bg-white/2 cursor-pointer"
+  data-category={category}
+  data-image={image}
+  data-title={title}
+>
+  <!-- Index Number -->
+  <span class="text-[10px] font-black text-white/20 group-hover:text-orange-500 transition-colors w-8">
+    {String(index + 1).padStart(2, '0')}
+  </span>
+
+  <!-- Category (Small Pill) -->
+  <div class="hidden md:block w-32">
+    <span class="px-2 py-0.5 bg-white/5 border border-white/10 rounded-full text-[8px] uppercase font-black tracking-widest text-slate-500 group-hover:text-orange-400 group-hover:border-orange-500/20 transition-all">
+      {category}
+    </span>
+  </div>
+
+  <!-- Title (Main Focus) -->
+  <div class="grow">
+    <h3 class="text-xl md:text-2xl font-black text-white/80 group-hover:text-white transition-all transform group-hover:translate-x-2" set:html={title} />
+  </div>
+
+  <!-- Tech Stack (Icons only) -->
+  <div class="hidden lg:flex items-center gap-2 opacity-30 group-hover:opacity-100 transition-opacity">
+    {techStack?.slice(0, 4).map((tech) => {
+      const iconData = techIcons[tech];
+      return iconData ? (
+        <div class="p-1 px-2 border border-white/5 rounded-md" title={iconData.title}>
+           <Icon name={iconData.name} class="w-3.5 h-3.5 opacity-80" style={`color: ${iconData.color}`} />
+        </div>
+      ) : null;
+    })}
+    {techStack?.length > 4 && <span class="text-[8px] font-bold text-slate-600">+{techStack.length - 4}</span>}
+  </div>
+
+  <!-- Actions -->
+  <div class="flex items-center gap-4 pl-4 border-l border-white/5">
+    <div class="flex gap-2">
+      {githubUrl && (
+        <a href={githubUrl} target="_blank" class="p-2 text-slate-500 hover:text-white transition-colors">
+          <Github class="w-4 h-4" />
+        </a>
+      )}
+      {liveUrl && (
+        <a href={liveUrl} target="_blank" class="p-2 text-slate-500 hover:text-white transition-colors">
+           <ExternalLink class="w-4 h-4" />
+        </a>
+      )}
+    </div>
+    <a href={`/${id}`} class="p-2 text-orange-500 hover:scale-110 active:scale-95 transition-all">
+      <ArrowUpRight class="w-5 h-5" />
+    </a>
+  </div>
+</div>
+
+<style>
+  .project-row {
+     /* Allow for precise mouse tracking */
+     position: relative;
+  }
+</style>
