@@ -13,121 +13,192 @@ interface Props {
   techStack: string[];
   githubUrl?: string;
   liveUrl?: string;
+  size?: "small" | "medium" | "large"; // Bento sizes
 }
 
-const { id, title, category, description, image, techStack, githubUrl, liveUrl } = Astro.props;
+const { id, title, category, description, image, techStack, githubUrl, liveUrl, size = "medium" } = Astro.props;
 
-// Tech Counter logic
-const visibleTechCount = 4;
+const isSmall = size === "small";
+const isLarge = size === "large";
+
+// Deterministic "code" snippet shown in hover background
+const codeSnippet = `// ${title}
+const config = {
+  env: process.env.NODE_ENV,
+  version: "1.0.0",
+};
+
+async function init() {
+  const data = await fetch("/api");
+  return data.json();
+}
+
+export default init;`;
+
+const visibleTechCount = isLarge ? 8 : isSmall ? 0 : 4;
 const mainTech = techStack?.slice(0, visibleTechCount) || [];
-const remainingTech = techStack?.slice(visibleTechCount) || [];
-const hasMore = remainingTech.length > 0;
 ---
 
-<div
-  class="group relative flex flex-col bg-[#0d0f14]/80 backdrop-blur-3xl border border-white/5 rounded-3xl overflow-hidden transition-all duration-500 hover:border-orange-500/30 hover:-translate-y-2 hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.6),0_0_20px_-5px_rgba(249,115,22,0.1)] h-full"
-  data-category={category}
->
-  <!-- Image Banner (16:9 + Glossy Overlay) -->
-  <div class="relative aspect-video m-2 rounded-2xl overflow-hidden bg-slate-800">
-    <img
-      src={image}
-      alt={title}
-      class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-    />
-    <div class="absolute inset-0 bg-linear-to-t from-[#0d0f14] via-transparent to-transparent opacity-80"></div>
-    
-    <!-- Category Badge (Floating Glass) -->
-    <div class="absolute top-3 left-3">
-      <span class="px-3 py-1 bg-black/40 backdrop-blur-md border border-white/10 rounded-full text-[9px] uppercase font-black tracking-widest text-orange-500">
-        {category}
-      </span>
+{isSmall ? (
+  <!-- SMALL CELL: Just logo/image + name -->
+  <div
+    class="project-card group relative bg-[#0d0f14] border border-white/8 rounded-2xl overflow-hidden cursor-pointer transition-all duration-500 hover:border-orange-500/60 hover:-translate-y-1 hover:shadow-xl hover:shadow-orange-500/10 aspect-square flex flex-col"
+    data-category={category}
+    data-tech={techStack?.join(',')}
+  >
+    <!-- Code BG on hover -->
+    <div class="code-bg absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-700 font-mono text-[9px] text-orange-400 p-4 leading-relaxed overflow-hidden pointer-events-none select-none whitespace-pre">
+      {codeSnippet}
+    </div>
+
+    <!-- Image fills the card -->
+    <div class="relative flex-1 overflow-hidden">
+      <img src={image} alt={title} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
+      <div class="absolute inset-0 bg-linear-to-t from-[#0d0f14] via-black/10 to-transparent"></div>
+    </div>
+
+    <!-- Bottom label -->
+    <div class="p-4 relative z-10">
+      <div class="flex items-center justify-between gap-2">
+        <h3 class="text-sm font-bold text-white leading-tight line-clamp-2 group-hover:text-orange-400 transition-colors" set:html={title} />
+        <a href={`/${id}`} class="p-1.5 bg-white/5 border border-white/10 rounded-lg text-white/40 hover:bg-orange-500 hover:text-white transition-all shrink-0">
+          <ArrowUpRight class="w-3.5 h-3.5" />
+        </a>
+      </div>
+      <span class="text-[9px] text-orange-500/70 font-bold uppercase tracking-widest mt-1 block">{category}</span>
     </div>
   </div>
-
-  <!-- Card Content -->
-  <div class="p-5 pt-2 flex flex-col grow">
-    <div class="mb-3">
-       <h3 class="text-xl font-bold text-white group-hover:text-orange-400 transition-colors leading-tight" set:html={title} />
+) : isLarge ? (
+  <!-- LARGE CELL: Full story card -->
+  <div
+    class="project-card group relative bg-[#0d0f14] border border-white/8 rounded-2xl overflow-hidden transition-all duration-500 hover:border-orange-500/60 hover:-translate-y-1 hover:shadow-2xl hover:shadow-orange-500/10 flex flex-col md:grid md:grid-cols-2 min-h-[480px]"
+    data-category={category}
+    data-tech={techStack?.join(',')}
+  >
+    <!-- Code BG on hover -->
+    <div class="code-bg absolute inset-0 opacity-0 group-hover:opacity-[0.04] transition-opacity duration-700 font-mono text-[11px] text-orange-400 p-6 leading-relaxed overflow-hidden pointer-events-none select-none whitespace-pre z-0">
+      {codeSnippet}
     </div>
 
-    <!-- Description (Line-clamp initially, expand on hover) --!>
-    <div class="relative overflow-hidden transition-all duration-500 max-h-10 group-hover:max-h-40">
-      <p class="text-slate-400 text-xs leading-relaxed line-clamp-2 group-hover:line-clamp-none">
-        {description}
-      </p>
+    <!-- Left: Image -->
+    <div class="relative overflow-hidden">
+      <img src={image} alt={title} class="w-full h-full object-cover min-h-[220px] transition-transform duration-700 group-hover:scale-105" loading="lazy" />
+      <div class="absolute inset-0 bg-linear-to-r from-transparent to-[#0d0f14] opacity-60 md:block hidden"></div>
+      <div class="absolute inset-0 bg-linear-to-t from-[#0d0f14] via-transparent to-transparent md:hidden"></div>
+      <!-- Category badge -->
+      <div class="absolute top-4 left-4">
+        <span class="px-3 py-1 bg-black/60 backdrop-blur-md border border-white/10 rounded-full text-[9px] font-black uppercase tracking-widest text-orange-400">
+          {category}
+        </span>
+      </div>
     </div>
 
-    <!-- Tech Stack Row -->
-    <div class="flex flex-wrap items-center gap-2 mt-auto pt-6 group-hover:pt-4 transition-all duration-500">
-      {mainTech.map((tech) => {
-        const iconData = techIcons[tech];
-        return iconData ? (
-          <div class="p-1.5 bg-white/5 border border-white/5 rounded-lg group/tech relative" title={iconData.title}>
-            <Icon name={iconData.name} class="w-3.5 h-3.5" style={`color: ${iconData.color}`} />
-          </div>
-        ) : null;
-      })}
-      
-      {hasMore && (
-        <div class="flex items-center gap-2">
-           <span class="text-[9px] font-black text-slate-500 bg-white/5 px-2 py-1.5 rounded-lg group-hover:hidden">
-            +{remainingTech.length}
-          </span>
-          <!-- Revealed on Hover -->
-          <div class="hidden group-hover:flex flex-wrap gap-2 animate-in fade-in slide-in-from-left-2 duration-300">
-             {remainingTech.map((tech) => {
-                const iconData = techIcons[tech];
-                return iconData ? (
-                  <div class="p-1.5 bg-white/5 border border-white/5 rounded-lg" title={iconData.title}>
-                    <Icon name={iconData.name} class="w-3.5 h-3.5" style={`color: ${iconData.color}`} />
-                  </div>
-                ) : null;
-             })}
-          </div>
-        </div>
-      )}
-    </div>
+    <!-- Right: Content -->
+    <div class="p-8 flex flex-col justify-between relative z-10">
+      <div>
+        <h3 class="text-3xl font-black text-white leading-tight mb-3 group-hover:text-orange-400 transition-colors" set:html={title} />
+        <div class="w-12 h-1 bg-orange-500 rounded-full mb-5 transition-all duration-500 group-hover:w-24"></div>
+        <p class="text-slate-400 text-sm leading-relaxed mb-6">{description}</p>
+      </div>
 
-    <!-- Actions (Expandable on hover) -->
-    <div class="flex items-center gap-3 mt-5 pt-4 border-t border-white/5 overflow-hidden">
-      <!-- Details -->
-      <a
-        href={`/${id}`}
-        class="flex items-center justify-center gap-2 h-9 px-3 bg-orange-500 text-white rounded-xl text-[10px] font-black uppercase tracking-wider group/btn shrink-0 hover:bg-orange-600 transition-all duration-300 active:scale-95"
-      >
-        <span class="hidden group-hover:block transition-all">Ver Más</span>
-        <ArrowUpRight class="w-4 h-4" />
-      </a>
+      <!-- Tech Stack -->
+      <div class="flex flex-wrap gap-2 mb-8">
+        {mainTech.map((tech) => {
+          const iconData = techIcons[tech];
+          return iconData ? (
+            <div class="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border border-white/8 rounded-xl group/t hover:border-orange-500/30 transition-all" title={tech}>
+              <Icon name={iconData.name} class="w-3.5 h-3.5" style={`color: ${iconData.color}`} />
+              <span class="text-[10px] font-bold text-slate-400 group-hover/t:text-white transition-colors">{tech}</span>
+            </div>
+          ) : null;
+        })}
+      </div>
 
-      <!-- Source / Demo -->
-      <div class="flex gap-2 ml-auto">
+      <!-- Actions -->
+      <div class="flex items-center gap-3">
         {githubUrl && (
-          <a
-            href={githubUrl}
-            target="_blank"
-            class="flex items-center gap-2 h-9 px-3 bg-white/5 border border-white/10 text-slate-400 rounded-xl text-[10px] font-black uppercase tracking-wider hover:bg-white hover:text-black hover:w-auto w-9 transition-all duration-500 group/source"
-            aria-label="GitHub"
-          >
-            <Github class="w-4 h-4 shrink-0" />
-            <span class="opacity-0 group-hover/source:opacity-100 hidden group-hover/source:inline whitespace-nowrap">Source</span>
+          <a href={githubUrl} target="_blank" rel="noopener noreferrer"
+            class="flex items-center gap-2 px-4 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-[10px] font-bold uppercase tracking-widest text-white/60 hover:text-white transition-all">
+            <Github class="w-4 h-4" />
+            <span>GitHub</span>
           </a>
         )}
         {liveUrl && (
-          <a
-            href={liveUrl}
-            target="_blank"
-            class="flex items-center gap-2 h-9 px-3 bg-white/5 border border-white/10 text-slate-400 rounded-xl text-[10px] font-black uppercase tracking-wider hover:bg-white hover:text-black hover:w-auto w-9 transition-all duration-500 group/demo"
-            aria-label="Live Demo"
-          >
-            <ExternalLink class="w-4 h-4 shrink-0" />
-            <span class="opacity-0 group-hover/demo:opacity-100 hidden group-hover/demo:inline whitespace-nowrap">Live</span>
+          <a href={liveUrl} target="_blank" rel="noopener noreferrer"
+            class="flex items-center gap-2 px-5 py-2.5 bg-orange-500 hover:bg-orange-600 rounded-xl text-[10px] font-black uppercase tracking-widest text-white transition-all shadow-lg shadow-orange-500/20 active:scale-95 ml-auto">
+            <ExternalLink class="w-4 h-4" />
+            <span>Demo Live</span>
           </a>
         )}
       </div>
     </div>
   </div>
-</div>
+) : (
+  <!-- MEDIUM CELL: Standard card -->
+  <div
+    class="project-card group relative bg-[#0d0f14] border border-white/8 rounded-2xl overflow-hidden transition-all duration-500 hover:border-orange-500/60 hover:-translate-y-1 hover:shadow-xl hover:shadow-orange-500/10 flex flex-col"
+    data-category={category}
+    data-tech={techStack?.join(',')}
+  >
+    <!-- Code BG on hover -->
+    <div class="code-bg absolute inset-0 opacity-0 group-hover:opacity-[0.05] transition-opacity duration-700 font-mono text-[10px] text-orange-400 p-5 leading-relaxed overflow-hidden pointer-events-none select-none whitespace-pre z-0">
+      {codeSnippet}
+    </div>
+
+    <!-- Image -->
+    <div class="relative aspect-video overflow-hidden shrink-0">
+      <img src={image} alt={title} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
+      <div class="absolute inset-0 bg-linear-to-t from-[#0d0f14] via-transparent to-transparent opacity-80"></div>
+      <div class="absolute top-3 left-3">
+        <span class="px-2.5 py-1 bg-black/60 backdrop-blur-md border border-white/10 rounded-full text-[8px] font-black uppercase tracking-widest text-white/70 group-hover:text-orange-400 transition-colors">
+          {category}
+        </span>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="p-5 flex flex-col grow relative z-10">
+      <div class="flex items-start justify-between gap-2 mb-3">
+        <h3 class="text-lg font-bold text-white leading-snug group-hover:text-orange-400 transition-colors" set:html={title} />
+        <a href={`/${id}`} class="p-1.5 bg-white/5 border border-white/10 rounded-lg text-white/40 hover:bg-orange-500 hover:text-white transition-all shrink-0">
+          <ArrowUpRight class="w-3.5 h-3.5" />
+        </a>
+      </div>
+
+      <p class="text-slate-400 text-xs leading-relaxed line-clamp-2 mb-5">{description}</p>
+
+      <!-- Tech icons -->
+      <div class="flex flex-wrap gap-1.5 mb-6">
+        {mainTech.map((tech) => {
+          const iconData = techIcons[tech];
+          return iconData ? (
+            <div class="p-1.5 bg-white/5 border border-white/5 rounded-lg" title={tech}>
+              <Icon name={iconData.name} class="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 transition-opacity" style={`color: ${iconData.color}`} />
+            </div>
+          ) : null;
+        })}
+      </div>
+
+      <!-- Action bar -->
+      <div class="mt-auto pt-4 border-t border-white/5 flex gap-2">
+        {githubUrl && (
+          <a href={githubUrl} target="_blank" rel="noopener noreferrer"
+            class="flex items-center gap-1.5 px-3 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-[9px] font-bold uppercase tracking-widest text-white/60 hover:text-white transition-all">
+            <Github class="w-3.5 h-3.5" />
+            <span>GitHub</span>
+          </a>
+        )}
+        {liveUrl && (
+          <a href={liveUrl} target="_blank" rel="noopener noreferrer"
+            class="flex items-center gap-1.5 px-3 py-2 bg-orange-500 hover:bg-orange-600 rounded-xl text-[9px] font-black uppercase tracking-widest text-white transition-all ml-auto shadow-lg shadow-orange-500/20 active:scale-95">
+            <ExternalLink class="w-3.5 h-3.5" />
+            <span>Demo</span>
+          </a>
+        )}
+      </div>
+    </div>
+  </div>
+)}
 
 <style>
   .line-clamp-2 {
