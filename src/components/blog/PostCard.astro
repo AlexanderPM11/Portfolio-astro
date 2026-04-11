@@ -39,11 +39,11 @@ let excerpt = (post.excerpt?.rendered || post.content?.rendered || "")
 ---
 
 <article 
-  class="post-item group relative flex flex-col transition-all duration-500 border border-gray-800/40 bg-gray-900/20 p-6 md:p-10 rounded-[2.5rem] hover:bg-gray-900/40 hover:border-orange-500/30"
+  class="post-item group relative flex flex-col transition-all duration-500 border border-gray-800/40 bg-gray-900/20 rounded-[2.5rem] hover:bg-gray-900/40 hover:border-orange-500/30 max-w-4xl mx-auto overflow-hidden"
   data-categories={postCatSlugs}
 >
-  <!-- Image Container (High Format) -->
-  <div class="relative w-full aspect-[16/9] overflow-hidden rounded-sm shadow-2xl">
+  <!-- Image Container (Full Width Header) -->
+  <div class="relative w-full aspect-video overflow-hidden">
     <a href={`/blog/${post.id}`} class="block w-full h-full">
       <img
         src={imageUrl}
@@ -67,10 +67,10 @@ let excerpt = (post.excerpt?.rendered || post.content?.rendered || "")
     </div>
   </div>
 
-  <!-- Content (Editorial Flow) -->
-  <div class="flex flex-col gap-4">
+  <!-- Content Area (With Padding) -->
+  <div class="flex flex-col gap-8 p-8 md:p-14">
     <!-- Meta: Date Above Title -->
-    <div class="flex items-center gap-2 text-gray-500 text-xs font-bold uppercase tracking-widest italic">
+    <div class="flex items-center gap-3 text-gray-500 text-xs font-bold uppercase tracking-widest italic opacity-70">
       <div class="w-8 h-[1px] bg-orange-500/50"></div>
       <span>{date}</span>
     </div>
@@ -78,7 +78,7 @@ let excerpt = (post.excerpt?.rendered || post.content?.rendered || "")
     <!-- Title -->
     <a href={`/blog/${post.id}`} class="block group/title">
       <h3
-        class="text-2xl font-black text-white leading-[1.1] group-hover/title:text-orange-500 transition-colors duration-300"
+        class="text-2xl font-black text-white leading-tight group-hover/title:text-orange-500 transition-colors duration-300"
         set:html={title}
       />
     </a>
