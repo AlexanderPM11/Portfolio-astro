@@ -28,7 +28,7 @@ export async function fetchCategories(): Promise<Category[]> {
     const data = await get<Category[]>(url);
 
     const validCategories = data
-        .filter((cat) => cat.count > 0 && cat.slug !== "projects" && cat.slug !== "_servicesonly" && cat.slug !== "highlights" && !cat.name.startsWith("(P) -"))
+        .filter((cat) => cat.count > 0 && cat.slug !== "projects" && cat.slug !== "_servicesonly" && cat.slug !== "_highlights" && !cat.name.startsWith("(P) -"))
         .sort((a, b) => b.count - a.count);
 
     return [{ id: 0, name: "Todos", slug: "all", count: 0 }, ...validCategories];
@@ -42,7 +42,7 @@ export async function fetchPosts(categorySlug = "all", page = 1, perPage = 12, k
     
     const projectsCat = resCategories.find((c) => c.slug === "projects");
     const servicesCat = resCategories.find((c) => c.slug === "_servicesonly");
-    const highlightsCat = resCategories.find((c) => c.slug === "highlights");
+    const highlightsCat = resCategories.find((c) => c.slug === "_highlights");
 
     let excludes = [];
     if (projectsCat) excludes.push(projectsCat.id);
@@ -128,7 +128,7 @@ export async function fetchLimitedPosts(
                     if (flatTerms.some((t: any) => 
                         t?.slug === "projects" || t?.id === projectsId || 
                         t?.slug === "_servicesonly" || t?.id === servicesId ||
-                        t?.slug === "highlights" || t?.id === highlightsId
+                        t?.slug === "_highlights" || t?.id === highlightsId
                     )) {
                         return false;
                     }
