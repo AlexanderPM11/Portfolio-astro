@@ -132,23 +132,25 @@ try {
               const mainTech = project.techStack?.slice(0, 6) || [];
               return (
                 <div
-                  class="slide snap-center shrink-0 w-full md:w-[88%] lg:w-[78%] relative rounded-3xl overflow-hidden border border-white/8 bg-[#0d0f14] transition-all duration-500"
+                  class="slide group snap-center shrink-0 w-full md:w-[88%] lg:w-[78%] relative rounded-3xl overflow-hidden border border-white/8 bg-[#0d0f14] transition-all duration-700 cursor-pointer hover:border-orange-500/40 hover:shadow-[0_0_60px_-15px_rgba(249,115,22,0.25)] hover:-translate-y-1"
                   data-category={project.category}
                   data-tech={project.techStack?.join(',')}
                   data-index={index}
                   style="min-height: 520px;"
                 >
-                  <!-- Full-bleed blurred BG from project image -->
+                  <!-- Full-bleed blurred BG from project image (intensifies on hover) -->
                   <div class="absolute inset-0 overflow-hidden">
                     <img
                       src={project.image}
                       alt=""
-                      class="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-20 saturate-150"
+                      class="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-20 saturate-150 transition-all duration-700 group-hover:opacity-35 group-hover:scale-105"
                       aria-hidden="true"
                     />
                     <div class="absolute inset-0 bg-linear-to-r from-[#0d0f14] via-[#0d0f14]/90 to-[#0d0f14]/60"></div>
                   </div>
 
+                  <!-- Orange halo line on top edge -->
+                  <div class="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-orange-500/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                   <!-- Content Grid: stacked on mobile, side-by-side on desktop -->
                   <div class="relative z-10 flex flex-col md:grid md:grid-cols-2 h-full min-h-[520px]">
                     <!-- Left: Text Content -->
@@ -165,13 +167,15 @@ try {
                       </div>
 
                       <!-- Title -->
-                      <h3
-                        class="text-4xl lg:text-5xl font-black text-white leading-[1.1] tracking-tight mb-5"
-                        set:html={project.title.rendered}
-                      />
+                      <a href={`/${project.id}`} class="group/title block mb-5">
+                        <h3
+                          class="text-4xl lg:text-5xl font-black text-white leading-[1.1] tracking-tight transition-colors duration-500 group-hover:text-orange-400 group-hover/title:text-orange-400"
+                          set:html={project.title.rendered}
+                        />
+                      </a>
 
-                      <!-- Separator -->
-                      <div class="w-12 h-1 bg-orange-500 rounded-full mb-6"></div>
+                      <!-- Separator (expands on hover) -->
+                      <div class="w-12 h-1 bg-orange-500 rounded-full mb-6 transition-all duration-700 group-hover:w-24"></div>
 
                       <!-- Description -->
                       <p class="text-slate-300/80 text-base leading-relaxed mb-10 max-w-sm">
@@ -183,9 +187,9 @@ try {
                         {mainTech.map((tech) => {
                           const iconData = techIcons[tech];
                           return iconData ? (
-                            <div class="flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/8 rounded-xl">
+                            <div class="flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/8 rounded-xl transition-all duration-300 group-hover:border-orange-500/20 group-hover:bg-orange-500/5">
                               <Icon name={iconData.name} class="w-3.5 h-3.5" style={`color: ${iconData.color}`} />
-                              <span class="text-[10px] font-bold text-slate-400">{tech}</span>
+                              <span class="text-[10px] font-bold text-slate-400 group-hover:text-slate-300 transition-colors">{tech}</span>
                             </div>
                           ) : null;
                         })}
@@ -198,7 +202,7 @@ try {
                             href={project.acf.githubUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="flex items-center gap-2 px-5 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-[11px] font-black uppercase tracking-widest text-white/60 hover:text-white transition-all"
+                            class="flex items-center gap-2 px-5 py-3 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/30 rounded-2xl text-[11px] font-black uppercase tracking-widest text-white/60 hover:text-white transition-all hover:-translate-y-0.5 active:scale-95"
                           >
                             <Github class="w-4 h-4" />
                             <span>GitHub</span>
@@ -209,7 +213,7 @@ try {
                             href={project.acf.liveurl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="flex items-center gap-2 px-6 py-3 bg-orange-500 hover:bg-orange-600 rounded-2xl text-[11px] font-black uppercase tracking-widest text-white transition-all shadow-[0_20px_40px_-10px_rgba(249,115,22,0.4)] hover:shadow-orange-500/60 active:scale-95"
+                            class="flex items-center gap-2 px-6 py-3 bg-orange-500 hover:bg-orange-400 rounded-2xl text-[11px] font-black uppercase tracking-widest text-white transition-all shadow-[0_15px_30px_-8px_rgba(249,115,22,0.4)] hover:shadow-[0_20px_40px_-8px_rgba(249,115,22,0.6)] hover:-translate-y-0.5 active:scale-95"
                           >
                             <ExternalLink class="w-4 h-4" />
                             <span>Demo Live</span>
@@ -227,15 +231,15 @@ try {
 
                     <!-- RIGHT (desktop) / TOP (mobile): Project Image -->
                     <div class="relative overflow-hidden flex items-center justify-center p-5 md:p-8 order-first md:order-last">
-                      <div class="slide-img relative w-full h-full max-h-[400px] rounded-2xl overflow-hidden shadow-2xl border border-white/10">
+                      <div class="slide-img relative w-full h-full max-h-[400px] rounded-2xl overflow-hidden shadow-2xl border border-white/10 transition-all duration-700 group-hover:border-orange-500/30 group-hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)]">
                         <img
                           src={project.image}
                           alt={project.title.rendered}
-                          class="w-full h-full object-cover min-h-[320px]"
+                          class="w-full h-full object-cover min-h-[320px] transition-transform duration-[2s] ease-out group-hover:scale-110"
                           loading="lazy"
                         />
-                        <!-- Subtle overlay -->
-                        <div class="absolute inset-0 bg-linear-to-br from-orange-500/5 to-transparent"></div>
+                        <!-- Overlay tint that fades on hover -->
+                        <div class="absolute inset-0 bg-linear-to-br from-orange-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                       </div>
                     </div>
                   </div>
@@ -415,7 +419,7 @@ try {
     display: none;
   }
   .slide {
-    transition: opacity 0.4s;
+    transition: opacity 0.4s, transform 0.7s cubic-bezier(0.2,0,0,1), border-color 0.5s, box-shadow 0.7s;
   }
   .slide.filtered-out {
     display: none;
