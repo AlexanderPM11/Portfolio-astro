@@ -71,7 +71,7 @@ const mainTech = techStack?.slice(0, visibleTechCount) || [];
 ) : isLarge ? (
   <!-- LARGE CELL: Full story card -->
   <div
-    class="project-card group relative bg-[#0d0f14] border border-white/8 rounded-2xl overflow-hidden transition-all duration-500 hover:border-orange-500/60 hover:-translate-y-1 hover:shadow-2xl hover:shadow-orange-500/10 flex flex-col md:grid md:grid-cols-2 min-h-[480px]"
+    class="project-card group relative bg-[#0d0f14] border border-white/8 rounded-2xl overflow-hidden transition-all duration-500 hover:border-orange-500/60 hover:-translate-y-1 hover:shadow-2xl hover:shadow-orange-500/10 flex flex-col lg:grid lg:grid-cols-[1.1fr_0.9fr] min-h-[480px]"
     data-category={category}
     data-tech={techStack?.join(',')}
   >
@@ -83,8 +83,8 @@ const mainTech = techStack?.slice(0, visibleTechCount) || [];
     <!-- Left: Image -->
     <div class="relative overflow-hidden">
       <img src={image} alt={title} class="w-full h-full object-cover min-h-[220px] transition-transform duration-700 group-hover:scale-105" loading="lazy" />
-      <div class="absolute inset-0 bg-linear-to-r from-transparent to-[#0d0f14] opacity-60 md:block hidden"></div>
-      <div class="absolute inset-0 bg-linear-to-t from-[#0d0f14] via-transparent to-transparent md:hidden"></div>
+      <div class="absolute inset-0 bg-linear-to-r from-transparent to-[#0d0f14] opacity-60 lg:block hidden"></div>
+      <div class="absolute inset-0 bg-linear-to-t from-[#0d0f14] via-transparent to-transparent lg:hidden"></div>
       <!-- Category badge -->
       <div class="absolute top-4 left-4">
         <span class="px-3 py-1 bg-black/60 backdrop-blur-md border border-white/10 rounded-full text-[9px] font-black uppercase tracking-widest text-orange-400">
