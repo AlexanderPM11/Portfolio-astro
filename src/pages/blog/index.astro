@@ -6,6 +6,8 @@ import {
   fetchLimitedPosts,
 } from "../../services/blog/BlogService";
 import Hero from "../../components/blog/Hero.astro";
+import BlogSidebar from "../../components/blog/BlogSidebar.astro";
+import PostCard from "../../components/blog/PostCard.astro";
 
 // Fetch inicial de datos: Traemos MUCHOS posts para filtrar en el cliente (estático)
 const [categories, initialData] = await Promise.all([
@@ -26,84 +28,11 @@ const allPosts = initialData.posts;
   />
 
   <!-- Contenido Dinámico -->
-  <section class="bg-gray-900 py-12 px-4">
-    <div class="max-w-6xl mx-auto">
-      <!-- Filtros -->
-      <div
-        class="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700/50 p-6 mb-12"
-      >
-        <div class="flex flex-col lg:items-center lg:justify-between gap-4">
-          <!-- Header Filtros -->
-          <div class="flex justify-center items-center gap-3 w-full">
-            <Filter class="w-5 h-5 text-orange-400" />
-            <h3
-              class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-orange-200"
-            >
-              Categorías
-            </h3>
-          </div>
-
-          <!-- Botones Categorías -->
-          <div
-            id="categories-container"
-            class="flex flex-wrap justify-center gap-3 p-4 bg-gray-900/40 rounded-3xl"
-          >
-            <button
-              data-category="all"
-              class="category-btn group relative px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ease-out border border-transparent overflow-hidden active-category text-white shadow-[0_0_20px_rgba(249,115,22,0.4)] ring-1 ring-orange-400/50 scale-105"
-            >
-              <div
-                class="absolute inset-0 bg-gradient-to-r from-orange-600 to-orange-500 opacity-100 transition-opacity duration-300 rounded-full"
-              >
-              </div>
-              <div
-                class="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full"
-              >
-              </div>
-              <span class="relative z-10 text-white flex items-center gap-2">
-                Todos
-                <span
-                  class="bg-black/20 px-2 py-0.5 rounded-full text-xs text-white/90"
-                  >{allPosts.length}</span
-                >
-              </span>
-            </button>
-
-            {
-              categories
-                .filter((cat) => cat.slug !== "all" && cat.count > 0)
-                .map((cat) => (
-                  <button
-                    data-category={cat.slug}
-                    class="category-btn group relative px-6 py-2.5 rounded-full text-sm font-medium text-gray-400 transition-all duration-300 ease-out border border-gray-700/50 hover:border-orange-500/30 hover:text-white bg-gray-800/40"
-                  >
-                    <div class="absolute inset-0 bg-gradient-to-r from-orange-600 to-orange-500 opacity-0 transition-opacity duration-300 rounded-full" />
-                    <span class="relative z-10 flex items-center gap-2">
-                      {cat.name}
-                      <span class="bg-gray-700/50 group-hover:bg-black/20 px-2 py-0.5 rounded-full text-xs transition-colors duration-300">
-                        {cat.count}
-                      </span>
-                    </span>
-                  </button>
-                ))
-            }
-          </div>
-        </div>
-
-        <div
-          id="filter-indicator"
-          class="hidden mt-4 items-center gap-2 text-sm text-orange-400"
-        >
-          <span>Filtrando por:</span>
-          <span id="filter-name" class="font-semibold"></span>
-          <button
-            id="clear-filter"
-            class="ml-2 text-gray-400 hover:text-white transition-colors"
-          >
-            × Limpiar filtro
-          </button>
-        </div>
-      </div>
+  <section class="bg-gray-900 py-12 px-4 shadow-2xl">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <!-- Main Content Area -->
+        <div class="lg:col-span-8 lg:border-r lg:border-gray-800 lg:pr-12">
 
       <!-- Contador de resultados -->
       <div id="results-info" class="flex items-center justify-between mb-8">
@@ -124,101 +53,12 @@ const allPosts = initialData.posts;
       <!-- Posts Container (Renderizamos TODOS los posts, el JS gestionará visibilidad) -->
       <div
         id="posts-container"
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 min-h-[400px]"
+        class="grid grid-cols-1 gap-10 min-h-[400px]"
       >
         {
-          allPosts.map((post) => {
-            // Preparamos los slugs de categorías para el filtrado data-
-            const postCatIds = post.categories || [];
-            const postCatSlugs = categories
-              .filter((c) => postCatIds.includes(c.id))
-              .map((c) => c.slug)
-              .join(",");
-
-            // Imagen
-            const imageUrl =
-              post._embedded?.["wp:featuredmedia"]?.[0]?.source_url ||
-              "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=1470&auto=format&fit=crop";
-
-            // Título (según interface, title es objeto con rendered)
-            const title = post.title?.rendered || "Sin título";
-
-            // Slug/ID
-            const slug = post.id;
-
-            // Autor
-            const autor = post._embedded?.["author"]?.[0]?.name || "Autor";
-
-            // Fecha (según interface, date es string)
-            const date = new Date(post.date).toLocaleDateString("es-ES", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            });
-
-            // Excerpt (según interface, excerpt es objeto con rendered)
-            // Limpieza básica de HTML para el excerpt sin usar DOMParser en el servidor (aunque Astro lo permite, string directo es más seguro aquí)
-            let excerptRaw =
-              post.excerpt?.rendered || post.content?.rendered || "";
-            // Quitamos etiquetas HTML simples
-            let excerpt =
-              excerptRaw.replace(/<[^>]*>?/gm, "").substring(0, 150) + "...";
-
-            return (
-              <article
-                class="post-item bg-gray-800/50 rounded-2xl border border-gray-700/50 overflow-hidden hover:border-orange-500/50 transition-all duration-300 hover:scale-[1.02] group"
-                data-categories={postCatSlugs}
-              >
-                <div class="aspect-video overflow-hidden bg-gray-700">
-                  <a href={`/blog/${slug}`}>
-                    <img
-                      src={imageUrl}
-                      alt={title}
-                      class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                    />
-                  </a>
-                </div>
-                <div class="p-6">
-                  <div class="flex items-center gap-2 mb-3">
-                    <span class="px-3 py-1 bg-orange-500/20 text-orange-400 text-xs font-medium rounded-full">
-                      {autor}
-                    </span>
-                    <span class="text-gray-500 text-xs">{date}</span>
-                  </div>
-                  <a href={`/blog/${slug}`}>
-                    <h3
-                      class="text-xl font-bold text-white mb-3 group-hover:text-orange-400 transition-colors"
-                      set:html={title}
-                    />
-                  </a>
-
-                  <p class="text-gray-400 text-sm mb-4 line-clamp-3">
-                    {excerpt}
-                  </p>
-
-                  <a
-                    href={`/blog/${slug}`}
-                    class="inline-flex items-center gap-2 text-orange-400 hover:text-orange-300 font-medium transition-colors"
-                  >
-                    Leer más
-                    <svg
-                      class="w-4 h-4 group-hover:translate-x-1 transition-transform"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  </a>
-                </div>
-              </article>
-            );
-          })
+          allPosts.map((post) => (
+            <PostCard post={post} allCategories={categories} />
+          ))
         }
       </div>
 
@@ -303,6 +143,13 @@ const allPosts = initialData.posts;
           </svg>
         </button>
       </div>
+        </div>
+
+        <!-- Sidebar Area -->
+        <div class="lg:col-span-4">
+          <BlogSidebar />
+        </div>
+      </div>
     </div>
   </section>
 </Layout>
@@ -311,7 +158,7 @@ const allPosts = initialData.posts;
   // Lógica "Client-Side Only" para filtrado y paginación
 
   // Configuración
-  const PER_PAGE = 12; // Cantidad de posts por página
+  const PER_PAGE = 6; // Cantidad de posts por página
 
   // Elementos
   const elements = {
@@ -341,16 +188,50 @@ const allPosts = initialData.posts;
   // Estado local
   let state = {
     currentCategory: "all",
+    searchQuery: "",
     currentPage: 1,
     filteredPosts: [] as HTMLElement[], // Array de elementos del DOM que coinciden con filtro
     totalPages: 1,
   };
 
   function init() {
-    // Al inicio, todos los posts son "filtrados" (si category es all)
-    state.filteredPosts = Array.from(elements.postItems) as HTMLElement[];
+    // Leer parámetros de la URL al cargar
+    const params = new URLSearchParams(window.location.search);
+    const catParam = params.get('category');
+    const searchParam = params.get('search');
+
+    if (catParam) state.currentCategory = catParam;
+    if (searchParam) state.searchQuery = searchParam;
+
+    applyFilters();
+  }
+
+  function applyFilters() {
+    const allItems = Array.from(elements.postItems) as HTMLElement[];
+    state.currentPage = 1;
+
+    state.filteredPosts = allItems.filter((item) => {
+      // Filtro por Categoría
+      let matchesCategory = true;
+      if (state.currentCategory !== 'all') {
+        const cats = item.dataset.categories?.split(",") || [];
+        matchesCategory = cats.includes(state.currentCategory);
+      }
+
+      // Filtro por Búsqueda
+      let matchesSearch = true;
+      if (state.searchQuery) {
+        const title = item.querySelector('h3')?.textContent?.toLowerCase() || "";
+        const q = state.searchQuery.toLowerCase();
+        matchesSearch = title.includes(q);
+      }
+
+      return matchesCategory && matchesSearch;
+    });
+
     calculateTotalPages();
     updateView();
+    updateFilterUI();
   }
 
   function calculateTotalPages() {
@@ -360,22 +241,7 @@ const allPosts = initialData.posts;
 
   function filterPosts(category: string) {
     state.currentCategory = category;
-    state.currentPage = 1; // Reset a pág 1 al filtrar
-
-    const allItems = Array.from(elements.postItems) as HTMLElement[];
-
-    if (category === "all") {
-      state.filteredPosts = allItems;
-    } else {
-      state.filteredPosts = allItems.filter((item) => {
-        const cats = item.dataset.categories?.split(",") || [];
-        return cats.includes(category);
-      });
-    }
-
-    calculateTotalPages();
-    updateView();
-    updateFilterUI(category);
+    applyFilters();
   }
 
   function changePage(newPage: number) {
@@ -429,7 +295,10 @@ const allPosts = initialData.posts;
     renderPaginationButtons();
   }
 
-  function updateFilterUI(category: string) {
+  function updateFilterUI() {
+    const category = state.currentCategory;
+    const query = state.searchQuery;
+
     // Actualizar estilo botones categorías
     elements.categoryBtns.forEach((btn) => {
       const btnEl = btn as HTMLElement;
@@ -479,23 +348,32 @@ const allPosts = initialData.posts;
     });
 
     // Actualizar indicador de filtro (texto "Filtrando por...")
-    if (category !== "all") {
-      // buscar nombre
+    if (category !== "all" || query) {
+      // buscar nombre categoría
       const btn = Array.from(elements.categoryBtns).find(
         (b) => (b as HTMLElement).dataset.category === category,
       );
-      const name = btn
+      const catName = btn
         ? btn.querySelector("span.relative")?.childNodes[0].textContent?.trim()
         : category;
 
-      if (elements.categoryInfo)
-        elements.categoryInfo.innerHTML = ` en <span class="text-orange-400 font-semibold">${name}</span>`;
+      let displayText = "";
+      if (category !== "all") displayText += ` en <span class="text-orange-400 font-semibold">${catName}</span>`;
+      if (query) displayText += ` buscando <span class="text-orange-400 font-semibold">"${query}"</span>`;
+
+      if (elements.categoryInfo) elements.categoryInfo.innerHTML = displayText;
+      
       if (elements.filterIndicator) {
         elements.filterIndicator.classList.remove("hidden");
         elements.filterIndicator.classList.add("flex");
       }
-      if (elements.filterName)
-        elements.filterName.textContent = name || category;
+      
+      if (elements.filterName) {
+        let label = "";
+        if (category !== "all") label += catName;
+        if (query) label += (label ? " + " : "") + `"${query}"`;
+        elements.filterName.textContent = label;
+      }
     } else {
       if (elements.categoryInfo) elements.categoryInfo.innerHTML = "";
       if (elements.filterIndicator) {
@@ -608,16 +486,26 @@ const allPosts = initialData.posts;
     });
   }
 
-  // --- Event Listeners ---
-  elements.categoryBtns.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const cat = (btn as HTMLElement).dataset.category;
-      if (cat) filterPosts(cat);
-    });
-  });
+  // Nota: Los categoryBtns ya no existen en el index principal, sino en el sidebar.
+  // Pero el sidebar genera navegación (/blog?category=...). 
+  // Así que dependemos del init() que lee de la URL.
+  
+  // elements.categoryBtns ya no es necesario aquí para clics directos, 
+  // pero mantendremos la lógica de applyFilters() para cuando cambie la URL.
 
-  elements.clearFilter?.addEventListener("click", () => filterPosts("all"));
-  elements.viewAllBtn?.addEventListener("click", () => filterPosts("all"));
+  elements.clearFilter?.addEventListener("click", () => {
+    state.currentCategory = "all";
+    state.searchQuery = "";
+    // Limpiar URL sin recargar
+    window.history.replaceState({}, '', '/blog');
+    applyFilters();
+  });
+  elements.viewAllBtn?.addEventListener("click", () => {
+    state.currentCategory = "all";
+    state.searchQuery = "";
+    window.history.replaceState({}, '', '/blog');
+    applyFilters();
+  });
   elements.prevBtn?.addEventListener("click", () =>
     changePage(state.currentPage - 1),
   );

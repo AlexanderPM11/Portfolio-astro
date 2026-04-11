@@ -26,29 +26,84 @@ const formatDate = (dateString: string) => {
 };
 ---
 
-<aside class="flex flex-col gap-10">
-  <!-- Search Widget -->
+<aside class="flex flex-col gap-12 sticky top-24">
+  <!-- Search Widget (At the Top) -->
   <div class="widget">
-    <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">
+    <h3 class="text-xs font-black text-white uppercase tracking-[0.2em] mb-4 border-b border-gray-800 pb-2">
       Buscar
     </h3>
     <div class="relative group">
       <input
+        id="sidebar-search-input"
         type="text"
-        placeholder="Buscar..."
-        class="w-full bg-gray-900/50 border border-gray-700/50 rounded-lg px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-hidden focus:border-orange-500/50 transition-all"
+        placeholder="Escribir..."
+        class="w-full bg-gray-900/50 border border-gray-700/50 rounded-none px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-hidden focus:border-orange-500/50 transition-all"
       />
       <button
-        class="absolute right-0 top-0 h-full px-4 bg-orange-500 hover:bg-orange-400 text-white rounded-r-lg transition-colors"
+        id="sidebar-search-btn"
+        class="absolute right-0 top-0 h-full px-4 bg-orange-500 hover:bg-orange-600 text-white transition-colors"
       >
         <Search class="w-4 h-4" />
       </button>
     </div>
   </div>
 
+  <script>
+    const searchInput = document.getElementById('sidebar-search-input') as HTMLInputElement;
+    const searchBtn = document.getElementById('sidebar-search-btn');
+
+    function performSearch() {
+      const query = searchInput?.value.trim();
+      if (query) {
+        window.location.href = `/blog?search=${encodeURIComponent(query)}`;
+      }
+    }
+
+    searchBtn?.addEventListener('click', performSearch);
+    searchInput?.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') performSearch();
+    });
+  </script>
+
+  <!-- Recent Posts Widget -->
+  <div class="widget">
+    <h3 class="text-xs font-black text-white uppercase tracking-[0.2em] mb-6 border-b border-gray-800 pb-2">
+      Publicaciones recientes
+    </h3>
+    <div class="flex flex-col gap-6">
+      {
+        recentPosts.slice(0, 3).map((post) => (
+          <div class="flex gap-4 items-start group">
+            <a
+              href={`/blog/${post.id}`}
+              class="w-16 h-16 shrink-0 overflow-hidden rounded-none bg-gray-800"
+            >
+              <img
+                src={getImageUrl(post)}
+                alt=""
+                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              />
+            </a>
+            <div class="flex flex-col gap-1">
+              <a
+                href={`/blog/${post.id}`}
+                class="text-xs font-bold text-gray-300 group-hover:text-orange-500 transition-colors line-clamp-2 leading-snug"
+              >
+                {post.title.rendered}
+              </a>
+              <span class="text-[10px] text-gray-600 uppercase font-black">{formatDate(post.date)}</span>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
   <!-- Categories Widget -->
   <div class="widget">
-    <h3 class="text-lg font-bold text-white mb-6">Categorías</h3>
+    <h3 class="text-xs font-black text-white uppercase tracking-[0.2em] mb-6 border-b border-gray-800 pb-2">
+      Categorías
+    </h3>
     <ul
       id="categories-list"
       class="flex flex-col gap-2 overflow-hidden transition-all duration-500 max-h-56"
@@ -126,37 +181,7 @@ const formatDate = (dateString: string) => {
     }
   </script>
 
-  <!-- Recent Posts Widget (Thumbnails) -->
-  <div class="widget">
-    <h3 class="text-lg font-bold text-white mb-6">Publicaciones recientes</h3>
-    <div class="flex flex-col gap-6">
-      {
-        recentPosts.slice(0, 3).map((post) => (
-          <div class="flex gap-4 items-start group">
-            <a
-              href={`/blog/${post.id}`}
-              class="w-20 h-20 shrink-0 overflow-hidden rounded-lg bg-gray-800"
-            >
-              <img
-                src={getImageUrl(post)}
-                alt=""
-                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-              />
-            </a>
-            <div class="flex flex-col gap-1">
-              <a
-                href={`/blog/${post.id}`}
-                class="text-sm font-bold text-white group-hover:text-orange-400 transition-colors line-clamp-2 leading-snug"
-              >
-                {post.title.rendered}
-              </a>
-              <span class="text-xs text-gray-500">{formatDate(post.date)}</span>
-            </div>
-          </div>
-        ))
-      }
-    </div>
-  </div>
+  <!-- Recent Posts Widget removed from here and moved to top -->
 </aside>
 
 <style>

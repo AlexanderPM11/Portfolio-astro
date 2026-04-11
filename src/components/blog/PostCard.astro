@@ -1,0 +1,117 @@
+---
+import { Calendar, User, ArrowRight, Heart } from "lucide-astro";
+import type { BlogPost } from "../../interface/Blog/BlogInterface";
+
+interface Props {
+  post: BlogPost;
+  allCategories?: any[];
+}
+
+const { post, allCategories = [] } = Astro.props;
+
+// Categorías del post
+const postCatIds = post.categories || [];
+const postCategories = allCategories.filter((c) => postCatIds.includes(c.id));
+const postCatSlugs = postCategories.map((c) => c.slug).join(",");
+
+// Imagen
+const imageUrl = 
+  post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || 
+  "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=1470&auto=format&fit=crop";
+
+// Título
+const title = post.title?.rendered || "Sin título";
+
+// Autor
+const autor = post._embedded?.["author"]?.[0]?.name || "Autor";
+
+// Fecha (Formato para diseño editorial)
+const date = new Date(post.date).toLocaleDateString("es-ES", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+
+// Extracto
+let excerpt = (post.excerpt?.rendered || post.content?.rendered || "")
+  .replace(/<[^>]*>?/gm, "")
+  .substring(0, 180) + "...";
+---
+
+<article 
+  class="post-item group relative flex flex-col transition-all duration-500 border border-gray-800/40 bg-gray-900/20 p-6 md:p-10 rounded-[2.5rem] hover:bg-gray-900/40 hover:border-orange-500/30"
+  data-categories={postCatSlugs}
+>
+  <!-- Image Container (High Format) -->
+  <div class="relative w-full aspect-[16/9] overflow-hidden rounded-sm shadow-2xl">
+    <a href={`/blog/${post.id}`} class="block w-full h-full">
+      <img
+        src={imageUrl}
+        alt={title}
+        class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+      />
+      <!-- Overlay Sutil -->
+      <div class="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors duration-500"></div>
+    </a>
+
+    <!-- Category Bars (Bottom Aligned per reference) -->
+    <div class="absolute bottom-0 left-0 flex flex-wrap gap-1 p-0 z-10">
+      {postCategories.map((cat) => (
+        <a 
+          href={`/blog?category=${cat.slug}`}
+          class="px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white text-[10px] font-black uppercase tracking-[0.2em] transition-colors"
+        >
+          {cat.name}
+        </a>
+      ))}
+    </div>
+  </div>
+
+  <!-- Content (Editorial Flow) -->
+  <div class="flex flex-col gap-4">
+    <!-- Meta: Date Above Title -->
+    <div class="flex items-center gap-2 text-gray-500 text-xs font-bold uppercase tracking-widest italic">
+      <div class="w-8 h-[1px] bg-orange-500/50"></div>
+      <span>{date}</span>
+    </div>
+
+    <!-- Title -->
+    <a href={`/blog/${post.id}`} class="block group/title">
+      <h3
+        class="text-3xl md:text-4xl lg:text-5xl font-black text-white leading-[1.1] group-hover/title:text-orange-500 transition-colors duration-300"
+        set:html={title}
+      />
+    </a>
+
+    <!-- Excerpt -->
+    <p class="text-gray-400 text-base md:text-lg leading-relaxed max-w-3xl">
+      {excerpt}
+    </p>
+
+    <!-- Footer Action: Leer más + Decorative Stats -->
+    <div class="flex items-center justify-between mt-4 pt-6 border-t border-gray-800/30">
+      <a
+        href={`/blog/${post.id}`}
+        class="flex items-center gap-3 text-xs font-black text-orange-500 uppercase tracking-[0.3em] group/link"
+      >
+        <ArrowRight class="w-4 h-4 group-hover/link:translate-x-2 transition-transform" />
+        <span class="border-b border-transparent group-hover/link:border-orange-500 transition-colors">Leer más</span>
+      </a>
+
+      <!-- Decorative Stats to match Reference -->
+      <div class="flex items-center gap-4 text-gray-600 text-[10px] font-bold">
+        <div class="flex items-center gap-1.5 hover:text-orange-500 transition-colors cursor-pointer group/stat">
+          <Heart class="w-3.5 h-3.5 group-hover/stat:fill-orange-500" />
+          <span>{Math.floor(Math.random() * 500) + 100}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+<style>
+  /* Custom line clamp if needed, but here we use flexible heights */
+  h3 {
+    text-wrap: balance;
+  }
+</style>
