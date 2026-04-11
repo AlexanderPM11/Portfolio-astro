@@ -1,0 +1,178 @@
+---
+import { Search } from "lucide-astro";
+import {
+  fetchCategories,
+  fetchLimitedPosts,
+} from "../../services/blog/BlogService";
+
+const categories = await fetchCategories();
+const { posts: recentPosts } = await fetchLimitedPosts(5);
+
+// Helper for image URLs
+const getImageUrl = (post: any) => {
+  return (
+    post._embedded?.["wp:featuredmedia"]?.[0]?.source_url ||
+    "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=1470&auto=format&fit=crop"
+  );
+};
+
+// Formatear fecha
+const formatDate = (dateString: string) => {
+  return new Date(dateString).toLocaleDateString("es-ES", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
+---
+
+<aside class="flex flex-col gap-10">
+  <!-- Search Widget -->
+  <div class="widget">
+    <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">
+      Buscar
+    </h3>
+    <div class="relative group">
+      <input
+        type="text"
+        placeholder="Buscar..."
+        class="w-full bg-gray-900/50 border border-gray-700/50 rounded-lg px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-hidden focus:border-orange-500/50 transition-all"
+      />
+      <button
+        class="absolute right-0 top-0 h-full px-4 bg-orange-500 hover:bg-orange-400 text-white rounded-r-lg transition-colors"
+      >
+        <Search class="w-4 h-4" />
+      </button>
+    </div>
+  </div>
+
+  <!-- Categories Widget -->
+  <div class="widget">
+    <h3 class="text-lg font-bold text-white mb-6">Categorías</h3>
+    <ul
+      id="categories-list"
+      class="flex flex-col gap-2 overflow-hidden transition-all duration-500 max-h-56"
+    >
+      {
+        categories
+          .filter((c) => c.slug !== "all")
+          .map((cat, index) => (
+            <li class={index >= 5 ? "hidden category-extra" : ""}>
+              <a
+                href={`/blog?category=${cat.slug}`}
+                class="flex items-center justify-between text-sm text-gray-400 hover:text-orange-400 py-1 transition-all group"
+              >
+                <span class="uppercase font-bold tracking-tight">
+                  {cat.name}
+                </span>
+                <span class="text-xs text-gray-600 group-hover:text-orange-500">
+                  ({cat.count})
+                </span>
+              </a>
+            </li>
+          ))
+      }
+    </ul>
+
+    {
+      categories.filter((c) => c.slug !== "all").length > 5 && (
+        <button
+          id="toggle-categories"
+          class="mt-4 text-xs font-bold text-orange-500 uppercase tracking-widest hover:text-orange-400 transition-colors flex items-center gap-2 cursor-pointer"
+        >
+          <span>Ver más</span>
+          <svg
+            class="w-3 h-3 transition-transform duration-300"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="3"
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </button>
+      )
+    }
+  </div>
+
+  <script>
+    const btn = document.getElementById("toggle-categories");
+    const list = document.getElementById("categories-list");
+    const extras = document.querySelectorAll(".category-extra");
+
+    if (btn && list) {
+      let isExpanded = false;
+      btn.addEventListener("click", () => {
+        isExpanded = !isExpanded;
+
+        // Toggle visibility of extra items
+        extras.forEach((el) => el.classList.toggle("hidden"));
+
+        // Update button text and icon
+        const span = btn.querySelector("span");
+        const svg = btn.querySelector("svg");
+
+        if (span) span.textContent = isExpanded ? "Ver menos" : "Ver más";
+        if (svg)
+          svg.style.transform = isExpanded ? "rotate(180deg)" : "rotate(0deg)";
+
+        // Update max-height for smooth transition (optional but nice)
+        list.style.maxHeight = isExpanded ? "1000px" : "14rem"; // 14rem = 224px (h-56)
+      });
+    }
+  </script>
+
+  <!-- Recent Posts Widget (Thumbnails) -->
+  <div class="widget">
+    <h3 class="text-lg font-bold text-white mb-6">Publicaciones recientes</h3>
+    <div class="flex flex-col gap-6">
+      {
+        recentPosts.slice(0, 3).map((post) => (
+          <div class="flex gap-4 items-start group">
+            <a
+              href={`/blog/${post.id}`}
+              class="w-20 h-20 shrink-0 overflow-hidden rounded-lg bg-gray-800"
+            >
+              <img
+                src={getImageUrl(post)}
+                alt=""
+                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              />
+            </a>
+            <div class="flex flex-col gap-1">
+              <a
+                href={`/blog/${post.id}`}
+                class="text-sm font-bold text-white group-hover:text-orange-400 transition-colors line-clamp-2 leading-snug"
+              >
+                {post.title.rendered}
+              </a>
+              <span class="text-xs text-gray-500">{formatDate(post.date)}</span>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</aside>
+
+<style>
+  .widget {
+    position: relative;
+    animation: fadeIn 0.8s ease-out forwards;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
