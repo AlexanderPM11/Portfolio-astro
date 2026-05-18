@@ -1,0 +1,691 @@
+---
+// src/pages/chat.astro
+import "../styles/global.css";
+import Logo from "../assets/img/Logo.png";
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Assistant - Alexander Polanco</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon_black.png" />
+    <style is:global>
+      .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+      .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+      .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(150, 150, 150, 0.3); border-radius: 10px; }
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(150, 150, 150, 0.5); }
+      
+      /* Ocultar scrollbar en el main container pero permitir scroll */
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+      /* Tema Claro (Light Mode overrides) */
+      :root.light-theme body, :root.light-theme main { background-color: #f8fafc !important; color: #0f172a !important; }
+      :root.light-theme aside { background-color: #ffffff !important; border-color: #e2e8f0 !important; }
+      :root.light-theme .chat-item:not(.active-chat) { color: #64748b !important; }
+      :root.light-theme .chat-item:not(.active-chat):hover { background-color: #f1f5f9 !important; color: #0f172a !important; }
+      :root.light-theme .active-chat { background-color: #eff6ff !important; color: #1d4ed8 !important; }
+      :root.light-theme .bot-message { background-color: #ffffff !important; color: #0f172a !important; border: 1px solid #e2e8f0 !important; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+      :root.light-theme .user-message { box-shadow: 0 2px 4px rgba(249, 115, 22, 0.2); } /* Mantiene el naranja, agrega sombra */
+      :root.light-theme .input-area { background: transparent !important; }
+      :root.light-theme .input-container { background-color: #ffffff !important; border-color: #e2e8f0 !important; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important; }
+      :root.light-theme textarea { color: #0f172a !important; }
+      :root.light-theme textarea::placeholder { color: #94a3b8 !important; }
+      :root.light-theme .sidebar-btn { color: #64748b !important; }
+      :root.light-theme .sidebar-btn:hover { background-color: #f1f5f9 !important; color: #0f172a !important; }
+      :root.light-theme .empty-state-btn { background-color: #ffffff !important; color: #334155 !important; border-color: #e2e8f0 !important; }
+      :root.light-theme .empty-state-btn:hover { background-color: #f8fafc !important; border-color: #cbd5e1 !important; }
+      :root.light-theme .typing-dot { background-color: #94a3b8 !important; }
+      :root.light-theme .disclaimer-text { color: #94a3b8 !important; }
+      :root.light-theme .mobile-header { background-color: rgba(255, 255, 255, 0.9) !important; border-color: #e2e8f0 !important; }
+      :root.light-theme .mobile-header-title { color: #0f172a !important; }
+
+      /* Fix para garantizar el layout de escritorio sin depender del JIT de Tailwind */
+      #btn-toggle-desktop { display: none; }
+      @media (min-width: 768px) {
+        #chat-sidebar {
+          position: static !important;
+          transform: translateX(0) !important;
+          width: 18rem !important; /* 72 * 0.25rem = 18rem */
+          border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
+        }
+        #chat-sidebar.desktop-closed {
+          transform: translateX(-100%) !important;
+          width: 0 !important;
+          border: none !important;
+          overflow: hidden !important;
+        }
+        #mobile-overlay, .mobile-header {
+          display: none !important;
+        }
+        #btn-toggle-desktop {
+          display: flex !important;
+        }
+      }
+
+      /* Exportar a PDF (Print Styles) */
+      @media print {
+        #chat-sidebar, #mobile-overlay, .mobile-header, .input-area, #btn-toggle-open, .empty-state-btns { display: none !important; }
+        body, main { background: white !important; color: black !important; height: auto !important; overflow: visible !important; display: block !important; }
+        #chat-messages { overflow: visible !important; height: auto !important; padding: 0 !important; }
+        .bot-message { border: 1px solid #ddd !important; background: #f9f9f9 !important; color: black !important; box-shadow: none !important; }
+        .user-message { background: #f97316 !important; color: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      }
+    </style>
+  </head>
+  <body class="bg-slate-900 text-slate-200 h-screen w-full flex overflow-hidden font-sans">
+    
+    <!-- Mobile Sidebar Overlay -->
+    <div id="mobile-overlay" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden backdrop-blur-sm"></div>
+
+    <!-- Confirmation Dialog -->
+    <div id="confirm-dialog" class="fixed inset-0 bg-black/60 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-4">
+      <div class="bg-slate-900 border border-white/10 rounded-2xl p-6 w-full max-w-sm shadow-2xl transform scale-95 opacity-0 transition-all duration-200" id="confirm-dialog-content">
+        <h3 id="confirm-title" class="text-xl font-bold text-white mb-2">Eliminar chat</h3>
+        <p id="confirm-desc" class="text-slate-400 text-sm mb-6">¿Estás seguro de que deseas eliminar esta conversación?</p>
+        <div class="flex gap-3">
+          <button id="btn-confirm-cancel" class="flex-1 px-4 py-2.5 rounded-xl bg-slate-800 text-white hover:bg-slate-700 transition-colors font-medium text-sm t-cancel">Cancelar</button>
+          <button id="btn-confirm-delete" class="flex-1 px-4 py-2.5 rounded-xl bg-red-500 text-white hover:bg-red-600 transition-colors font-medium text-sm t-delete">Eliminar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside id="chat-sidebar" class="fixed md:static inset-y-0 left-0 z-50 w-72 bg-slate-950 border-r border-white/5 flex flex-col transform -translate-x-full md:translate-x-0 transition-all duration-300 ease-in-out shrink-0">
+      
+      <!-- Sidebar Header -->
+      <div class="p-4 flex flex-col gap-4">
+        <div class="flex items-center justify-between mb-2">
+          <a href="/" class="block flex-1 min-w-0">
+            <img src={Logo.src} alt="Alexander Polanco Logo" class="h-8 object-contain" />
+          </a>
+        </div>
+
+        <button id="btn-new-chat" class="w-full flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-white px-4 py-3 rounded-xl transition-colors border border-white/5 shadow-sm empty-state-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14"/><path d="M12 5v14"/>
+          </svg>
+          <span class="font-medium text-sm t-new-chat">Nuevo Chat</span>
+        </button>
+      </div>
+
+      <!-- History List -->
+      <div class="flex-1 overflow-y-auto custom-scrollbar px-3 pb-4">
+        <div class="flex items-center justify-between mb-3 px-2">
+          <div class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider t-history">Conversaciones</div>
+          <button id="btn-clear-all" class="text-slate-500 hover:text-red-400 transition-colors hidden" title="Eliminar todos">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line>
+            </svg>
+          </button>
+        </div>
+        <div id="chat-history-list" class="flex flex-col gap-1">
+          <!-- Las sesiones se renderizan aquí por JS -->
+        </div>
+      </div>
+
+      <!-- Sidebar Footer -->
+      <div class="p-3 border-t border-white/5 space-y-1">
+        <a href="/" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-xl transition-colors sidebar-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m15 18-6-6 6-6"/>
+          </svg>
+          <span class="font-medium t-back">Volver al Portafolio</span>
+        </a>
+
+        <button id="btn-lang" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-xl transition-colors sidebar-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <span class="font-medium t-lang">English</span>
+        </button>
+
+        <button id="btn-theme" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-xl transition-colors sidebar-btn">
+          <svg id="icon-theme" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <span class="font-medium t-theme">Modo Claro</span>
+        </button>
+
+        <button id="btn-export" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-xl transition-colors sidebar-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+          <span class="font-medium t-export">Exportar Chat (PDF)</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Chat Area -->
+    <main class="flex-1 flex flex-col h-screen relative bg-slate-900 min-w-0 transition-colors duration-300">
+      
+      <!-- Toggle Button Desktop -->
+      <div class="hidden md:flex absolute top-4 left-4 z-40">
+        <button id="btn-desktop-toggle" class="text-slate-400 hover:text-slate-200 p-2.5 rounded-lg hover:bg-slate-800 bg-slate-900/50 backdrop-blur-sm border border-white/10 shadow-sm transition-colors sidebar-btn" title="Alternar barra lateral">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Mobile Header -->
+      <header class="mobile-header md:hidden flex items-center justify-between h-14 px-4 border-b border-white/5 bg-slate-950/80 backdrop-blur-md sticky top-0 z-30">
+        <button id="btn-menu" class="text-slate-400 hover:text-white p-2 -ml-2 sidebar-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/>
+          </svg>
+        </button>
+        <div class="font-semibold text-white mobile-header-title">AI Assistant</div>
+        <div class="w-8"></div> <!-- Spacer -->
+      </header>
+
+      <!-- Messages -->
+      <div id="chat-messages" class="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-8 space-y-6 scroll-smooth pt-16 md:pt-8">
+        
+        <!-- Empty State -->
+        <div id="empty-state" class="h-full flex flex-col items-center justify-center text-center max-w-md mx-auto space-y-6">
+          <div class="w-20 h-20 rounded-3xl bg-orange-500/10 flex items-center justify-center text-orange-500 shadow-xl shadow-orange-500/5">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 8V4H8"></path><rect x="4" y="8" width="16" height="12" rx="2"></rect><path d="M2 14h2"></path><path d="M20 14h2"></path><path d="M15 13v2"></path><path d="M9 13v2"></path>
+            </svg>
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold text-white mb-2 t-hello mobile-header-title">¡Hola! Soy el asistente de IA</h2>
+            <p class="text-slate-400 leading-relaxed t-desc">
+              Estoy aquí para ayudarte a conocer más sobre la experiencia y proyectos de Alexander. ¿Por dónde empezamos?
+            </p>
+          </div>
+          <div class="grid grid-cols-1 gap-2 w-full mt-4 empty-state-btns">
+            <button class="suggestion-btn empty-state-btn bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm py-3 px-4 rounded-xl border border-white/5 transition-colors text-left t-sugg1">
+              "Háblame sobre tu experiencia principal"
+            </button>
+            <button class="suggestion-btn empty-state-btn bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm py-3 px-4 rounded-xl border border-white/5 transition-colors text-left t-sugg2">
+              "¿Qué tecnologías dominas?"
+            </button>
+          </div>
+        </div>
+        
+      </div>
+
+      <!-- Typing Indicator -->
+      <div id="typing-indicator" class="hidden px-4 md:px-8 pb-4 max-w-4xl mx-auto w-full">
+        <div class="flex gap-4">
+          <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-slate-800 text-orange-400 border border-white/10 bot-message">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"></path><rect x="4" y="8" width="16" height="12" rx="2"></rect><path d="M2 14h2"></path><path d="M20 14h2"></path><path d="M15 13v2"></path><path d="M9 13v2"></path></svg>
+          </div>
+          <div class="flex items-center gap-1.5 px-4 py-3 rounded-2xl rounded-tl-sm bg-slate-800/80 border border-white/5 w-fit bot-message">
+            <span class="w-1.5 h-1.5 rounded-full animate-bounce typing-dot bg-slate-400"></span>
+            <span class="w-1.5 h-1.5 rounded-full animate-bounce typing-dot bg-slate-400" style="animation-delay: 0.15s"></span>
+            <span class="w-1.5 h-1.5 rounded-full animate-bounce typing-dot bg-slate-400" style="animation-delay: 0.3s"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Input -->
+      <div class="input-area p-4 md:p-6 bg-gradient-to-t from-slate-900 via-slate-900 to-transparent">
+        <div class="input-container max-w-4xl mx-auto relative flex items-end gap-2 bg-slate-800 rounded-2xl border border-white/10 p-2 shadow-lg focus-within:ring-1 focus-within:ring-orange-500/50 transition-shadow">
+          <textarea
+            id="chat-input"
+            placeholder="Escribe un mensaje..."
+            class="flex-1 max-h-[200px] bg-transparent text-white placeholder-slate-400 resize-none outline-none py-3 px-4 text-sm custom-scrollbar"
+            rows="1"
+          ></textarea>
+          <button
+            id="btn-send"
+            class="p-3 mb-1 mr-1 rounded-xl bg-orange-500 text-white hover:bg-orange-600 disabled:opacity-50 transition-all flex-shrink-0 flex items-center justify-center"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="22" x2="11" y1="2" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            </svg>
+          </button>
+        </div>
+        <div class="text-center mt-3 text-[11px] text-slate-500 disclaimer-text t-disclaimer">
+          La IA puede cometer errores. Considera verificar la información importante.
+        </div>
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const STORAGE_KEY = 'genesa_ai_sessions_v1';
+        
+        // DOM Elements
+        const sidebar = document.getElementById('chat-sidebar');
+        const overlay = document.getElementById('mobile-overlay');
+        const btnMenu = document.getElementById('btn-menu');
+        const btnNewChat = document.getElementById('btn-new-chat');
+        const historyList = document.getElementById('chat-history-list');
+        const messagesContainer = document.getElementById('chat-messages');
+        const emptyState = document.getElementById('empty-state');
+        const inputEl = document.getElementById('chat-input') as HTMLTextAreaElement;
+        const btnSend = document.getElementById('btn-send') as HTMLButtonElement;
+        const typingIndicator = document.getElementById('typing-indicator');
+        const suggestionBtns = document.querySelectorAll('.suggestion-btn');
+        
+        // New interactive elements
+        const btnToggleDesktop = document.getElementById('btn-toggle-desktop');
+        const btnToggleOpen = document.getElementById('btn-toggle-open');
+        const btnLang = document.getElementById('btn-lang');
+        const btnTheme = document.getElementById('btn-theme');
+        const btnExport = document.getElementById('btn-export');
+        const iconTheme = document.getElementById('icon-theme');
+
+        // State
+        let sessions: { id: string; title: string; updatedAt: number; messages: {role: string, content: string}[] }[] = [];
+        let activeSessionId: string | null = null;
+        let isTyping = false;
+        let currentLang: 'es' | 'en' = 'es';
+        let isDark = true;
+
+        // Translations dictionary
+        const i18n = {
+          es: { 
+            newChat: "Nuevo Chat", back: "Volver al Portafolio", history: "Conversaciones", empty: "Sin historial", 
+            theme: "Modo Claro", export: "Exportar Chat (PDF)", lang: "English",
+            hello: "¡Hola! Soy el asistente de IA", 
+            desc: "Estoy aquí para ayudarte a conocer más sobre la experiencia y proyectos de Alexander. ¿Por dónde empezamos?", 
+            placeholder: "Escribe un mensaje...", you: "Tú", bot: "Asistente AI",
+            disclaimer: "La IA puede cometer errores. Considera verificar la información importante.",
+            sugg1: '"Háblame sobre tu experiencia principal"', sugg2: '"¿Qué tecnologías dominas?"',
+            delTitle: "Eliminar chat", delDesc: "¿Estás seguro de que deseas eliminar esta conversación?",
+            delAllTitle: "Eliminar todos", delAllDesc: "¿Estás seguro de que deseas eliminar todas las conversaciones de forma permanente?",
+            cancel: "Cancelar", delete: "Eliminar"
+          },
+          en: { 
+            newChat: "New Chat", back: "Back to Portfolio", history: "Conversations", empty: "No history", 
+            theme: "Dark Mode", export: "Export Chat (PDF)", lang: "Español",
+            hello: "Hi! I'm the AI Assistant", 
+            desc: "I'm here to help you learn more about Alexander's experience and projects. Where should we start?", 
+            placeholder: "Type a message...", you: "You", bot: "AI Assistant",
+            disclaimer: "AI can make mistakes. Consider verifying important information.",
+            sugg1: '"Tell me about your main experience"', sugg2: '"What technologies do you master?"',
+            delTitle: "Delete chat", delDesc: "Are you sure you want to delete this conversation?",
+            delAllTitle: "Delete all", delAllDesc: "Are you sure you want to permanently delete all conversations?",
+            cancel: "Cancel", delete: "Delete"
+          }
+        };
+
+        // Load state
+        try {
+          const stored = localStorage.getItem(STORAGE_KEY);
+          if (stored) sessions = JSON.parse(stored);
+          
+          const storedTheme = localStorage.getItem('ai_chat_theme');
+          if (storedTheme === 'light') toggleTheme(false);
+          
+          const storedLang = localStorage.getItem('ai_chat_lang');
+          if (storedLang === 'en') toggleLang();
+        } catch(e) {}
+
+        if (sessions.length > 0) {
+          activeSessionId = sessions[0].id;
+        }
+
+        // --- Core Functions ---
+        const saveSessions = () => {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(sessions));
+        };
+
+        const createSession = (initialTitle = i18n[currentLang].newChat) => {
+          const newSession = {
+            id: Date.now().toString(),
+            title: initialTitle,
+            updatedAt: Date.now(),
+            messages: []
+          };
+          sessions.unshift(newSession);
+          activeSessionId = newSession.id;
+          saveSessions();
+          renderSidebar();
+          renderMessages();
+        };
+
+        const deleteSession = (id: string, e: Event) => {
+          e.stopPropagation();
+          const dict = i18n[currentLang];
+          showConfirmDialog(
+            dict.delTitle,
+            dict.delDesc,
+            () => {
+              sessions = sessions.filter(s => s.id !== id);
+              if (activeSessionId === id) {
+                activeSessionId = sessions.length > 0 ? sessions[0].id : null;
+              }
+              saveSessions();
+              renderSidebar();
+              renderMessages();
+            }
+          );
+        };
+
+        const renderSidebar = () => {
+          if (!historyList) return;
+          historyList.innerHTML = '';
+          
+          const btnClearAll = document.getElementById('btn-clear-all');
+          if (btnClearAll) {
+            if (sessions.length > 0) {
+              btnClearAll.classList.remove('hidden');
+            } else {
+              btnClearAll.classList.add('hidden');
+            }
+          }
+
+          if (sessions.length === 0) {
+            historyList.innerHTML = `<div class="text-center text-slate-600 text-xs mt-4">${i18n[currentLang].empty}</div>`;
+            return;
+          }
+
+          sessions.forEach(session => {
+            const isActive = session.id === activeSessionId;
+            const el = document.createElement('div');
+            el.className = `chat-item group flex items-center justify-between p-3 rounded-xl cursor-pointer transition-colors ${isActive ? 'bg-slate-800 text-white active-chat' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'}`;
+            
+            el.innerHTML = `
+              <div class="flex items-center gap-3 overflow-hidden flex-1">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                <span class="text-sm truncate w-full block">${session.title}</span>
+              </div>
+              <button class="delete-btn opacity-0 group-hover:opacity-100 p-1 text-slate-500 hover:text-red-400 transition-all ml-2" title="Eliminar">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
+              </button>
+            `;
+            
+            el.addEventListener('click', () => {
+              activeSessionId = session.id;
+              renderSidebar();
+              renderMessages();
+              closeMobileSidebar();
+            });
+
+            el.querySelector('.delete-btn')?.addEventListener('click', (e) => deleteSession(session.id, e));
+            historyList.appendChild(el);
+          });
+        };
+
+        const renderMessages = () => {
+          if (!messagesContainer) return;
+          
+          const session = sessions.find(s => s.id === activeSessionId);
+          const msgs = session?.messages || [];
+
+          // Remove all existing messages but keep empty state
+          Array.from(messagesContainer.children).forEach(child => {
+            if (child !== emptyState) child.remove();
+          });
+
+          if (msgs.length === 0) {
+            if (emptyState) emptyState.style.display = 'flex';
+            return;
+          }
+
+          if (emptyState) emptyState.style.display = 'none';
+
+          msgs.forEach(msg => {
+            const isUser = msg.role === 'user';
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `flex gap-4 max-w-4xl mx-auto w-full ${isUser ? 'flex-row-reverse' : 'flex-row'}`;
+            
+            const botClasses = 'bg-slate-800 text-slate-200 border border-white/5 bot-message';
+            const userClasses = 'bg-orange-500 text-white user-message';
+            
+            msgDiv.innerHTML = `
+              <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${isUser ? userClasses : 'bg-slate-800 text-orange-400 border border-white/10 bot-message'}">
+                ${isUser 
+                  ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="14" cy="7" r="4"></circle></svg>'
+                  : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"></path><rect x="4" y="8" width="16" height="12" rx="2"></rect><path d="M2 14h2"></path><path d="M20 14h2"></path><path d="M15 13v2"></path><path d="M9 13v2"></path></svg>'}
+              </div>
+              <div class="flex flex-col ${isUser ? 'items-end' : 'items-start'} max-w-[85%]">
+                <div class="text-xs text-slate-500 mb-1 px-1 font-medium">${isUser ? i18n[currentLang].you : i18n[currentLang].bot}</div>
+                <div class="px-5 py-3.5 rounded-2xl text-[15px] leading-relaxed shadow-sm ${isUser ? 'bg-orange-500 text-white rounded-tr-sm user-message' : 'rounded-tl-sm ' + botClasses}">
+                  ${msg.content.replace(/\\n/g, '<br>')}
+                </div>
+              </div>
+            `;
+            messagesContainer.appendChild(msgDiv);
+          });
+
+          messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        };
+
+        const generateDummyResponse = (query: string) => {
+          const q = query.toLowerCase();
+          if (currentLang === 'es') {
+            if (q.includes("hola")) return "¡Hola! Bienvenido al chat interactivo. Soy el asistente de IA de Alexander. ¿Cómo puedo ayudarte hoy?";
+            if (q.includes("experiencia")) return "Alexander es un desarrollador de software con sólida experiencia en tecnologías frontend (Astro, React, Tailwind) y backend (Node.js, Bases de datos). Se especializa en crear soluciones modernas, integraciones con IA y experiencias de usuario de alta calidad.";
+            if (q.includes("tecnología") || q.includes("tecnologia")) return "Las principales tecnologías incluyen:\n- Astro y React\n- TailwindCSS\n- TypeScript y JavaScript\n- Node.js\n- Integraciones con APIs de IA (OpenAI, Gemini).";
+            return "Entiendo. Por el momento soy una demostración de interfaz gráfica, pero pronto estaré conectado a un modelo de lenguaje avanzado para responder a esa pregunta con mayor detalle. ¿Hay algo más en lo que pueda ayudarte?";
+          } else {
+            if (q.includes("hi") || q.includes("hello")) return "Hi! Welcome to the interactive chat. I'm Alexander's AI assistant. How can I help you today?";
+            if (q.includes("experience")) return "Alexander is a software developer with solid experience in frontend technologies (Astro, React, Tailwind) and backend (Node.js, Databases). He specializes in creating modern solutions, AI integrations, and high-quality user experiences.";
+            return "I understand. At the moment I am a graphical interface demo, but I will soon be connected to an advanced language model to answer that question in more detail. Is there anything else I can help you with?";
+          }
+        };
+
+        const handleSend = (text: string) => {
+          if (!text || isTyping) return;
+          
+          if (!activeSessionId) {
+            createSession(text.slice(0, 30) + (text.length > 30 ? "..." : ""));
+          } else {
+            // Update title if it's the first message
+            const session = sessions.find(s => s.id === activeSessionId);
+            if (session && session.messages.length === 0) {
+              session.title = text.slice(0, 30) + (text.length > 30 ? "..." : "");
+            }
+          }
+
+          const session = sessions.find(s => s.id === activeSessionId);
+          if (!session) return;
+
+          session.messages.push({ role: 'user', content: text });
+          session.updatedAt = Date.now();
+          saveSessions();
+          renderSidebar();
+          renderMessages();
+
+          if (inputEl) {
+            inputEl.value = '';
+            inputEl.style.height = 'auto';
+            if (btnSend) btnSend.disabled = true;
+          }
+
+          // Simulate AI
+          isTyping = true;
+          if (typingIndicator) typingIndicator.classList.remove('hidden');
+          messagesContainer?.scrollTo(0, messagesContainer.scrollHeight);
+
+          setTimeout(() => {
+            const response = generateDummyResponse(text);
+            session.messages.push({ role: 'assistant', content: response });
+            session.updatedAt = Date.now();
+            saveSessions();
+            
+            isTyping = false;
+            if (typingIndicator) typingIndicator.classList.add('hidden');
+            renderSidebar();
+            renderMessages();
+          }, 1500 + Math.random() * 1000);
+        };
+
+        // --- Confirmation Dialog ---
+        const confirmDialog = document.getElementById('confirm-dialog');
+        const confirmContent = document.getElementById('confirm-dialog-content');
+        const btnConfirmCancel = document.getElementById('btn-confirm-cancel');
+        const btnConfirmDelete = document.getElementById('btn-confirm-delete');
+        
+        let pendingDeleteAction: (() => void) | null = null;
+
+        const showConfirmDialog = (title: string, desc: string, onConfirm: () => void) => {
+          setText('#confirm-title', title);
+          setText('#confirm-desc', desc);
+          pendingDeleteAction = onConfirm;
+          confirmDialog?.classList.remove('hidden');
+          // Pequeño delay para la animación CSS
+          setTimeout(() => {
+            confirmContent?.classList.remove('scale-95', 'opacity-0');
+            confirmContent?.classList.add('scale-100', 'opacity-100');
+          }, 10);
+        };
+
+        const closeConfirmDialog = () => {
+          confirmContent?.classList.remove('scale-100', 'opacity-100');
+          confirmContent?.classList.add('scale-95', 'opacity-0');
+          setTimeout(() => {
+            confirmDialog?.classList.add('hidden');
+            pendingDeleteAction = null;
+          }, 200);
+        };
+
+        btnConfirmCancel?.addEventListener('click', closeConfirmDialog);
+        btnConfirmDelete?.addEventListener('click', () => {
+          if (pendingDeleteAction) pendingDeleteAction();
+          closeConfirmDialog();
+        });
+
+        // --- Layout Actions ---
+        const btnDesktopToggle = document.getElementById('btn-desktop-toggle');
+        
+        const toggleDesktopSidebar = () => {
+          const isClosed = sidebar?.classList.contains('desktop-closed');
+          if (isClosed) {
+            sidebar?.classList.remove('desktop-closed');
+          } else {
+            sidebar?.classList.add('desktop-closed');
+          }
+        };
+
+        // --- Feature Buttons (Lang, Theme, PDF) ---
+        const setText = (selector: string, text: string) => {
+          const el = document.querySelector(selector);
+          if (el) el.textContent = text;
+        };
+
+        function updateUITexts() {
+          const dict = i18n[currentLang];
+          setText('.t-new-chat', dict.newChat);
+          setText('.t-history', dict.history);
+          setText('.t-back', dict.back);
+          setText('.t-export', dict.export);
+          setText('.t-lang', dict.lang);
+          setText('.t-theme', dict.theme);
+          setText('.t-hello', dict.hello);
+          setText('.t-desc', dict.desc);
+          if (inputEl) inputEl.placeholder = dict.placeholder;
+          setText('.t-sugg1', dict.sugg1);
+          setText('.t-sugg2', dict.sugg2);
+          setText('.t-cancel', dict.cancel);
+          setText('.t-delete', dict.delete);
+          renderSidebar();
+          renderMessages();
+        }
+
+        function toggleLang() {
+          currentLang = currentLang === 'es' ? 'en' : 'es';
+          localStorage.setItem('ai_chat_lang', currentLang);
+          updateUITexts();
+        }
+
+        function toggleTheme(switchValue = true) {
+          if (switchValue) isDark = !isDark;
+          
+          if (isDark) {
+            document.documentElement.classList.remove('light-theme');
+            setText('.t-theme', i18n[currentLang].theme); // "Modo Claro"
+            if(iconTheme) iconTheme.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+            localStorage.setItem('ai_chat_theme', 'dark');
+          } else {
+            document.documentElement.classList.add('light-theme');
+            const targetText = currentLang === 'es' ? 'Modo Oscuro' : 'Dark Mode';
+            setText('.t-theme', targetText);
+            if(iconTheme) iconTheme.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
+            localStorage.setItem('ai_chat_theme', 'light');
+          }
+        }
+
+        function exportToPDF() {
+          window.print();
+        }
+
+        // --- Event Listeners ---
+        btnDesktopToggle?.addEventListener('click', toggleDesktopSidebar);
+        
+        btnLang?.addEventListener('click', toggleLang);
+        btnTheme?.addEventListener('click', () => toggleTheme(true));
+        btnExport?.addEventListener('click', exportToPDF);
+
+        btnNewChat?.addEventListener('click', () => {
+          const emptySession = sessions.find(s => s.messages.length === 0);
+          if (emptySession) {
+            activeSessionId = emptySession.id;
+            renderSidebar();
+            renderMessages();
+          } else {
+            createSession();
+          }
+          closeMobileSidebar();
+        });
+
+        const btnClearAll = document.getElementById('btn-clear-all');
+        btnClearAll?.addEventListener('click', () => {
+          const dict = i18n[currentLang];
+          showConfirmDialog(
+            dict.delAllTitle, 
+            dict.delAllDesc, 
+            () => {
+              sessions = [];
+              activeSessionId = null;
+              saveSessions();
+              renderSidebar();
+              renderMessages();
+            }
+          );
+        });
+
+        btnSend?.addEventListener('click', () => {
+          if (inputEl) handleSend(inputEl.value.trim());
+        });
+
+        inputEl?.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSend(inputEl.value.trim());
+          }
+        });
+
+        inputEl?.addEventListener('input', () => {
+          inputEl.style.height = 'auto';
+          inputEl.style.height = Math.min(inputEl.scrollHeight, 200) + 'px';
+          if (btnSend) btnSend.disabled = inputEl.value.trim().length === 0;
+        });
+
+        suggestionBtns.forEach(btn => {
+          btn.addEventListener('click', () => {
+            const text = btn.textContent?.replace(/"/g, '').trim();
+            if (text) handleSend(text);
+          });
+        });
+
+        // Mobile Sidebar Toggles
+        const openMobileSidebar = () => {
+          sidebar?.classList.remove('-translate-x-full');
+          overlay?.classList.remove('hidden');
+        };
+
+        const closeMobileSidebar = () => {
+          sidebar?.classList.add('-translate-x-full');
+          overlay?.classList.add('hidden');
+        };
+
+        btnMenu?.addEventListener('click', openMobileSidebar);
+        overlay?.addEventListener('click', closeMobileSidebar);
+
+        // Initialization
+        renderSidebar();
+        renderMessages();
+      });
+    </script>
+  </body>
+</html>

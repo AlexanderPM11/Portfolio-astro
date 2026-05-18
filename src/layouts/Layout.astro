@@ -2,6 +2,7 @@
 import BackToTop from "../components/BackToTop.astro";
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
+import AIChatWidget from "../components/AIChatWidget.astro";
 import "../styles/global.css";
 ---
 
@@ -52,7 +53,9 @@ import "../styles/global.css";
     </main>
     <Footer />
     <BackToTop />
+    <AIChatWidget />
   </body>
+
   <!--Start of Tawk.to Script-->
   <script type="text/javascript">
     var Tawk_API = Tawk_API || {},
@@ -189,8 +192,6 @@ import "../styles/global.css";
       });
     });
   </script>
-
-  <!--End of Tawk.to Script-->
 </html>
 
 <style>

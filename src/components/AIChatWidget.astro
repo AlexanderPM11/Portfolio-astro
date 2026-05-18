@@ -1,0 +1,20 @@
+---
+// AIChatWidget.astro
+---
+
+<div id="ai-chat-widget" class="fixed bottom-6 left-6 z-50 pointer-events-auto font-sans">
+  <a
+    href="/chat"
+    class="relative p-4 rounded-full bg-orange-500 text-white shadow-xl shadow-orange-500/20 hover:bg-orange-600 transition-all transform hover:scale-105 active:scale-95 group flex items-center justify-center"
+  >
+    <div class="absolute -top-2 -right-2 bg-slate-900 text-orange-500 text-[10px] font-bold px-2 py-0.5 rounded-full border border-orange-500/30 shadow-sm z-10">
+      BETA
+    </div>
+    
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 ai-icon-default">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+    </svg>
+    
+    <div class="absolute inset-0 rounded-full bg-orange-400 opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-300"></div>
+  </a>
+</div>
