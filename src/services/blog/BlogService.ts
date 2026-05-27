@@ -28,7 +28,7 @@ export async function fetchCategories(): Promise<Category[]> {
     const data = await get<Category[]>(url);
 
     const validCategories = data
-        .filter((cat) => cat.count > 0 && cat.slug !== "projects" && cat.slug !== "_servicesonly" && cat.slug !== "_highlights" && !cat.name.startsWith("(P) -"))
+        .filter((cat) => cat.count > 0 && cat.slug !== "projects" && cat.slug !== "_servicesonly" && cat.slug !== "_highlights" && cat.slug !== "_skillsonly" && !cat.name.startsWith("(P) -"))
         .sort((a, b) => b.count - a.count);
 
     return [{ id: 0, name: "Todos", slug: "all", count: 0 }, ...validCategories];
@@ -43,11 +43,13 @@ export async function fetchPosts(categorySlug = "all", page = 1, perPage = 12, k
     const projectsCat = resCategories.find((c) => c.slug === "projects");
     const servicesCat = resCategories.find((c) => c.slug === "_servicesonly");
     const highlightsCat = resCategories.find((c) => c.slug === "_highlights");
+    const skillsCat = resCategories.find((c) => c.slug === "_skillsonly");
 
     let excludes = [];
     if (projectsCat) excludes.push(projectsCat.id);
     if (servicesCat) excludes.push(servicesCat.id);
     if (highlightsCat) excludes.push(highlightsCat.id);
+    if (skillsCat) excludes.push(skillsCat.id);
 
     if (excludes.length > 0) {
         url += `&categories_exclude=${excludes.join(",")}`;
@@ -82,10 +84,12 @@ export async function fetchLimitedPosts(
         const projectsCat = resCategories.find((c) => c.slug === "projects");
         const servicesCat = resCategories.find((c) => c.slug === "_servicesonly");
         const highlightsCat = resCategories.find((c) => c.slug === "_highlights");
+        const skillsCat = resCategories.find((c) => c.slug === "_skillsonly");
         
         const projectsId = projectsCat ? projectsCat.id : null;
         const servicesId = servicesCat ? servicesCat.id : null;
         const highlightsId = highlightsCat ? highlightsCat.id : null;
+        const skillsId = skillsCat ? skillsCat.id : null;
 
         // 2) parámetros para la paginación y eficiencia
         //    perPage alta para reducir número de requests (ajusta si tu WP limita)
@@ -128,7 +132,8 @@ export async function fetchLimitedPosts(
                     if (flatTerms.some((t: any) => 
                         t?.slug === "projects" || t?.id === projectsId || 
                         t?.slug === "_servicesonly" || t?.id === servicesId ||
-                        t?.slug === "_highlights" || t?.id === highlightsId
+                        t?.slug === "_highlights" || t?.id === highlightsId ||
+                        t?.slug === "_skillsonly" || t?.id === skillsId
                     )) {
                         return false;
                     }

@@ -1,83 +1,10 @@
 ---
 // src/components/SkillsData.ts
-import {
-  Database,
-  Figma,
-  Key,
-  Code,
-  Zap, // React
-  Box, // Docker
-  Layout, // WordPress
-  Sliders, // Tailwind CSS
-  Workflow, // Automation
-  Brain, // IA / Prompting
-  Bot, // Agentes
-  Cpu, // Arquitectura IA
-  FileCode, // Spec-Driven Development
-  Blocks, // Servidores MCP
-  Layers, // Orquestación Multi-Agente
-  Cloud, // Cloud Code
-  Sparkles, // Antigravity
-} from "lucide-astro";
+import * as LucideIcons from "lucide-astro";
 import SectionHeading from "./common/SectionHeading.astro";
+import { GetWpSkills } from "../services/wpSkills";
 
-interface Skill {
-  name: string;
-  Icon: any; // Icono compatible con Astro (lucide-astro)
-  category: string;
-}
-
-export const skills: Skill[] = [
-  // Languages
-  { name: "JavaScript", Icon: Code, category: "Languages" },
-  { name: "TypeScript", Icon: Code, category: "Languages" },
-  { name: "C#", Icon: Code, category: "Languages" },
-  { name: "SQL", Icon: Database, category: "Languages" },
-  { name: "Dart", Icon: Code, category: "Languages" },
-
-  // Frameworks/Libraries
-  { name: "React", Icon: Zap, category: "Frameworks/Libraries" },
-  { name: "Astro", Icon: Code, category: "Frameworks/Libraries" },
-  { name: "Flutter", Icon: Code, category: "Frameworks/Libraries" },
-  { name: "Tailwind CSS", Icon: Sliders, category: "Frameworks/Libraries" },
-  { name: "HTML", Icon: Code, category: "Frameworks/Libraries" },
-  { name: "CSS", Icon: Code, category: "Frameworks/Libraries" },
-  { name: "ASP.NET Core", Icon: Code, category: "Frameworks/Libraries" },
-  { name: "WordPress", Icon: Layout, category: "Frameworks/Libraries" },
-
-  // Agentic AI
-  { name: "Antigravity", Icon: Sparkles, category: "Agentic AI" },
-  { name: "Cloud Code", Icon: Cloud, category: "Agentic AI" },
-  { name: "Codex", Icon: Code, category: "Agentic AI" },
-  { name: "Spec-Driven Dev AI", Icon: FileCode, category: "Agentic AI" },
-  { name: "Programación Asistida", Icon: Bot, category: "Agentic AI" },
-  { name: "Desarrollo Servidores MCP", Icon: Blocks, category: "Agentic AI" },
-  { name: "Orquestación Multi-Agente", Icon: Layers, category: "Agentic AI" },
-  { name: "Prompt Engineering & Ops", Icon: Brain, category: "Agentic AI" },
-  { name: "Optimización de Contexto", Icon: Cpu, category: "Agentic AI" },
-
-  // Cloud/DevOps
-  { name: "Docker", Icon: Box, category: "Cloud/DevOps" },
-  { name: "Linux Server", Icon: Code, category: "Cloud/DevOps" },
-  { name: "VPS Deployment", Icon: Code, category: "Cloud/DevOps" },
-  { name: "Certificados SSL", Icon: Key, category: "Cloud/DevOps" },
-
-  // ML/Data
-  { name: "SQL Server", Icon: Database, category: "ML/Data" },
-  { name: "MySQL", Icon: Database, category: "ML/Data" },
-
-  // Concepts
-  { name: "Git", Icon: Code, category: "Concepts" },
-  { name: "GitHub", Icon: Code, category: "Concepts" },
-  { name: "GitLab", Icon: Code, category: "Concepts" },
-  { name: "Figma", Icon: Figma, category: "Concepts" },
-  { name: "Trello", Icon: Code, category: "Concepts" },
-  { name: "Jira", Icon: Code, category: "Concepts" },
-  { name: "API Design", Icon: Code, category: "Concepts" },
-
-  // Automation
-  { name: "n8n", Icon: Workflow, category: "Automation" },
-];
+const skills = await GetWpSkills();
 
 let activeCategory = "Languages";
 const skillFilters = [
@@ -120,15 +47,18 @@ const skillFilters = [
     <!-- Skill Cards -->
     <div id="skills-container" class="flex flex-wrap justify-center gap-4 mt-6">
       {
-        skills.map(({ name, Icon, category }) => (
-          <div
-            class={`skill-card group flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 hover:border-orange-500/30 hover:shadow-[0_0_20px_-5px_rgba(249,115,22,0.3)] transition-all duration-300 text-white min-w-[180px] max-w-[220px] border border-white/10 backdrop-blur-sm ${category !== activeCategory ? "hidden" : ""}`}
-            data-category={category}
-          >
-            <Icon class="text-2xl text-white/80 group-hover:text-orange-400 transition-colors duration-300" />
-            <span class="text-sm font-semibold">{name}</span>
-          </div>
-        ))
+        skills.map((skill) => {
+          const IconComponent = (LucideIcons as any)[skill.iconName] || LucideIcons.Code;
+          return (
+            <div
+              class={`skill-card group flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 hover:border-orange-500/30 hover:shadow-[0_0_20px_-5px_rgba(249,115,22,0.3)] transition-all duration-300 text-white min-w-[180px] max-w-[220px] border border-white/10 backdrop-blur-sm ${skill.category !== activeCategory ? "hidden" : ""}`}
+              data-category={skill.category}
+            >
+              <IconComponent class="text-2xl text-white/80 group-hover:text-orange-400 transition-colors duration-300" />
+              <span class="text-sm font-semibold" set:html={skill.name} />
+            </div>
+          );
+        })
       }
     </div>
   </div>
