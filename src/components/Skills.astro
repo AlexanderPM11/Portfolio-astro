@@ -10,6 +10,14 @@ import {
   Layout, // WordPress
   Sliders, // Tailwind CSS
   Workflow, // Automation
+  Brain, // IA / Prompting
+  Bot, // Agentes
+  Cpu, // Arquitectura IA
+  FileCode, // Spec-Driven Development
+  Blocks, // Servidores MCP
+  Layers, // Orquestación Multi-Agente
+  Cloud, // Cloud Code
+  Sparkles, // Antigravity
 } from "lucide-astro";
 import SectionHeading from "./common/SectionHeading.astro";
 
@@ -36,6 +44,17 @@ export const skills: Skill[] = [
   { name: "CSS", Icon: Code, category: "Frameworks/Libraries" },
   { name: "ASP.NET Core", Icon: Code, category: "Frameworks/Libraries" },
   { name: "WordPress", Icon: Layout, category: "Frameworks/Libraries" },
+
+  // Agentic AI
+  { name: "Antigravity", Icon: Sparkles, category: "Agentic AI" },
+  { name: "Cloud Code", Icon: Cloud, category: "Agentic AI" },
+  { name: "Codex", Icon: Code, category: "Agentic AI" },
+  { name: "Spec-Driven Dev AI", Icon: FileCode, category: "Agentic AI" },
+  { name: "Programación Asistida", Icon: Bot, category: "Agentic AI" },
+  { name: "Desarrollo Servidores MCP", Icon: Blocks, category: "Agentic AI" },
+  { name: "Orquestación Multi-Agente", Icon: Layers, category: "Agentic AI" },
+  { name: "Prompt Engineering & Ops", Icon: Brain, category: "Agentic AI" },
+  { name: "Optimización de Contexto", Icon: Cpu, category: "Agentic AI" },
 
   // Cloud/DevOps
   { name: "Docker", Icon: Box, category: "Cloud/DevOps" },
@@ -64,6 +83,7 @@ let activeCategory = "Languages";
 const skillFilters = [
   "Languages",
   "Frameworks/Libraries",
+  "Agentic AI",
   "Cloud/DevOps",
   "Concepts",
   "Automation",
@@ -88,7 +108,7 @@ const skillFilters = [
         skillFilters.map((filter) => (
           <button
             type="button"
-            class={`cursor-pointer px-4 py-1.5 rounded-md text-sm font-semibold transition-colors ${filter === activeCategory ? "bg-white text-gray-900 shadow" : "text-white/70 hover:bg-white/10"}`}
+            class={`cursor-pointer px-4 py-1.5 rounded-md text-sm font-semibold transition-all duration-300 ${filter === activeCategory ? "bg-orange-500 text-white shadow-lg shadow-orange-500/20" : "text-white/70 hover:bg-white/10"}`}
             data-category={filter}
           >
             {filter}
@@ -102,10 +122,10 @@ const skillFilters = [
       {
         skills.map(({ name, Icon, category }) => (
           <div
-            class={`skill-card flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition text-white max-w-[200px] border border-white/10 backdrop-blur-sm ${category !== activeCategory ? "hidden" : ""}`}
+            class={`skill-card group flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 hover:border-orange-500/30 hover:shadow-[0_0_20px_-5px_rgba(249,115,22,0.3)] transition-all duration-300 text-white min-w-[180px] max-w-[220px] border border-white/10 backdrop-blur-sm ${category !== activeCategory ? "hidden" : ""}`}
             data-category={category}
           >
-            <Icon class="text-2xl text-white/80" />
+            <Icon class="text-2xl text-white/80 group-hover:text-orange-400 transition-colors duration-300" />
             <span class="text-sm font-semibold">{name}</span>
           </div>
         ))
@@ -127,10 +147,10 @@ const skillFilters = [
       // Actualizar tab activo
       buttons.forEach((b) => {
         if (b.dataset.category === category) {
-          b.classList.add("bg-white", "text-gray-900", "shadow");
+          b.classList.add("bg-orange-500", "text-white", "shadow-lg", "shadow-orange-500/20");
           b.classList.remove("text-white/70", "hover:bg-white/10");
         } else {
-          b.classList.remove("bg-white", "text-gray-900", "shadow");
+          b.classList.remove("bg-orange-500", "text-white", "shadow-lg", "shadow-orange-500/20");
           b.classList.add("text-white/70", "hover:bg-white/10");
         }
       });
