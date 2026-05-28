@@ -207,6 +207,7 @@ const allPosts = initialData.posts;
   }
 
   function applyFilters() {
+    console.log(`BLOG_INDEX_JS: applyFilters starting. currentCategory=${state.currentCategory}, searchQuery=${state.searchQuery}`);
     const allItems = Array.from(elements.postItems) as HTMLElement[];
     state.currentPage = 1;
 
@@ -257,6 +258,7 @@ const allPosts = initialData.posts;
   }
 
   function updateView() {
+    console.log(`BLOG_INDEX_JS: updateView starting. filteredPosts=${state.filteredPosts.length}`);
     // 1. Ocultar todos primero
     elements.postItems.forEach((item) => item.classList.add("hidden"));
 
@@ -296,6 +298,7 @@ const allPosts = initialData.posts;
   }
 
   function updateFilterUI() {
+    console.log("BLOG_INDEX_JS: updateFilterUI starting.");
     const category = state.currentCategory;
     const query = state.searchQuery;
 
@@ -519,5 +522,12 @@ const allPosts = initialData.posts;
   );
 
   // Init
-  init();
+  console.log("BLOG_INDEX_JS: Script loaded, running init...");
+  try {
+    console.log(`BLOG_INDEX_JS: postItems found = ${elements.postItems.length}`);
+    init();
+    console.log("BLOG_INDEX_JS: Initialization complete.");
+  } catch (err: any) {
+    console.error("BLOG_INDEX_JS_ERROR:", err.stack || err.message || err);
+  }
 </script>
