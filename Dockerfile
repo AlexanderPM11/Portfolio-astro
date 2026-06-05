@@ -10,16 +10,23 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-# Etapa 2: Servidor final (Nginx)
-FROM nginx:alpine
-WORKDIR /usr/share/nginx/html
+# Etapa 2: Servidor final (Node.js)
+FROM node:20-alpine AS runner
+WORKDIR /app
 
-# Elimina archivos por defecto de Nginx y copia la app
-RUN rm -rf ./*
-COPY --from=builder /app/dist ./
+# Copia las dependencias de producción
+COPY package*.json ./
+RUN npm install --omit=dev
 
-# Copia un archivo de configuración personalizada (opcional)
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copia la compilación del builder
+COPY --from=builder /app/dist ./dist
 
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# Variables de entorno
+ENV HOST=0.0.0.0
+ENV PORT=3000
+ENV NODE_ENV=production
+
+EXPOSE 3000
+
+# Ejecuta el servidor standalone de Astro
+CMD ["node", "./dist/server/entry.mjs"]

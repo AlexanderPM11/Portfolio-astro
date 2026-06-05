@@ -73,6 +73,29 @@ import Logo from "../assets/img/Logo.png";
         .bot-message { border: 1px solid #ddd !important; background: #f9f9f9 !important; color: black !important; box-shadow: none !important; }
         .user-message { background: #f97316 !important; color: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       }
+
+      /* Estilos para renderizar Markdown dentro de los mensajes */
+      .msg-content h1, .msg-content h2, .msg-content h3 {
+        color: #ffffff !important;
+        font-weight: 700;
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+      }
+      :root.light-theme .msg-content h1, 
+      :root.light-theme .msg-content h2, 
+      :root.light-theme .msg-content h3 {
+        color: #0f172a !important;
+      }
+      
+      .msg-content h1 { font-size: 1.25rem; }
+      .msg-content h2 { font-size: 1.125rem; }
+      .msg-content h3 { font-size: 1rem; }
+      
+      .msg-content ul { list-style-type: disc !important; padding-left: 1.25rem !important; margin-top: 0.5rem !important; margin-bottom: 0.5rem !important; }
+      .msg-content ol { list-style-type: decimal !important; padding-left: 1.25rem !important; margin-top: 0.5rem !important; margin-bottom: 0.5rem !important; }
+      .msg-content li { margin-bottom: 0.25rem !important; }
+      .msg-content blockquote { border-left: 4px solid #f97316 !important; padding-left: 1rem !important; font-style: italic !important; margin: 0.5rem 0 !important; color: #94a3b8 !important; }
+      :root.light-theme .msg-content blockquote { color: #475569 !important; }
     </style>
   </head>
   <body class="bg-slate-900 text-slate-200 h-screen w-full flex overflow-hidden font-sans">
@@ -250,6 +273,87 @@ import Logo from "../assets/img/Logo.png";
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         const STORAGE_KEY = 'genesa_ai_sessions_v1';
+
+        function parseMarkdown(text: string): string {
+          if (!text) return '';
+          
+          let html = text.replace(/\\n/g, '\n');
+
+          // Escape HTML tags to prevent XSS
+          html = html
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+
+          // Strong / Bold: **text**
+          html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+
+          // Italic: *text*
+          html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+
+          // Headings
+          html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+          html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+          html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+
+          // Blockquotes
+          html = html.replace(/^&gt; (.*$)/gim, '<blockquote>$1</blockquote>');
+
+          // Process lists line-by-line
+          const lines = html.split('\n');
+          let inUl = false;
+          let inOl = false;
+          const processedLines = [];
+
+          for (let i = 0; i < lines.length; i++) {
+            const line = lines[i].trim();
+            
+            if (line.startsWith('- ') || line.startsWith('* ')) {
+              if (inOl) {
+                processedLines.push('</ol>');
+                inOl = false;
+              }
+              if (!inUl) {
+                processedLines.push('<ul>');
+                inUl = true;
+              }
+              const content = line.substring(2);
+              processedLines.push(`<li>${content}</li>`);
+            } else if (/^\d+\.\s/.test(line)) {
+              if (inUl) {
+                processedLines.push('</ul>');
+                inUl = false;
+              }
+              if (!inOl) {
+                processedLines.push('<ol>');
+                inOl = true;
+              }
+              const content = line.replace(/^\d+\.\s/, '');
+              processedLines.push(`<li>${content}</li>`);
+            } else {
+              if (inUl) {
+                processedLines.push('</ul>');
+                inUl = false;
+              }
+              if (inOl) {
+                processedLines.push('</ol>');
+                inOl = false;
+              }
+              processedLines.push(lines[i]);
+            }
+          }
+
+          if (inUl) processedLines.push('</ul>');
+          if (inOl) processedLines.push('</ol>');
+
+          html = processedLines.join('\n');
+
+          // Double and single newlines
+          html = html.replace(/\n\n/g, '<div class="h-3"></div>');
+          html = html.replace(/\n/g, '<br>');
+
+          return html;
+        }
         
         // DOM Elements
         const sidebar = document.getElementById('chat-sidebar');
@@ -439,8 +543,8 @@ import Logo from "../assets/img/Logo.png";
               </div>
               <div class="flex flex-col ${isUser ? 'items-end' : 'items-start'} max-w-[85%]">
                 <div class="text-xs text-slate-500 mb-1 px-1 font-medium">${isUser ? i18n[currentLang].you : i18n[currentLang].bot}</div>
-                <div class="px-5 py-3.5 rounded-2xl text-[15px] leading-relaxed shadow-sm ${isUser ? 'bg-orange-500 text-white rounded-tr-sm user-message' : 'rounded-tl-sm ' + botClasses}">
-                  ${msg.content.replace(/\\n/g, '<br>')}
+                <div class="msg-content px-5 py-3.5 rounded-2xl text-[15px] leading-relaxed shadow-sm ${isUser ? 'bg-orange-500 text-white rounded-tr-sm user-message' : 'rounded-tl-sm ' + botClasses}">
+                  ${isUser ? msg.content.replace(/\\n/g, '<br>').replace(/\n/g, '<br>') : parseMarkdown(msg.content)}
                 </div>
               </div>
             `;
@@ -450,22 +554,9 @@ import Logo from "../assets/img/Logo.png";
           messagesContainer.scrollTop = messagesContainer.scrollHeight;
         };
 
-        const generateDummyResponse = (query: string) => {
-          const q = query.toLowerCase();
-          if (currentLang === 'es') {
-            if (q.includes("hola")) return "¡Hola! Bienvenido al chat interactivo. Soy el asistente de IA de Alexander. ¿Cómo puedo ayudarte hoy?";
-            if (q.includes("experiencia")) return "Alexander es un desarrollador de software con sólida experiencia en tecnologías frontend (Astro, React, Tailwind) y backend (Node.js, Bases de datos). Se especializa en crear soluciones modernas, integraciones con IA y experiencias de usuario de alta calidad.";
-            if (q.includes("tecnología") || q.includes("tecnologia")) return "Las principales tecnologías incluyen:\n- Astro y React\n- TailwindCSS\n- TypeScript y JavaScript\n- Node.js\n- Integraciones con APIs de IA (OpenAI, Gemini).";
-            return "Entiendo. Por el momento soy una demostración de interfaz gráfica, pero pronto estaré conectado a un modelo de lenguaje avanzado para responder a esa pregunta con mayor detalle. ¿Hay algo más en lo que pueda ayudarte?";
-          } else {
-            if (q.includes("hi") || q.includes("hello")) return "Hi! Welcome to the interactive chat. I'm Alexander's AI assistant. How can I help you today?";
-            if (q.includes("experience")) return "Alexander is a software developer with solid experience in frontend technologies (Astro, React, Tailwind) and backend (Node.js, Databases). He specializes in creating modern solutions, AI integrations, and high-quality user experiences.";
-            return "I understand. At the moment I am a graphical interface demo, but I will soon be connected to an advanced language model to answer that question in more detail. Is there anything else I can help you with?";
-          }
-        };
-
-        const handleSend = (text: string) => {
-          if (!text || isTyping) return;
+        const handleSend = async (text: string) => {
+          if (!text || isTyping || !messagesContainer) return;
+          const container = messagesContainer;
           
           if (!activeSessionId) {
             createSession(text.slice(0, 30) + (text.length > 30 ? "..." : ""));
@@ -492,22 +583,86 @@ import Logo from "../assets/img/Logo.png";
             if (btnSend) btnSend.disabled = true;
           }
 
-          // Simulate AI
           isTyping = true;
           if (typingIndicator) typingIndicator.classList.remove('hidden');
-          messagesContainer?.scrollTo(0, messagesContainer.scrollHeight);
+          container.scrollTo(0, container.scrollHeight);
 
-          setTimeout(() => {
-            const response = generateDummyResponse(text);
-            session.messages.push({ role: 'assistant', content: response });
+          try {
+            const response = await fetch('/api/chat', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                messages: session.messages.map(m => ({ role: m.role, content: m.content })),
+                sessionId: activeSessionId
+              })
+            });
+
+            if (typingIndicator) typingIndicator.classList.add('hidden');
+
+            if (!response.ok) {
+              const errData = await response.json().catch(() => ({}));
+              throw new Error(errData.error || `Error del servidor (HTTP ${response.status})`);
+            }
+
+            const data = await response.json();
+            const fullReply = data.response || 'Sin respuesta.';
+
+            // Crear el mensaje del asistente inicialmente vacío
+            const assistantMsg = { role: 'assistant', content: '' };
+            session.messages.push(assistantMsg);
+            renderMessages();
+
+            // Encontrar el último div de contenido del mensaje
+            const msgEls = container.querySelectorAll('.msg-content');
+            const lastMsgEl = msgEls[msgEls.length - 1];
+
+            // Efecto Typewriter progresivo palabra por palabra
+            const words = fullReply.split(/(\s+)/);
+            let wordIndex = 0;
+
+            await new Promise<void>((resolve) => {
+              const typeWord = () => {
+                if (wordIndex < words.length) {
+                  assistantMsg.content += words[wordIndex];
+                  if (lastMsgEl) {
+                    lastMsgEl.innerHTML = parseMarkdown(assistantMsg.content);
+                  }
+                  container.scrollTop = container.scrollHeight;
+                  wordIndex++;
+                  // Ajusta la velocidad de simulación de escritura (20ms por palabra)
+                  setTimeout(typeWord, 20);
+                } else {
+                  resolve();
+                }
+              };
+              typeWord();
+            });
+
+            // Guardar el historial completo al terminar
             session.updatedAt = Date.now();
             saveSessions();
-            
-            isTyping = false;
-            if (typingIndicator) typingIndicator.classList.add('hidden');
             renderSidebar();
+
+          } catch (error: any) {
+            console.error('Error al recibir la respuesta:', error);
+            if (typingIndicator) typingIndicator.classList.add('hidden');
+
+            const errorMsg = currentLang === 'es' 
+              ? 'Lo siento, ha ocurrido un error al conectar con el servidor. Por favor, inténtalo de nuevo.' 
+              : 'Sorry, an error occurred while connecting to the server. Please try again.';
+
+            session.messages.push({
+              role: 'assistant',
+              content: `${errorMsg}\n\n*Detalle del error:* ${error.message || 'Error desconocido'}`
+            });
+            session.updatedAt = Date.now();
+            saveSessions();
             renderMessages();
-          }, 1500 + Math.random() * 1000);
+          } finally {
+            isTyping = false;
+          }
         };
 
         // --- Confirmation Dialog ---
