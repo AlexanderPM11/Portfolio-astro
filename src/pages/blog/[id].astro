@@ -162,7 +162,7 @@ const categories = post.categories || (post.category ? [post.category] : []);
   }
 </script>
 
-<style>
+<style is:global>
   /* ── Post Content Prose Styles (Modern Premium) ──────────────── */
   .post-content-container {
     max-width: none;
@@ -252,5 +252,42 @@ const categories = post.categories || (post.category ? [post.category] : []);
     margin: 3rem auto;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     display: block;
+    height: auto;
+    max-width: 100%;
+  }
+
+  /* ── WordPress Gutenberg Specific Styles ──────────────── */
+  .prose-premium .alignleft {
+    float: left;
+    margin-right: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .prose-premium .alignright {
+    float: right;
+    margin-left: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .prose-premium .aligncenter {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+  }
+  .prose-premium figure {
+    margin: 2rem 0;
+  }
+  .prose-premium figcaption {
+    color: #94a3b8; /* text-gray-400 */
+    font-size: 0.875rem;
+    text-align: center;
+    margin-top: 0.5rem;
+  }
+  .prose-premium iframe,
+  .prose-premium video {
+    max-width: 100%;
+    border-radius: 1rem;
+    margin: 2rem auto;
+    display: block;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
   }
 </style>
