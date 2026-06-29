@@ -4,13 +4,25 @@ import { sanitizeContent } from "../../util/constants/sanitizedContent";
 import Layout from "../../layouts/Layout.astro";
 import { getProjectById } from "../../services/blog/ProjectService";
 import type { ProjectPost } from "../../interface/Project/ProjectInterface";
-import { getPostPaths } from "../../services/blog/BlogService";
+import { getPostPaths, fetchCategories, fetchLimitedPosts } from "../../services/blog/BlogService";
 import BlogSidebar from "../../components/blog/BlogSidebar.astro";
 
 const { id } = Astro.params;
 
 export async function getStaticPaths() {
-  return await getPostPaths();
+  const [categories, { posts: recentPosts }] = await Promise.all([
+    fetchCategories(),
+    fetchLimitedPosts(5),
+  ]);
+  const paths = await getPostPaths();
+  return paths.map((path) => ({
+    params: path.params,
+    props: {
+      post: path.props.post,
+      categories,
+      recentPosts,
+    },
+  }));
 }
 
 export async function get(id: string) {
@@ -23,9 +35,14 @@ export async function get(id: string) {
   }
 }
 
-let post: ProjectPost;
-const data = await get(id);
-post = data.props.post!;
+let post = Astro.props.post;
+let sidebarCategories = Astro.props.categories;
+let recentPosts = Astro.props.recentPosts;
+
+if (!post) {
+  const data = await get(id!);
+  post = data.props.post!;
+}
 
 const sanitizedContent = sanitizeContent(post.content?.rendered || "");
 
@@ -142,7 +159,7 @@ const categories = post.categories || (post.category ? [post.category] : []);
 
         <!-- Sidebar -->
         <div class="lg:col-span-4">
-          <BlogSidebar />
+          <BlogSidebar categories={sidebarCategories} recentPosts={recentPosts} />
         </div>
 
       </div>

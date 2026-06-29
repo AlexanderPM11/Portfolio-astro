@@ -5,8 +5,15 @@ import {
   fetchLimitedPosts,
 } from "../../services/blog/BlogService";
 
-const categories = await fetchCategories();
-const { posts: recentPosts } = await fetchLimitedPosts(5);
+interface Props {
+  categories?: any[];
+  recentPosts?: any[];
+}
+
+const { 
+  categories = await fetchCategories(), 
+  recentPosts = (await fetchLimitedPosts(5)).posts 
+} = Astro.props;
 
 // Helper for image URLs
 const getImageUrl = (post: any) => {

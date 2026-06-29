@@ -38,10 +38,12 @@ export async function get(id: string) {
 // ------------------
 // Variables disponibles en el template
 // ------------------
-let post: ProjectPost;
+let post = Astro.props.post;
 
-const data = await get(id);
-post = data.props.post!;
+if (!post) {
+  const data = await get(id!);
+  post = data.props.post!;
+}
 
 const sanitizedContent = sanitizeContent(post.content?.rendered || "");
 

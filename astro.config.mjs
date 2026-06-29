@@ -18,12 +18,6 @@ export default defineConfig({
     icon({
       // Especificar los icon sets que quieres usar
       iconDir: "src/icons",
-      include: {
-        // Incluir Material Design Icons (viene por defecto)
-        mdi: ["*"],
-        // Incluir Simple Icons explícitamente
-        "simple-icons": ["*"],
-      },
     }),
   ],
   vite: {
