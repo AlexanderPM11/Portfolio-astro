@@ -65,10 +65,24 @@ export async function getProjectById(id: number): Promise<ProjectPost> {
 }
 
 export async function GetProjects(): Promise<ProjectPost[]> {
-  const url = `${API_URL}&_embed&per_page=100`;
+  // 1) Obtener dinámicamente el ID de la categoría "projects"
+  const catUrl = API_URL.replace("wp/v2/posts", "wp/v2/categories&slug=projects");
+  const categories = await get<any[]>(catUrl);
+  
+  let projectsCategoryId: number | null = null;
+  if (Array.isArray(categories) && categories.length > 0) {
+    projectsCategoryId = categories[0].id;
+  }
+
+  // 2) Armar la query pidiendo específicamente esa categoría si fue encontrada
+  let url = `${API_URL}&_embed&per_page=100`;
+  if (projectsCategoryId !== null) {
+    url += `&categories=${projectsCategoryId}`;
+  }
+
   const posts = await get<any[]>(url);
 
-  // 🔹 Filtra los posts que tienen la categoría "projects"
+  // 3) Filtrar por seguridad (aunque WordPress ya los filtra por categoría)
   const filtered = posts.filter((p) => {
     const termsGroups = p._embedded?.["wp:term"];
     if (!Array.isArray(termsGroups)) return false;
