@@ -64,9 +64,9 @@ export type VisitorData = {
 };
 
 export const sendVisitorAlert = async (data: VisitorData): Promise<boolean> => {
-    if (data.ip === '38.159.192.25') {
-        return true;
-    }
+    // if (data.ip === '38.159.192.25') {
+    //     return true;
+    // }
 
     const templateIdVisitor = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID_VISITOR;
 
@@ -80,17 +80,12 @@ export const sendVisitorAlert = async (data: VisitorData): Promise<boolean> => {
             serviceId,
             templateIdVisitor,
             {
-                title: "Nueva Visita Detectada",
-                name: "System Visitor",
-                email: "visitor@portfolio.com",
-                message: `Se ha detectado una nueva visita en la página "${data.page}" desde ${data.city}, ${data.country}.`,
-                
-                // Mapeo exacto a las variables de tu template HTML
+                subject: "Nueva Visita Detectada",
+                message: `Se ha detectado una nueva visita en la página "${data.page}".`,
                 visitante_ip: data.ip,
                 visitante_pais: data.country,
                 visitante_region: data.region,
                 visitante_ciudad: data.city,
-                visitante_pagina: data.page,
                 user_agent: data.userAgent,
                 timestamp: data.time
             },
