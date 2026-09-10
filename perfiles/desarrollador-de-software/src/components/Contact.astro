@@ -1,0 +1,356 @@
+---
+import { Send, MessageCircle, User, Mail, MapPin, Github } from "lucide-astro";
+import { sendMessage } from "../util/sendMessage";
+import SectionHeading from "./common/SectionHeading.astro";
+---
+
+<section
+  id="contact"
+  class="py-28 px-6 bg-linear-to-br from-gray-900 via-gray-950 to-black text-white relative overflow-hidden"
+>
+  <!-- Elementos decorativos de fondo -->
+  <div
+    class="absolute top-0 left-0 w-96 h-96 bg-orange-500/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"
+  >
+  </div>
+  <div
+    class="absolute bottom-0 right-0 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"
+  >
+  </div>
+
+  <div class="max-w-7xl mx-auto relative z-10">
+    <!-- Header de sección -->
+    <SectionHeading
+      label="Disponible para Proyectos"
+      title="Trabajemos"
+      highlight=" Juntos"
+      description="¿Tienes una idea innovadora? Hablemos sobre cómo puedo ayudarte a hacerla realidad."
+    />
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+      <!-- Información de Contacto -->
+      <div class="space-y-8">
+        <div>
+          <h3 class="text-3xl font-bold text-white mb-6">Conectemos</h3>
+          <p class="text-gray-300 text-lg mb-8 leading-relaxed">
+            Estoy siempre abierto a discutir nuevos proyectos, ideas creativas y
+            oportunidades para ser parte de tu visión.
+          </p>
+        </div>
+
+        <!-- Tarjetas de contacto -->
+        <div class="space-y-6">
+          <!-- Email -->
+          <a
+            href="mailto:alexanderdev@apolanco.com"
+            class="group flex items-center gap-6 p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-orange-500/30 hover:bg-white/10 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-orange-500/10"
+          >
+            <div
+              class="shrink-0 w-14 h-14 bg-linear-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300"
+            >
+              <Mail class="w-6 h-6" />
+            </div>
+            <div class="grow">
+              <h4 class="text-lg font-semibold text-white mb-1">
+                Correo Electrónico
+              </h4>
+              <p class="text-gray-300">alexanderdev@apolanco.com</p>
+              <p
+                class="text-orange-400 text-sm mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              >
+                Click para enviar email
+              </p>
+            </div>
+          </a>
+
+          <!-- GitHub -->
+          <a
+            href="https://github.com/AlexanderPM11"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group flex items-center gap-6 p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-blue-500/30 hover:bg-white/10 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-blue-500/10"
+          >
+            <div
+              class="shrink-0 w-14 h-14 bg-linear-to-br from-gray-700 to-gray-900 rounded-2xl flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300"
+            >
+              <Github class="w-6 h-6" />
+            </div>
+            <div class="grow">
+              <h4 class="text-lg font-semibold text-white mb-1">GitHub</h4>
+              <p class="text-gray-300">github.com/AlexanderPM11</p>
+              <p
+                class="text-blue-400 text-sm mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              >
+                Ver mis proyectos
+              </p>
+            </div>
+          </a>
+
+          <!-- Telegram -->
+          <a
+            href="https://t.me/alexanderJpm"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group flex items-center gap-6 p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:border-sky-500/30 hover:bg-white/10 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-sky-500/10"
+          >
+            <div
+              class="shrink-0 w-14 h-14 bg-linear-to-br from-sky-500 to-sky-600 rounded-2xl flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300"
+            >
+              <Send class="w-6 h-6" />
+            </div>
+            <div class="grow">
+              <h4 class="text-lg font-semibold text-white mb-1">Telegram</h4>
+              <p class="text-gray-300">@alexanderJpm</p>
+              <p
+                class="text-sky-400 text-sm mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              >
+                Enviar mensaje directo
+              </p>
+            </div>
+          </a>
+
+          <!-- Ubicación -->
+          <div
+            class="group flex items-center gap-6 p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 transition-all duration-500"
+          >
+            <div
+              class="shrink-0 w-14 h-14 bg-linear-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center text-white"
+            >
+              <MapPin class="w-6 h-6" />
+            </div>
+            <div class="grow">
+              <h4 class="text-lg font-semibold text-white mb-1">Ubicación</h4>
+              <p class="text-gray-300">Santo Domingo, República Dominicana</p>
+              <p class="text-green-400 text-sm mt-1">
+                Disponible para trabajo remoto
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulario de Contacto -->
+      <div class="relative">
+        <div
+          class="bg-linear-to-br from-white/5 to-white/2 backdrop-blur-xl border border-white/10 rounded-3xl px-8 pt-10 pb-4 shadow-2xl"
+        >
+          <!-- Elemento decorativo -->
+          <div
+            class="absolute top-6 right-6 w-20 h-20 bg-orange-500/10 rounded-full blur-xl"
+          >
+          </div>
+
+          <div class="relative z-10">
+            <h3 class="text-2xl font-bold text-white mb-2">
+              Envíame un mensaje
+            </h3>
+            <p class="text-gray-300 mb-8">
+              Completa el formulario y me pondré en contacto contigo en menos de
+              24 horas.
+            </p>
+
+            <form id="contact-form" class="space-y-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                  <label
+                    for="name"
+                    class="block text-sm font-medium text-gray-300"
+                  >
+                    Nombre completo *
+                  </label>
+                  <div class="relative">
+                    <User
+                      class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
+                    />
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      required
+                      class="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300"
+                      placeholder="Tu nombre"
+                    />
+                  </div>
+                </div>
+
+                <div class="space-y-2">
+                  <label
+                    for="email"
+                    class="block text-sm font-medium text-gray-300"
+                  >
+                    Correo electrónico *
+                  </label>
+                  <div class="relative">
+                    <Mail
+                      class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
+                    />
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      required
+                      class="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300"
+                      placeholder="tu@email.com"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <label
+                  for="service"
+                  class="block text-sm font-medium text-gray-300"
+                >
+                  Asunto del proyecto
+                </label>
+                <input
+                  type="text"
+                  id="service"
+                  name="service"
+                  class="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300"
+                  placeholder="¿En qué puedo ayudarte?"
+                />
+              </div>
+
+              <div class="space-y-2">
+                <label
+                  for="message"
+                  class="block text-sm font-medium text-gray-300"
+                >
+                  Mensaje *
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  rows="6"
+                  required
+                  class="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300 resize-none"
+                  placeholder="Cuéntame sobre tu proyecto..."></textarea>
+              </div>
+
+              <button
+                type="submit"
+                id="submit-btn"
+                class="group w-full bg-linear-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold py-5 rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/25 inline-flex items-center justify-center gap-3"
+              >
+                <span>Enviar Mensaje</span>
+                <Send
+                  class="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300"
+                />
+              </button>
+
+              <div id="status" class="text-center text-sm min-h-5"></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Animaciones personalizadas */
+
+  /* Mejoras de focus para accesibilidad */
+  input:focus,
+  textarea:focus {
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+  }
+
+  /* Efecto de carga para el botón */
+  .loading {
+    position: relative;
+    color: transparent;
+  }
+
+  .loading::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+    margin-left: -10px;
+    margin-top: -10px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    border-right-color: transparent;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+</style>
+
+<script>
+  import { sendMessage } from "../util/sendMessage";
+
+  type FormData = {
+    name: string;
+    email: string;
+    phone?: string;
+    service?: string;
+    message: string;
+  };
+
+  type SendMessageResult = {
+    success: boolean;
+    message: string;
+  };
+
+  // Función para manejar el envío del formulario
+  async function handleSubmit(e: Event) {
+    e.preventDefault(); // Esto previene la recarga de la página
+    const form = e.target as HTMLFormElement;
+    const formData = Object.fromEntries(
+      new FormData(form).entries()
+    ) as FormData;
+
+    const status = document.getElementById("status")!;
+    const button = document.getElementById("submit-btn")! as HTMLButtonElement;
+
+    // Validación básica
+    if (!formData.name || !formData.email || !formData.message) {
+      status.innerHTML =
+        '<p class="text-red-400">Por favor, completa todos los campos requeridos</p>';
+      return;
+    }
+
+    // Estado de carga
+    button.classList.add("loading");
+    button.disabled = true;
+    status.innerHTML = "";
+
+    try {
+      const res: SendMessageResult = await sendMessage(formData);
+
+      if (res.success) {
+        status.innerHTML = `<p class="text-green-400 text-lg font-medium">🎉 ${res.message} Te contactaré pronto.</p>`;
+        form.reset();
+      } else {
+        status.innerHTML = `<p class="text-red-400">❌ ${res.message}</p>`;
+      }
+    } catch (err: any) {
+      status.innerHTML = `<p class="text-red-400">❌ ${err.message || "Error al enviar el mensaje. Intenta nuevamente."}</p>`;
+    } finally {
+      button.classList.remove("loading");
+      button.disabled = false;
+      button.innerHTML =
+        '<span>Enviar Mensaje</span><Send class="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />';
+    }
+  }
+  // Inicializar el formulario cuando el DOM esté listo
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("contact-form");
+    if (form) {
+      form.addEventListener("submit", (e: Event) => {
+        e.preventDefault();
+        handleSubmit(e);
+      });
+    }
+  });
+</script>
+

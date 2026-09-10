@@ -1,0 +1,99 @@
+---
+// src/components/SkillsData.ts
+import * as LucideIcons from "lucide-astro";
+import SectionHeading from "./common/SectionHeading.astro";
+import { GetWpSkills } from "../services/wpSkills";
+
+const skills = await GetWpSkills();
+
+let activeCategory = "Languages";
+const skillFilters = [
+  "Languages",
+  "Frameworks/Libraries",
+  "Agentic AI",
+  "Cloud/DevOps",
+  "Concepts",
+  "Automation",
+];
+---
+
+<section id="skills" class="py-16 px-4 bg-[#0B0F1A] text-white relative z-10">
+  <div class="max-w-6xl mx-auto text-center">
+    <SectionHeading
+      label="Tecnologías y herramientas"
+      title="Habilidades"
+      highlight="Técnica"
+      description="Conjunto de tecnologías y herramientas que utilizo para diseñar, desarrollar y optimizar soluciones digitales."
+    />
+
+    <!-- Tabs -->
+    <div
+      id="skills-tabs"
+      class="flex flex-wrap justify-center gap-2 mt-10 mb-8 bg-white/5 p-2 rounded-xl backdrop-blur-sm border border-white/10 w-fit mx-auto"
+    >
+      {
+        skillFilters.map((filter) => (
+          <button
+            type="button"
+            class={`cursor-pointer px-4 py-1.5 rounded-md text-sm font-semibold transition-all duration-300 ${filter === activeCategory ? "bg-orange-500 text-white shadow-lg shadow-orange-500/20" : "text-white/70 hover:bg-white/10"}`}
+            data-category={filter}
+          >
+            {filter}
+          </button>
+        ))
+      }
+    </div>
+
+    <!-- Skill Cards -->
+    <div id="skills-container" class="flex flex-wrap justify-center gap-4 mt-6">
+      {
+        skills.map((skill) => {
+          const IconComponent = (LucideIcons as any)[skill.iconName] || LucideIcons.Code;
+          return (
+            <div
+              class={`skill-card group flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 hover:border-orange-500/30 hover:shadow-[0_0_20px_-5px_rgba(249,115,22,0.3)] transition-all duration-300 text-white min-w-[180px] max-w-[220px] border border-white/10 backdrop-blur-sm ${skill.category !== activeCategory ? "hidden" : ""}`}
+              data-category={skill.category}
+            >
+              <IconComponent class="text-2xl text-white/80 group-hover:text-orange-400 transition-colors duration-300" />
+              <span class="text-sm font-semibold" set:html={skill.name} />
+            </div>
+          );
+        })
+      }
+    </div>
+  </div>
+</section>
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>(
+    "#skills-tabs button",
+  );
+  const cards = document.querySelectorAll<HTMLDivElement>(".skill-card");
+
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const category = btn.dataset.category;
+      if (!category) return;
+
+      // Actualizar tab activo
+      buttons.forEach((b) => {
+        if (b.dataset.category === category) {
+          b.classList.add("bg-orange-500", "text-white", "shadow-lg", "shadow-orange-500/20");
+          b.classList.remove("text-white/70", "hover:bg-white/10");
+        } else {
+          b.classList.remove("bg-orange-500", "text-white", "shadow-lg", "shadow-orange-500/20");
+          b.classList.add("text-white/70", "hover:bg-white/10");
+        }
+      });
+
+      // Mostrar/Ocultar cards
+      cards.forEach((card) => {
+        if (card.dataset.category === category) {
+          card.classList.remove("hidden");
+        } else {
+          card.classList.add("hidden");
+        }
+      });
+    });
+  });
+</script>
+
