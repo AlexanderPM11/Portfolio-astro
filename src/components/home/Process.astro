@@ -1,0 +1,26 @@
+---
+import { FileText, ScanLine, SlidersHorizontal, ShieldCheck } from "lucide-astro";
+import SectionHeading from "../common/SectionHeading.astro";
+
+const steps = [
+  { icon: FileText, title: "Recibir", text: "Documento, formulario o información proveniente de un sistema." },
+  { icon: ScanLine, title: "Extraer", text: "OCR, APIs o IA para identificar el contenido relevante." },
+  { icon: SlidersHorizontal, title: "Validar", text: "Limpieza, normalización y revisión de datos con errores." },
+  { icon: ShieldCheck, title: "Proteger", text: "Almacenamiento organizado y manejo responsable de información sensible." },
+];
+---
+
+<section id="process" class="bg-[#080b12] px-6 py-24 text-white lg:px-10">
+  <div class="mx-auto max-w-7xl">
+    <SectionHeading label="El flujo" title="Del documento a la" highlight="información útil" description="Me interesa construir procesos que no solo extraigan datos, sino que también permitan revisarlos, entenderlos y protegerlos." />
+    <div class="relative grid gap-8 md:grid-cols-4 md:gap-4">
+      <div class="absolute left-[12%] right-[12%] top-7 hidden h-px bg-gradient-to-r from-orange-400/60 via-orange-400/20 to-transparent md:block"></div>
+      {steps.map(({ icon: Icon, title, text }, index) => (
+        <div class="relative text-center md:text-left">
+          <div class="relative mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-orange-400/40 bg-[#111722] text-orange-300 shadow-[0_0_0_8px_rgba(8,11,18,1)] md:mx-0"><Icon class="h-6 w-6" /><span class="absolute -right-1 -top-2 font-mono text-[10px] text-orange-300">0{index + 1}</span></div>
+          <h3 class="mt-6 text-lg font-bold">{title}</h3><p class="mt-2 max-w-[15rem] text-sm leading-6 text-slate-500 md:max-w-none">{text}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

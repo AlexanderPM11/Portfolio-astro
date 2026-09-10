@@ -28,5 +28,5 @@ export async function testNavigation(page: Page) {
 
   const cvBtn = page.locator('#hero a', { hasText: 'Descargar' });
   await expect(cvBtn).toBeVisible();
-  await expect(cvBtn).toHaveAttribute('href', '/CV_Alexander_Polanco_Desarrollo_de_Software.pdf');
+  await expect(cvBtn).toHaveAttribute('href', '/CV_Alexander_Polanco_Analista_de_Desarrollo_y_Automatizacion.pdf');
 }

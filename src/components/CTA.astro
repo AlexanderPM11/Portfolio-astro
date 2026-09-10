@@ -44,17 +44,17 @@ import { Mail, ArrowRight, Rocket, Sparkles } from "lucide-astro";
       class="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-linear-to-r from-orange-500/20 to-orange-600/20 border border-orange-500/30 text-orange-300 text-base font-medium mb-8 backdrop-blur-sm"
     >
       <Sparkles class="w-5 h-5" />
-      <span>Disponible para nuevos proyectos</span>
+      <span>Disponible para colaborar</span>
     </div>
 
     <!-- Contenido principal -->
     <div class="text-center mb-12">
       <h2 class="text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-        ¿Listo para crear algo
+        ¿Tienes un proceso
         <span
           class="text-transparent bg-clip-text bg-linear-to-r from-orange-400 via-orange-500 to-orange-600"
         >
-          extraordinario</span
+          manual</span
         >
         ?
       </h2>
@@ -62,24 +62,23 @@ import { Mail, ArrowRight, Rocket, Sparkles } from "lucide-astro";
       <p
         class="text-xl lg:text-2xl text-gray-200 mb-8 leading-relaxed max-w-3xl mx-auto"
       >
-        Transformemos tu visión en una solución digital robusta y de alto rendimiento.
-        <span class="text-orange-300 font-semibold">Desarrollo fullstack</span> de punta a punta.
+        Puedo ayudarte a convertir documentos, datos y tareas repetitivas en flujos digitales más claros, automatizados y protegidos.
       </p>
     </div>
 
     <!-- Estadísticas de confianza -->
     <div class="flex flex-wrap justify-center gap-8 mb-12">
       <div class="text-center">
-        <div class="text-3xl font-bold text-white mb-2">24h</div>
-        <div class="text-gray-300 text-sm">Respuesta rápida</div>
+        <div class="text-3xl font-bold text-white mb-2">+4</div>
+        <div class="text-gray-300 text-sm">Años creando software</div>
       </div>
       <div class="text-center">
-        <div class="text-3xl font-bold text-white mb-2">100%</div>
-        <div class="text-gray-300 text-sm">Dedicación</div>
+        <div class="text-3xl font-bold text-white mb-2">IA</div>
+        <div class="text-gray-300 text-sm">Automatización aplicada</div>
       </div>
       <div class="text-center">
-        <div class="text-3xl font-bold text-white mb-2">✓</div>
-        <div class="text-gray-300 text-sm">Clean Code</div>
+        <div class="text-3xl font-bold text-white mb-2">SQL</div>
+        <div class="text-gray-300 text-sm">Datos estructurados</div>
       </div>
     </div>
 
@@ -98,18 +97,18 @@ import { Mail, ArrowRight, Rocket, Sparkles } from "lucide-astro";
         </div>
 
         <Mail class="w-6 h-6 relative z-10" />
-        <span class="relative z-10">Iniciar Proyecto</span>
+        <span class="relative z-10">Hablemos</span>
         <ArrowRight
           class="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform duration-300"
         />
       </a>
 
       <a
-        href="#portfolio"
+        href="#projects"
         class="group border-2 border-white/30 hover:border-orange-500/50 text-white px-10 py-5 rounded-2xl font-semibold text-lg transition-all duration-300 hover:bg-white/5 hover:scale-105 inline-flex items-center justify-center gap-3 backdrop-blur-sm"
       >
         <Rocket class="w-5 h-5" />
-        <span>Ver Proyectos</span>
+        <span>Ver proyectos</span>
       </a>
     </div>
 
@@ -117,7 +116,7 @@ import { Mail, ArrowRight, Rocket, Sparkles } from "lucide-astro";
     <div class="text-center">
       <p class="text-gray-400 text-sm flex items-center justify-center gap-2">
         <span class="w-2 h-2 bg-green-500 rounded-full"></span>
-        Sin compromisos • Disponible para freelance y proyectos a medida
+        Digitalización • Automatización • Desarrollo de software
       </p>
     </div>
   </div>
@@ -211,10 +210,10 @@ import { Mail, ArrowRight, Rocket, Sparkles } from "lucide-astro";
     }
 
     // Botón secundario de portfolio
-    const portfolioButton = document.querySelector('a[href="#portfolio"]');
+    const portfolioButton = document.querySelector('a[href="#projects"]');
     if (portfolioButton) {
       portfolioButton.addEventListener("click", (e) => {
-        scrollToSection(e, "#portfolio");
+        scrollToSection(e, "#projects");
       });
     }
 

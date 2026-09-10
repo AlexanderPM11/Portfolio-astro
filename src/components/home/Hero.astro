@@ -1,130 +1,57 @@
 ---
-import heroImg from "../../assets/img/Hero.jpeg";
 import meImg from "../../assets/img/profile.png";
 import Button from "../common/Button.astro";
 import SocialMedia from "../SocialMedia.astro";
-import "astro-icon";
-
-import { Folder, ArrowDown } from "lucide-astro";
+import { ArrowDown, ArrowRight, ScanLine } from "lucide-astro";
 ---
 
-<section
-  id="hero"
-  class="h-screen min-h-[600px] bg-center bg-cover bg-no-repeat flex items-center justify-center text-center text-white px-4 relative"
-  style={`background-image: linear-gradient(rgb(11 25 38 / 0%), rgba(11,25,38,0.8)), url(${heroImg.src})`}
->
-  <div class="absolute inset-0 bg-[#0b192680] z-0"></div>
+<section id="hero" class="relative isolate min-h-screen overflow-hidden bg-[#080b12] px-6 pb-16 pt-32 text-white lg:px-10">
+  <div class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_76%_22%,rgba(249,115,22,0.16),transparent_32%),radial-gradient(circle_at_14%_80%,rgba(34,211,238,0.08),transparent_28%)]"></div>
+  <div class="pointer-events-none absolute inset-0 -z-10 opacity-30 [background-image:linear-gradient(rgba(255,255,255,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.045)_1px,transparent_1px)] [background-size:64px_64px] [mask-image:linear-gradient(to_bottom,black,transparent_78%)]"></div>
 
-  <div
-    class="relative z-10 flex flex-col-reverse lg:flex-row items-center justify-between gap-10 lg:gap-20 py-10"
-  >
-    <!-- Texto -->
-    <div class="text-center lg:text-left max-w-xl">
-      <h1
-        class="text-4xl sm:text-5xl lg:text-4xl font-bold uppercase leading-tight mb-2 text-white"
-      >
-        Alexander Polanco
+  <div class="mx-auto grid max-w-7xl items-center gap-16 lg:grid-cols-[1.08fr_0.92fr] lg:gap-12">
+    <div class="max-w-3xl">
+      <div class="mb-7 inline-flex items-center gap-3 rounded-full border border-orange-400/25 bg-orange-400/10 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.22em] text-orange-300">
+        <span class="relative flex h-2 w-2"><span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-orange-400 opacity-70"></span><span class="relative inline-flex h-2 w-2 rounded-full bg-orange-400"></span></span>
+        Software · Automatización · Datos
+      </div>
+      <p class="mb-4 text-sm font-semibold uppercase tracking-[0.28em] text-slate-400">Alexander Polanco / Santo Domingo, RD</p>
+      <h1 class="max-w-4xl text-5xl font-black leading-[0.98] tracking-[-0.05em] text-white sm:text-6xl lg:text-8xl">
+        Convierto procesos manuales en <span class="text-orange-400">sistemas útiles.</span>
       </h1>
-
-      <h2 id="typewriter" class="text-lg sm:text-1xl font-bold mb-4 h-8"></h2>
-
-      <p class="text-base sm:text-lg mb-6 text-white/90">
-        Me enfoco en construir aplicaciones eficientes, escalables y seguras,
-        combinando lo mejor del backend y frontend para ofrecer experiencias
-        digitales sólidas y funcionales.
+      <p class="mt-8 max-w-2xl text-lg leading-8 text-slate-300 sm:text-xl">
+        Desarrollador de software con más de cuatro años creando APIs, automatizaciones e integraciones para procesar información con más claridad, velocidad y control.
       </p>
-
-      <div
-        class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4"
-      >
-        <Button
-          href="#projects"
-          variant="primary"
-          class="bg-white text-gray-900 hover:bg-white/75"
-          icon={Folder}
-          iconPosition="right"
-          iconColor="text-gray-900"
-          iconSize="w-4 h-4"
-        >
-          <span class="text-gray-900">Proyectos</span>
-        </Button>
-
-        <Button
-          href="/CV_Alexander_Polanco_Desarrollo_de_Software.pdf"
-          variant="primary"
-          class="bg-transparent hover:bg-white/10 border border-gray-500 text-white"
-          icon={ArrowDown}
-          iconPosition="left"
-          iconSize="w-5 h-5"
-        >
-          Descargar
-        </Button>
+      <div class="mt-9 flex flex-col gap-4 sm:flex-row">
+        <Button href="#focus" variant="primary" class="bg-orange-500 text-white shadow-[0_18px_50px_-18px_rgba(249,115,22,0.8)] hover:bg-orange-400" icon={ArrowRight} iconPosition="right" iconSize="w-4 h-4">Ver cómo puedo aportar</Button>
+        <Button href="/CV_Alexander_Polanco_Analista_de_Desarrollo_y_Automatizacion.pdf" variant="primary" class="border border-white/15 bg-white/5 text-white hover:border-orange-400/50 hover:bg-white/10" icon={ArrowDown} iconPosition="left" iconSize="w-4 h-4">Descargar CV</Button>
       </div>
-
-      <div class="flex justify-center md:justify-start mt-4">
-        <SocialMedia />
-      </div>
+      <div class="mt-8 flex items-center gap-5"><SocialMedia /><span class="h-px w-16 bg-white/15"></span><span class="text-xs text-slate-500">Disponible para colaborar</span></div>
     </div>
 
-    <!-- Imagen -->
-    <div
-      class="w-48 h-48 sm:w-64 sm:h-64 lg:w-80 lg:h-80 overflow-hidden rounded-full shadow-lg animate__animated animate__backInLeft"
-    >
-      <img
-        src={meImg.src}
-        alt="Alexander Polanco"
-        class="w-full h-full object-cover"
-      />
+    <div class="relative mx-auto w-full max-w-md lg:justify-self-end">
+      <div class="absolute -inset-8 rounded-[3rem] border border-orange-400/10 bg-orange-400/5 blur-2xl"></div>
+      <div class="relative overflow-hidden rounded-[2rem] border border-white/15 bg-slate-900/80 p-3 shadow-2xl shadow-black/40">
+        <div class="relative aspect-[4/5] overflow-hidden rounded-[1.35rem] bg-slate-800">
+          <img src={meImg.src} alt="Alexander Polanco" class="h-full w-full object-cover object-top grayscale-[15%] transition duration-700 hover:scale-105" />
+          <div class="absolute inset-0 bg-gradient-to-t from-[#080b12] via-transparent to-transparent"></div>
+          <div class="absolute bottom-5 left-5 right-5 rounded-2xl border border-white/10 bg-black/35 p-4 backdrop-blur-md">
+            <div class="flex items-center gap-3"><ScanLine class="h-5 w-5 text-orange-400" /><div><p class="text-xs font-bold uppercase tracking-[0.18em] text-orange-300">Focus actual</p><p class="mt-1 text-sm text-white">Digitalización + automatización</p></div></div>
+          </div>
+        </div>
+        <div class="grid grid-cols-3 gap-2 px-2 pb-1 pt-4 text-center">
+          <div><p class="text-xl font-black text-white">+4</p><p class="text-[10px] uppercase tracking-wider text-slate-500">Años</p></div>
+          <div><p class="text-xl font-black text-white">API</p><p class="text-[10px] uppercase tracking-wider text-slate-500">Backend</p></div>
+          <div><p class="text-xl font-black text-white">IA</p><p class="text-[10px] uppercase tracking-wider text-slate-500">Flujos</p></div>
+        </div>
+      </div>
     </div>
   </div>
+
+  <div class="mx-auto mt-20 grid max-w-7xl grid-cols-2 gap-3 border-y border-white/10 py-5 sm:grid-cols-4">
+    <div class="border-r border-white/10 px-3"><p class="text-xl font-black text-white">+4 años</p><p class="mt-1 text-xs uppercase tracking-widest text-slate-500">Experiencia</p></div>
+    <div class="border-r border-white/10 px-3 sm:pl-6"><p class="text-xl font-black text-white">n8n + IA</p><p class="mt-1 text-xs uppercase tracking-widest text-slate-500">Automatización</p></div>
+    <div class="border-r border-white/10 px-3 sm:pl-6"><p class="text-xl font-black text-white">SQL</p><p class="mt-1 text-xs uppercase tracking-widest text-slate-500">Datos</p></div>
+    <div class="px-3 sm:pl-6"><p class="text-xl font-black text-white">Docker</p><p class="mt-1 text-xs uppercase tracking-widest text-slate-500">Infraestructura</p></div>
+  </div>
 </section>
-
-<!-- 🧠 Typewriter + Scroll suave -->
-<script>
-  const words = [
-    "Full Stack Developer",
-    "Frontend Developer",
-    "Backend Specialist",
-    "React Lover",
-    "ASP.NET Expert",
-    "Software Architect",
-  ];
-  const typewriterEl = document.getElementById("typewriter")!;
-  let wordIndex = 0;
-  let charIndex = 0;
-  let isDeleting = false;
-
-  function typeEffect() {
-    const currentWord = words[wordIndex];
-    const displayed = isDeleting
-      ? currentWord.substring(0, charIndex--)
-      : currentWord.substring(0, charIndex++);
-    typewriterEl.textContent = displayed + "|";
-    if (!isDeleting && charIndex === currentWord.length + 1) {
-      setTimeout(() => (isDeleting = true), 2000);
-    } else if (isDeleting && charIndex === 0) {
-      isDeleting = false;
-      wordIndex = (wordIndex + 1) % words.length;
-    }
-    const speed = isDeleting ? 40 : 80;
-    setTimeout(typeEffect, speed);
-  }
-
-  typeEffect();
-
-  // 🧭 Scroll suave
-  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-    const anchorEl = anchor as HTMLAnchorElement;
-    anchorEl.addEventListener("click", function (e) {
-      const targetId = anchorEl.getAttribute("href");
-      if (!targetId?.startsWith("#")) return;
-
-      const target = document.querySelector(targetId);
-      if (!target) return;
-
-      e.preventDefault();
-      const offset = target.getBoundingClientRect().top + window.scrollY - 80;
-      window.scrollTo({ top: offset, behavior: "smooth" });
-    });
-  });
-</script>
